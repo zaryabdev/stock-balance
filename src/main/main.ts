@@ -8,10 +8,11 @@
  * When running `npm run build` or `npm run build:main`, this file is compiled to
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
-import path from 'path';
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
-import { autoUpdater } from 'electron-updater';
+import { BrowserWindow, app, ipcMain, shell } from 'electron';
 import log from 'electron-log';
+import { autoUpdater } from 'electron-updater';
+import path from 'path';
+import sqlite from 'sqlite3';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
@@ -22,6 +23,25 @@ class AppUpdater {
     autoUpdater.checkForUpdatesAndNotify();
   }
 }
+
+const sqlite3 = sqlite.verbose();
+const db = new sqlite3.Database(':memory:');
+
+db.serialize(() => {
+  db.run('CREATE TABLE lorem (info TEXT)');
+
+  const stmt = db.prepare('INSERT INTO lorem VALUES (?)');
+  for (let i = 0; i < 10; i += 1) {
+    stmt.run(`Ipsum ${i}`);
+  }
+  stmt.finalize();
+
+  db.each('SELECT rowid AS id, info FROM lorem', (_err: any, row: any) => {
+    console.log(`${row.id}: ${row.info}`);
+  });
+});
+
+db.close();
 
 let mainWindow: BrowserWindow | null = null;
 
