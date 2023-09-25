@@ -1,40 +1,48 @@
-import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-import icon from '../../assets/icon.svg';
+import { useState } from 'react';
+import {
+  DataSheetGrid,
+  checkboxColumn,
+  keyColumn,
+  textColumn,
+} from 'react-datasheet-grid';
+import { Route, MemoryRouter as Router, Routes } from 'react-router-dom';
+// import icon from '../../assets/icon.svg';
 import './App.css';
 
 function Hello() {
+  const [data, setData] = useState([
+    { active: true, firstName: 'Elon', lastName: 'Musk' },
+    { active: false, firstName: 'Jeff', lastName: 'Bezos' },
+  ]);
+
+  const columns = [
+    {
+      ...keyColumn('active', checkboxColumn),
+      title: 'Active',
+    },
+    {
+      ...keyColumn('firstName', textColumn),
+      title: 'First name',
+    },
+    {
+      ...keyColumn('lastName', textColumn),
+      title: 'Last name',
+    },
+  ];
+
   return (
     <div>
-      <div className="Hello">
-        <img width="200" alt="icon" src={icon} />
-      </div>
-      <h1>electron-react-boilerplate</h1>
-      <div className="Hello">
-        <a
-          href="https://electron-react-boilerplate.js.org/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="books">
-              📚
-            </span>
-            Read our docs
-          </button>
-        </a>
-        <a
-          href="https://github.com/sponsors/electron-react-boilerplate"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="folded hands">
-              🙏
-            </span>
-            Donate
-          </button>
-        </a>
-      </div>
+      <button
+        type="button"
+        onClick={() => {
+          window.electron.store.set('foo', 'bar');
+          console.log(window.electron.store.get('foo'));
+        }}
+      >
+        Click Me!
+      </button>
+
+      <DataSheetGrid value={data} onChange={setData} columns={columns} />
     </div>
   );
 }
