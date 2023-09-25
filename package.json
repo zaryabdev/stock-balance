@@ -103,7 +103,8 @@
     "react": "^18.2.0",
     "react-datasheet-grid": "^4.11.2",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.16.0"
+    "react-router-dom": "^6.16.0",
+    "winston": "^3.10.0"
   },
   "devDependencies": {
     "@electron/notarize": "^2.1.0",
