@@ -42,7 +42,7 @@ function Hello() {
         Click Me!
       </button>
 
-      <DataSheetGrid value={data} onChange={setData} columns={columns} />
+      {/* <DataSheetGrid value={data} onChange={setData} columns={columns} /> */}
     </div>
   );
 }

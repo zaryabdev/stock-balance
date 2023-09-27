@@ -13,9 +13,20 @@ import log from 'electron-log';
 import Store from 'electron-store';
 import { autoUpdater } from 'electron-updater';
 import path from 'path';
-import sqlite from 'sqlite3';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+
+import AppDAO from './dao';
+import PackingTypeRepository from './repositories/packing_type_repository';
+// import ProductNameRepository from './repositories/product_name_repository';
+
+const dao = new AppDAO('sqlite_demo');
+
+// const productNameRepo = new ProductNameRepository(dao);
+const packingTypeRepo = new PackingTypeRepository(dao);
+
+// productNameRepo.createTable();
+// packingTypeRepo.createTable();
 
 const store = new Store();
 
@@ -26,25 +37,6 @@ class AppUpdater {
     autoUpdater.checkForUpdatesAndNotify();
   }
 }
-
-const sqlite3 = sqlite.verbose();
-const db = new sqlite3.Database(':memory:');
-
-db.serialize(() => {
-  db.run('CREATE TABLE lorem (info TEXT)');
-
-  const stmt = db.prepare('INSERT INTO lorem VALUES (?)');
-  for (let i = 0; i < 10; i += 1) {
-    stmt.run(`Ipsum ${i}`);
-  }
-  stmt.finalize();
-
-  db.each('SELECT rowid AS id, info FROM lorem', (_err: any, row: any) => {
-    console.log(`${row.id}: ${row.info}`);
-  });
-});
-
-db.close();
 
 let mainWindow: BrowserWindow | null = null;
 
