@@ -21,6 +21,29 @@ const electronHandler = {
     once(channel: Channels, func: (...args: unknown[]) => void) {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
     },
+    createPackingType(preloadData) {
+      console.log('Inside preload create:packing_type');
+      console.log({ preloadData });
+      ipcRenderer.send('create:packing_type', preloadData);
+    },
+    updatePackingType(preloadData) {
+      console.log('Inside preload update:packing_type');
+      console.log({ preloadData });
+
+      ipcRenderer.send('update:packing_type', preloadData);
+    },
+    deletePackingType(preloadData) {
+      console.log('Inside preload delete:packing_type');
+      console.log({ preloadData });
+
+      ipcRenderer.send('delete:packing_type', preloadData);
+    },
+    getAllPackingTypes(preloadData) {
+      console.log('Inside preload get:packing_types');
+      console.log({ preloadData });
+
+      ipcRenderer.send('get:packing_types', preloadData);
+    },
   },
   store: {
     get(key: any) {

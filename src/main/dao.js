@@ -26,33 +26,33 @@ class AppDAO {
     return 0;
   }
 
-  // async get(sql, params = []) {
-  //   logger.debug('DAO : get');
-  //   const stmt = this.db.prepare(sql);
-  //   try {
-  //     const result = await stmt.get(params);
-  //     console.log(result);
-  //     return result;
-  //   } catch (error) {
-  //     logger.error('DAO : get');
-  //     console.log(error);
-  //   }
-  //   return {};
-  // }
+  async get(sql, params = []) {
+    logger.debug('DAO : get');
+    const stmt = this.db.prepare(sql);
+    try {
+      const result = await stmt.get(params);
+      console.log(result);
+      return result;
+    } catch (error) {
+      logger.error('DAO : get');
+      console.log(error);
+    }
+    return {};
+  }
 
-  // async all(sql, params = []) {
-  //   logger.debug('DAO : all');
-  //   const stmt = this.db.prepare(sql);
-  //   try {
-  //     const resultSet = await stmt.all(params);
-  //     console.log(resultSet);
-  //     return resultSet;
-  //   } catch (error) {
-  //     logger.error('DAO : all');
-  //     console.log(error);
-  //   }
-  //   return [];
-  // }
+  async all(sql, params = []) {
+    logger.debug('DAO : all');
+    const stmt = this.db.prepare(sql);
+    try {
+      const resultSet = await stmt.all(params);
+      console.log(resultSet);
+      return resultSet;
+    } catch (error) {
+      logger.error('DAO : all');
+      console.log(error);
+    }
+    return [];
+  }
 }
 
 module.exports = AppDAO;

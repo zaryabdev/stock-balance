@@ -22,11 +22,11 @@ import PackingTypeRepository from './repositories/packing_type_repository';
 
 const dao = new AppDAO('sqlite_demo');
 
-// const productNameRepo = new ProductNameRepository(dao);
 const packingTypeRepo = new PackingTypeRepository(dao);
+// const productNameRepo = new ProductNameRepository(dao);
 
+packingTypeRepo.createTable();
 // productNameRepo.createTable();
-// packingTypeRepo.createTable();
 
 const store = new Store();
 
@@ -39,21 +39,6 @@ class AppUpdater {
 }
 
 let mainWindow: BrowserWindow | null = null;
-
-// IPC listener
-ipcMain.on('electron-store-get', async (event, val) => {
-  event.returnValue = store.get(val);
-});
-
-ipcMain.on('electron-store-set', async (event, key, val) => {
-  store.set(key, val);
-});
-
-ipcMain.on('ipc-example', async (event, arg) => {
-  const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
-  console.log(msgTemplate(arg));
-  event.reply('ipc-example', msgTemplate('pong'));
-});
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -139,6 +124,73 @@ const createWindow = async () => {
 /**
  * Add event listeners...
  */
+
+// IPC listener
+ipcMain.on('electron-store-get', async (event, val) => {
+  event.returnValue = store.get(val);
+});
+
+ipcMain.on('electron-store-set', async (event, key, val) => {
+  store.set(key, val);
+});
+
+ipcMain.on('ipc-example', async (event, arg) => {
+  const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
+  console.log(msgTemplate(arg));
+  event.reply('ipc-example', msgTemplate('pong'));
+});
+
+// packing type
+ipcMain.on('create:packing_type', async (event, mainData) => {
+  console.log('Inside Main create:packing_type');
+  console.log({ mainData });
+  const webContents = event.sender;
+  const win = BrowserWindow.fromWebContents(webContents);
+  packingTypeRepo.create(mainData).then((result) => {
+    console.log('result from create:packing_type sql');
+    console.log({ result });
+    win.webContents.send('create:packing_type', result);
+  });
+});
+
+ipcMain.on('update:packing_type', async (event, mainData) => {
+  console.log('Inside Main update:packing_type');
+  console.log({ mainData });
+  const webContents = event.sender;
+  const win = BrowserWindow.fromWebContents(webContents);
+  // event.reply('update:packing_type', mainData);
+  packingTypeRepo.update(mainData).then((result) => {
+    console.log('result from update:packing_type sql');
+    console.log({ result });
+    win.webContents.send('update:packing_type', result);
+  });
+});
+
+ipcMain.on('delete:packing_type', async (event, mainData) => {
+  console.log('Inside Main delete:packing_type');
+  console.log({ mainData });
+  const webContents = event.sender;
+  const win = BrowserWindow.fromWebContents(webContents);
+  packingTypeRepo.delete(mainData).then((result) => {
+    console.log('result from delete:packing_type sql');
+    console.log({ result });
+    win.webContents.send('delete:packing_type', result);
+  });
+});
+
+ipcMain.on('get:packing_type', async (event, mainData) => {
+  console.log('Inside Main get:packing_types');
+  console.log({ mainData });
+
+  const webContents = event.sender;
+  const win = BrowserWindow.fromWebContents(webContents);
+
+  productNameRepo.getAll().then((result: any) => {
+    console.log('result from get:packing_types sql');
+    console.log({ result });
+    win.webContents.send('get:packing_types', result);
+  });
+});
 
 app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even
