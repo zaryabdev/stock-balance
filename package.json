@@ -1,5 +1,5 @@
 {
-  "description": "A foundation for scalable desktop apps",
+  "description": "Imventoty Managment",
   "keywords": [
     "electron",
     "boilerplate",
@@ -11,19 +11,19 @@
     "hot",
     "reload"
   ],
-  "homepage": "https://github.com/electron-react-boilerplate/electron-react-boilerplate#readme",
+  "homepage": "https://github.com/zaryabdev/inventory-management#readme",
   "bugs": {
-    "url": "https://github.com/electron-react-boilerplate/electron-react-boilerplate/issues"
+    "url": "https://github.com/zaryabdev/inventory-management/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/electron-react-boilerplate/electron-react-boilerplate.git"
+    "url": "git+https://github.com/zaryabdev/inventory-management.git"
   },
   "license": "MIT",
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://electron-react-boilerplate.js.org"
+    "name": "Zaryab",
+    "email": "xaryabdev@gmail.com",
+    "url": "zaryab.site"
   },
   "contributors": [
     {
@@ -177,8 +177,8 @@
     "webpack-merge": "^5.9.0"
   },
   "build": {
-    "productName": "ElectronReact",
-    "appId": "org.erb.ElectronReact",
+    "productName": "Inventory Management",
+    "appId": "org.zaryab.InventoryManagement",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
     "files": [

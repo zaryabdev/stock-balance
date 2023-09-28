@@ -1,3 +1,5 @@
+import { SearchOutlined } from '@ant-design/icons';
+import { Avatar, Col, Descriptions, Input, Row, Space } from 'antd';
 import Fuse from 'fuse.js';
 import { nanoid } from 'nanoid';
 import React, {
@@ -15,16 +17,22 @@ import {
   keyColumn,
   textColumn,
 } from 'react-datasheet-grid';
-// import BillHeader from './BillHeader';
-// import { sendAsync, getBills, insertBill } from './message-control/renderer';
-import { HeartOutlined } from '@ant-design/icons';
-import { Avatar, Col, Descriptions, Row } from 'antd';
-import 'react-datasheet-grid/dist/style.css';
+import CustomerList from './CustomerList';
 
 const PACKINTYPES = [];
 const PRODUCTNAMES = [];
 
-function Grid() {
+//  <DataSheetGrid
+//         disableExpandSelection
+//         value={data}
+//         height={500}
+//         onChange={(newValue, operations) =>
+//           onColumnChange(newValue, operations)
+//         }
+//         columns={columns}
+//       />
+
+function Customers() {
   const [data, setData] = useState([{}, {}, {}]);
 
   const getAllPackingTypes = () => {
@@ -106,66 +114,24 @@ function Grid() {
   ];
 
   return (
-    <>
-      {/* <article>
-                <textarea
-                    type="text"
-                    value={message}
-                    onChange={({ target: { value } }) => setMessage(value)}
-                />
-                <button type="button" onClick={() => send(message)}>
-                    Send
-                </button>
-                <br />
-                <p>Main process responses:</p>
-                <br />
-                <pre>
-                    {(response && JSON.stringify(response, null, 2)) ||
-                        'No query results yet!'}
-                </pre>
-            </article>
-            */}
-      <Row>
-        <Col span={4}>
-          <Avatar
-            size={{
-              xs: 24,
-              sm: 32,
-              md: 40,
-              lg: 64,
-              xl: 80,
-              xxl: 100,
-            }}
-            icon={<HeartOutlined />}
-          />
-        </Col>
-        <Col span={20}>
-          <Descriptions>
-            <Descriptions.Item label="Name">Talha Zaryab</Descriptions.Item>
-            <Descriptions.Item label="Phone">1234567890</Descriptions.Item>
-            <Descriptions.Item label="City">Lahore</Descriptions.Item>
-            <Descriptions.Item label="Invoice No">001</Descriptions.Item>
-            <Descriptions.Item label="Invoice Date">
-              22-08-2022
-            </Descriptions.Item>
-            <Descriptions.Item label="User">Zaryab</Descriptions.Item>
-            <Descriptions.Item label="Teller">Zaryab</Descriptions.Item>
-          </Descriptions>
-        </Col>
-      </Row>
-
-      <DataSheetGrid
-        disableExpandSelection
-        value={data}
-        height={500}
-        onChange={(newValue, operations) =>
-          onColumnChange(newValue, operations)
-        }
-        columns={columns}
-      />
-    </>
+    <Row gutter={[8, 8]}>
+      <Col span={4}>
+        <CustomerSearch />
+        <CustomerList />
+      </Col>
+      <Col span={20} />
+    </Row>
   );
 }
+
+function CustomerSearch(params: type) {
+  return (
+    <div>
+      <Input placeholder="Search cutomer" iconRender={<SearchOutlined />} />
+    </div>
+  );
+}
+
 function PackingAutoFill({
   focus,
   active,
@@ -322,4 +288,4 @@ function NameAutoFill({
     </>
   );
 }
-export default Grid;
+export default Customers;
