@@ -41,7 +41,7 @@ function CustomerEditGrid({ label }) {
   return (
     <>
       {label}
-      <DataSheetGrid value={data} onChange={setData} columns={columns} />
+      {/* <DataSheetGrid value={data} onChange={setData} columns={columns} /> */}
     </>
   );
 }

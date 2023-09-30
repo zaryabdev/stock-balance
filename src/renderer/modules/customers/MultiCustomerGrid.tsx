@@ -1,7 +1,9 @@
-import { Tabs } from 'antd';
+import { ExclamationCircleFilled } from '@ant-design/icons';
+import { Button, Modal, Space, Tabs } from 'antd';
 import React, { useRef, useState } from 'react';
 import CustomerEditGrid from './CustomerEditGrid';
 
+const { confirm } = Modal;
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
 const initialItems = [
@@ -9,17 +11,6 @@ const initialItems = [
     label: 'Tab 1',
     children: <CustomerEditGrid label="CustomerGridSample Tab 1 Content" />,
     key: '1',
-  },
-  {
-    label: 'Tab 2',
-    children: <CustomerEditGrid label=" CustomerGridSample Tab 2 Content" />,
-    key: '2',
-  },
-  {
-    label: 'Tab 3',
-    children: <CustomerEditGrid label="CustomerGridSample Tab 3 Content" />,
-    key: '3',
-    closable: true,
   },
 ];
 
@@ -33,17 +24,26 @@ function MultiCustomerGrid(params: type) {
   };
 
   const add = () => {
-    const newActiveKey = `newTab${newTabIndex.current++}`;
-    const newPanes = [...items];
-    newPanes.push({
-      label: 'New Tab',
-      children: (
-        <CustomerEditGrid label="CustomerGridSample NEW Tab  Content" />
-      ),
-      key: newActiveKey,
+    confirm({
+      title: 'Do you want to delete these items?',
+      icon: <ExclamationCircleFilled />,
+      content:
+        'When clicked the OK button, this dialog will be closed after 1 second',
+      onOk() {
+        const newActiveKey = `newTab${newTabIndex.current++}`;
+        const newPanes = [...items];
+        newPanes.push({
+          label: 'New Tab',
+          children: (
+            <CustomerEditGrid label="CustomerGridSample NEW Tab  Content" />
+          ),
+          key: newActiveKey,
+        });
+        setItems(newPanes);
+        setActiveKey(newActiveKey);
+      },
+      onCancel() {},
     });
-    setItems(newPanes);
-    setActiveKey(newActiveKey);
   };
 
   const remove = (targetKey: TargetKey) => {
