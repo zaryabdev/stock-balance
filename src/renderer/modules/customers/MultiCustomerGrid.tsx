@@ -42,7 +42,10 @@ function MultiCustomerGrid(params: type) {
         />
       ),
       onOk() {
-        //
+        debugger;
+        console.log('yes OK');
+        saveCustomerToDatabase();
+
         const newActiveKey = nanoid();
         const newPanes = [...items];
         newPanes.push({
@@ -87,6 +90,22 @@ function MultiCustomerGrid(params: type) {
       remove(targetKey);
     }
   };
+
+  function saveCustomerToDatabase(params: type) {
+    console.log('%c Going to call createCustomer', 'color: tomato');
+    window.electron.ipcRenderer.createCustomer({
+      name,
+      address,
+      balance,
+      credit,
+    });
+
+    // window.electron.ipcRenderer.on('create:packing_type', (responseData) => {
+    //   console.log('create:packing_type event response');
+    //   console.log({ responseData });
+    //   console.log('Going to call getAllPackingTypes from createPackingType');
+    // });
+  }
 
   return (
     <div>
