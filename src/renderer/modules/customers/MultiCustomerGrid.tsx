@@ -1,5 +1,6 @@
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import { Button, Input, Modal, Space, Tabs } from 'antd';
+import { nanoid } from 'nanoid';
 import React, { useRef, useState } from 'react';
 import CustomerEditGrid from './CustomerEditGrid';
 
@@ -10,7 +11,7 @@ const initialItems = [
   {
     label: 'Tab 1',
     children: <CustomerEditGrid label="CustomerGridSample Tab 1 Content" />,
-    key: '1',
+    key: nanoid(),
   },
 ];
 
@@ -18,6 +19,11 @@ function MultiCustomerGrid(params: type) {
   const [activeKey, setActiveKey] = useState(initialItems[0].key);
   const [items, setItems] = useState(initialItems);
   const newTabIndex = useRef(0);
+
+  const [name, setName] = useState('');
+  const [address, setAddress] = useState('');
+  const [credit, setCredit] = useState(0);
+  const [balance, setBalance] = useState(0);
 
   const onChange = (newActiveKey: string) => {
     setActiveKey(newActiveKey);
@@ -27,16 +33,21 @@ function MultiCustomerGrid(params: type) {
     confirm({
       title: 'Add new Customer',
       icon: <ExclamationCircleFilled />,
-      content: <CustomerForm />,
+      content: (
+        <CustomerForm
+          setName={setName}
+          setAddress={setAddress}
+          setCredit={setCredit}
+          setBalance={setBalance}
+        />
+      ),
       onOk() {
         //
-        const newActiveKey = `newTab${newTabIndex.current++}`;
+        const newActiveKey = nanoid();
         const newPanes = [...items];
         newPanes.push({
           label: 'New Tab',
-          children: (
-            <CustomerEditGrid label="CustomerGridSample NEW Tab  Content" />
-          ),
+          children: <CustomerEditGrid label={`Tab ID =  ${newActiveKey}`} />,
           key: newActiveKey,
         });
         setItems(newPanes);
@@ -78,18 +89,27 @@ function MultiCustomerGrid(params: type) {
   };
 
   return (
-    <Tabs
-      type="editable-card"
-      onChange={onChange}
-      activeKey={activeKey}
-      onEdit={onEdit}
-      items={items}
-    />
+    <div>
+      <Tabs
+        type="editable-card"
+        onChange={onChange}
+        activeKey={activeKey}
+        onEdit={onEdit}
+        items={items}
+      />
+    </div>
   );
 }
 
-function CustomerForm(params: type) {
-  return <Input placeholder="Basic usage" />;
+function CustomerForm({ setName, setAddress, setBalance, setCredit }) {
+  return (
+    <>
+      <Input placeholder="Name" onChange={setName} />
+      <Input placeholder="Address" onChange={setAddress} />
+      <Input placeholder="Balance" onChange={setBalance} />
+      <Input placeholder="Credit" onChange={setCredit} />
+    </>
+  );
 }
 
 export default MultiCustomerGrid;
