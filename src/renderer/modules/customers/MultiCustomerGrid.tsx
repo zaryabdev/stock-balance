@@ -1,5 +1,5 @@
 import { ExclamationCircleFilled } from '@ant-design/icons';
-import { Button, Modal, Space, Tabs } from 'antd';
+import { Button, Input, Modal, Space, Tabs } from 'antd';
 import React, { useRef, useState } from 'react';
 import CustomerEditGrid from './CustomerEditGrid';
 
@@ -25,11 +25,11 @@ function MultiCustomerGrid(params: type) {
 
   const add = () => {
     confirm({
-      title: 'Do you want to delete these items?',
+      title: 'Add new Customer',
       icon: <ExclamationCircleFilled />,
-      content:
-        'When clicked the OK button, this dialog will be closed after 1 second',
+      content: <CustomerForm />,
       onOk() {
+        //
         const newActiveKey = `newTab${newTabIndex.current++}`;
         const newPanes = [...items];
         newPanes.push({
@@ -86,6 +86,10 @@ function MultiCustomerGrid(params: type) {
       items={items}
     />
   );
+}
+
+function CustomerForm(params: type) {
+  return <Input placeholder="Basic usage" />;
 }
 
 export default MultiCustomerGrid;
