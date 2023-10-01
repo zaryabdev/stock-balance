@@ -1,7 +1,7 @@
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import { Button, Input, Modal, Space, Tabs } from 'antd';
 import { nanoid } from 'nanoid';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import CustomerEditGrid from './CustomerEditGrid';
 
 const { confirm } = Modal;
@@ -24,6 +24,10 @@ function MultiCustomerGrid(params: type) {
   const [address, setAddress] = useState('');
   const [credit, setCredit] = useState(0);
   const [balance, setBalance] = useState(0);
+
+  useEffect(() => {
+    console.log(name);
+  }, [name]);
 
   const onChange = (newActiveKey: string) => {
     setActiveKey(newActiveKey);
@@ -93,7 +97,12 @@ function MultiCustomerGrid(params: type) {
 
   function saveCustomerToDatabase(params: type) {
     console.log('%c Going to call createCustomer', 'color: tomato');
+    console.log(name, address, balance, credit);
+
+    debugger;
+
     window.electron.ipcRenderer.createCustomer({
+      id: nanoid(),
       name,
       address,
       balance,
@@ -123,10 +132,22 @@ function MultiCustomerGrid(params: type) {
 function CustomerForm({ setName, setAddress, setBalance, setCredit }) {
   return (
     <>
-      <Input placeholder="Name" onChange={setName} />
-      <Input placeholder="Address" onChange={setAddress} />
-      <Input placeholder="Balance" onChange={setBalance} />
-      <Input placeholder="Credit" onChange={setCredit} />
+      <Input
+        placeholder="Name"
+        onChange={(event) => setName(event.target.value)}
+      />
+      <Input
+        placeholder="Address"
+        onChange={(event) => setAddress(event.target.value)}
+      />
+      <Input
+        placeholder="Balance"
+        onChange={(event) => setBalance(event.target.value)}
+      />
+      <Input
+        placeholder="Credit"
+        onChange={(event) => setCredit(event.target.value)}
+      />
     </>
   );
 }

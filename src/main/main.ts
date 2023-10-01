@@ -17,16 +17,12 @@ import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
 import AppDAO from './dao';
-import PackingTypeRepository from './repositories/packing_type_repository';
-// import ProductNameRepository from './repositories/product_name_repository';
+import CustomerRepository from './repositories/customer-repo';
 
 const dao = new AppDAO('sqlite_demo');
+const customerRepo = new CustomerRepository(dao);
 
-const packingTypeRepo = new PackingTypeRepository(dao);
-// const productNameRepo = new ProductNameRepository(dao);
-
-packingTypeRepo.createTable();
-// productNameRepo.createTable();
+customerRepo.createTable();
 
 const store = new Store();
 
@@ -148,7 +144,7 @@ ipcMain.on('create:customer', async (event, mainData) => {
   const webContents = event.sender;
   const win = BrowserWindow.fromWebContents(webContents);
 
-  productNameRepo.create(mainData).then((result: any) => {
+  customerRepo.create(mainData).then((result: any) => {
     console.log('result from create:customer sql');
     console.log({ result });
     win.webContents.send('create:customer', result);
