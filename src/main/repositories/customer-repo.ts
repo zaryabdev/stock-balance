@@ -13,20 +13,18 @@ class CustomerRepository {
         CREATE TABLE IF NOT EXISTS customers (
         id TEXT,
         name TEXT,
-        address TEXT,
-        balance TEXT,
-        credit TEXT
+        address TEXT
         )`;
     return this.dao.run(sql);
   }
 
-  create({ id, name, address, balance, credit }) {
+  create({ id, name, address }) {
     logger.debug('create called for CustomerRepository');
-    console.log({ id, name, address, balance, credit });
+    console.log({ id, name, address });
 
     const result = this.dao.run(
-      'INSERT INTO customers (id, name, address, balance, credit) VALUES (?,?,?,?,?)',
-      [id, name, address, balance, credit],
+      'INSERT INTO customers (id, name, address) VALUES (?,?,?)',
+      [id, name, address],
     );
     console.log('Data entry was success');
 

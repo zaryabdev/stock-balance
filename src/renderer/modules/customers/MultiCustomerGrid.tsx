@@ -1,5 +1,14 @@
 import { ExclamationCircleFilled } from '@ant-design/icons';
-import { Button, Input, Modal, Space, Tabs } from 'antd';
+import {
+  Button,
+  Form,
+  Input,
+  InputNumber,
+  Modal,
+  Space,
+  Tabs,
+  Typography,
+} from 'antd';
 import { nanoid } from 'nanoid';
 import React, { useEffect, useRef, useState } from 'react';
 import CustomerEditGrid from './CustomerEditGrid';
@@ -20,14 +29,9 @@ function MultiCustomerGrid(params: type) {
   const [items, setItems] = useState(initialItems);
   const newTabIndex = useRef(0);
 
-  const [name, setName] = useState('');
-  const [address, setAddress] = useState('');
-  const [credit, setCredit] = useState(0);
-  const [balance, setBalance] = useState(0);
-
-  useEffect(() => {
-    console.log(name);
-  }, [name]);
+  const [form] = Form.useForm<{ name: string; age: number }>();
+  const nameValue = Form.useWatch('name', form);
+  console.log(nameValue);
 
   const onChange = (newActiveKey: string) => {
     setActiveKey(newActiveKey);
@@ -38,12 +42,20 @@ function MultiCustomerGrid(params: type) {
       title: 'Add new Customer',
       icon: <ExclamationCircleFilled />,
       content: (
-        <CustomerForm
-          setName={setName}
-          setAddress={setAddress}
-          setCredit={setCredit}
-          setBalance={setBalance}
-        />
+        <>
+          <Form form={form} layout="vertical" autoComplete="off">
+            <Form.Item name="name" label="Name (Watch to trigger rerender)">
+              <Input />
+            </Form.Item>
+            <Form.Item name="age" label="Age (Not Watch)">
+              <InputNumber />
+            </Form.Item>
+          </Form>
+
+          <Typography>
+            <pre>Name Value: {nameValue}</pre>
+          </Typography>
+        </>
       ),
       onOk() {
         debugger;
@@ -97,17 +109,13 @@ function MultiCustomerGrid(params: type) {
 
   function saveCustomerToDatabase(params: type) {
     console.log('%c Going to call createCustomer', 'color: tomato');
-    console.log(name, address, balance, credit);
 
     debugger;
 
-    window.electron.ipcRenderer.createCustomer({
-      id: nanoid(),
-      name,
-      address,
-      balance,
-      credit,
-    });
+    // window.electron.ipcRenderer.createCustomer({
+    //   id: nanoid(),
+    //   userName,
+    // });
 
     // window.electron.ipcRenderer.on('create:packing_type', (responseData) => {
     //   console.log('create:packing_type event response');
@@ -129,25 +137,11 @@ function MultiCustomerGrid(params: type) {
   );
 }
 
-function CustomerForm({ setName, setAddress, setBalance, setCredit }) {
+function CustomerForm({ name, addrress }) {
   return (
     <>
-      <Input
-        placeholder="Name"
-        onChange={(event) => setName(event.target.value)}
-      />
-      <Input
-        placeholder="Address"
-        onChange={(event) => setAddress(event.target.value)}
-      />
-      <Input
-        placeholder="Balance"
-        onChange={(event) => setBalance(event.target.value)}
-      />
-      <Input
-        placeholder="Credit"
-        onChange={(event) => setCredit(event.target.value)}
-      />
+      <Input onChange={(event) => (name = event.target.value)} />
+      <Input onChange={(event) => (addrress = event.target.value)} />
     </>
   );
 }
