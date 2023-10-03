@@ -110,6 +110,8 @@ function MultiCustomerGrid(params: type) {
   function saveCustomerToDatabase(params: type) {
     console.log('%c Going to call createCustomer', 'color: tomato');
 
+    let name = form.getFieldValue('name');
+
     debugger;
 
     // window.electron.ipcRenderer.createCustomer({
@@ -133,6 +135,7 @@ function MultiCustomerGrid(params: type) {
         onEdit={onEdit}
         items={items}
       />
+      <pre>{JSON.stringify(form.getFieldsValue(), null, 2)}</pre>;
     </div>
   );
 }

@@ -28,8 +28,8 @@
     "*.{css,sass,scss}.d.ts": true
   },
   "workbench.colorCustomizations": {
-    // "activityBar.background": "#00342C",
-    // "titleBar.activeBackground": "#00493E",
-    // "titleBar.activeForeground": "#E9FFFC"
+    "activityBar.background": "#00342C",
+    "titleBar.activeBackground": "#00493E",
+    "titleBar.activeForeground": "#E9FFFC"
   }
 }
