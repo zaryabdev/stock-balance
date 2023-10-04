@@ -22,6 +22,11 @@ import CustomerRepository from './repositories/customer-repo';
 const dao = new AppDAO('sqlite_demo');
 const customerRepo = new CustomerRepository(dao);
 
+const STATUS = {
+  SUCCESS: 'SUCCESS',
+  FAILED: 'FAILED',
+};
+
 customerRepo.createTable();
 
 const store = new Store();
@@ -137,18 +142,34 @@ ipcMain.on('ipc-example', async (event, arg) => {
 });
 
 // customer
-ipcMain.on('create:customer', async (event, mainData) => {
+ipcMain.on('create:customer', (event, data) => {
   console.log('Inside Main create:customer');
-  console.log({ mainData });
+  console.log(data);
+  debugger;
 
-  const webContents = event.sender;
-  const win = BrowserWindow.fromWebContents(webContents);
+  const callbackFunction = (response, err) => {
+    // const webContents = event.sender;
+    // const win = BrowserWindow.fromWebContents(webContents);
+    console.log('callback function called!!');
+    debugger;
+    if (err) {
+      console.log(err);
+    }
 
-  customerRepo.create(mainData).then((result: any) => {
-    console.log('result from create:customer sql');
-    console.log({ result });
-    win.webContents.send('create:customer', result);
-  });
+    if (response.status === STATUS.SUCCESS) {
+      console.log('respose was success');
+      // console.log(win);
+      debugger;
+
+      event.reply('create:customer-response', response);
+
+      // win.webContents.send('create:customer', response);
+    } else {
+      console.log(response.message);
+    }
+  };
+
+  customerRepo.create(data, callbackFunction);
 });
 
 app.on('window-all-closed', () => {

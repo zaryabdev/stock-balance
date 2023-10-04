@@ -3,33 +3,33 @@ const logger = require('../logger');
 class CustomerRepository {
   constructor(dao) {
     console.log(`CustomerRepository constructor called`);
-    logger.debug('CustomerRepository constructor called');
     this.dao = dao;
   }
 
   createTable() {
-    logger.debug('createTable called for customers');
+    console.log('createTable called for customers');
     const sql = `
         CREATE TABLE IF NOT EXISTS customers (
         id TEXT,
         name TEXT,
         address TEXT
         )`;
+
     return this.dao.run(sql);
   }
 
-  create({ id, name, address }) {
-    logger.debug('create called for CustomerRepository');
-    console.log({ id, name, address });
+  create(data, callbackFunction) {
+    debugger;
+    console.log('create called for CustomerRepository');
+    const { id, name, address } = data;
 
-    const result = this.dao.run(
+    console.log({ id, name, address });
+    console.log(callbackFunction);
+    this.dao.run(
       'INSERT INTO customers (id, name, address) VALUES (?,?,?)',
       [id, name, address],
+      callbackFunction,
     );
-    console.log('Data entry was success');
-
-    console.log(result);
-    return result;
   }
 
   // update(item) {

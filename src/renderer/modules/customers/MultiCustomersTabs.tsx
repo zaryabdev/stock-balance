@@ -89,24 +89,30 @@ function MultiCustomerGrid(params: type) {
   };
 
   function saveCustomerToDatabase(params: type) {
-    console.log('%c Going to call createCustomer', 'color: tomato');
-
     let name = form.getFieldValue('name');
     let address = form.getFieldValue('address');
 
-    debugger;
-
-    window.electron.ipcRenderer.createCustomer({
+    let data = {
       id: uuidv4(),
       name,
       address,
-    });
+    };
+
+    debugger;
+
+    window.electron.ipcRenderer.createCustomer(data);
 
     // window.electron.ipcRenderer.on('create:packing_type', (responseData) => {
-    //   console.log('create:packing_type event response');
-    //   console.log({ responseData });
-    //   console.log('Going to call getAllPackingTypes from createPackingType');
+    //   console.log(responseData);
+    //   console.log('window.electron.ipcRenderer.on');
+    //   debugger;
     // });
+
+    window.electron.ipcRenderer.once('create:customer-response', (arg) => {
+      debugger;
+      // eslint-disable-next-line no-console
+      console.log(arg);
+    });
   }
 
   return (

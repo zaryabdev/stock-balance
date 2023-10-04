@@ -1,62 +1,79 @@
 import sqlite from 'sqlite3';
 
-const { Database } = sqlite.verbose();
+const sqlite3 = sqlite.verbose();
 // const Database = new sqlite3.Database(':memory:');
 
 const logger = require('./logger');
 
+const STATUS = {
+  SUCCESS: 'SUCCESS',
+  FAILED: 'FAILED',
+};
+
 class AppDAO {
   constructor(dbFilePath) {
-    this.db = new Database(dbFilePath, {
-      verbose: console.log('Connected to Sqlite Database'),
+    this.db = new sqlite3.Database(dbFilePath, {
+      verbose: console.log(`Connected to Database located at ${dbFilePath}`),
     });
   }
 
-  run(sql, params = {}, log) {
-    logger.debug('DAO : run');
+  run(sql, params = [], callbackFunction) {
+    console.log('DAO : run');
+    console.log(callbackFunction);
 
+    let res = {
+      status: '',
+      data: {},
+      message: '',
+    };
     const query = this.db.prepare(sql);
 
-    query.run({ ...params }, (err) => {
-      if (err) {
-        logger.error('DAO : run error');
-        logger.error(err);
-        return 0;
-      } else {
-        logger.info(`A new record has been inserted with ID ${this.lastID}`);
+    console.log('before query.run');
 
-        return this.lastID;
+    query.run([...params], (err) => {
+      debugger;
+      if (err) {
+        res.status = STATUS.FAILED;
+        console.log(err);
+        if (callbackFunction) callbackFunction(res, err);
+      } else {
+        res.status = STATUS.SUCCESS;
+        console.log('inside query.run');
+        console.log(this.lastID);
+        console.log('TEST');
+        if (callbackFunction) callbackFunction(res);
       }
     });
+    debugger;
   }
 
-  async get(sql, params = []) {
-    logger.debug('DAO : get');
-    const stmt = this.db.prepare(sql);
-    try {
-      const result = await stmt.get(params);
-      console.log(result);
-      return result;
-    } catch (error) {
-      logger.error('DAO : get');
-      console.log(error);
-    }
-    return {};
-  }
+  // async get(sql, params = []) {
+  //   logger.debug('DAO : get');
+  //   const stmt = this.db.prepare(sql);
+  //   try {
+  //     const result = await stmt.get(params);
+  //     console.log(result);
+  //     return result;
+  //   } catch (error) {
+  //     logger.error('DAO : get');
+  //     console.log(error);
+  //   }
+  //   return {};
+  // }
 
-  async all(sql, params = []) {
-    logger.debug('DAO : all');
-    const stmt = this.db.prepare(sql);
-    try {
-      const resultSet = await stmt.all(params);
-      console.log(resultSet);
-      return resultSet;
-    } catch (error) {
-      logger.error('DAO : all');
-      console.log(error);
-    }
-    return [];
-  }
+  // async all(sql, params = []) {
+  //   logger.debug('DAO : all');
+  //   const stmt = this.db.prepare(sql);
+  //   try {
+  //     const resultSet = await stmt.all(params);
+  //     console.log(resultSet);
+  //     return resultSet;
+  //   } catch (error) {
+  //     logger.error('DAO : all');
+  //     console.log(error);
+  //   }
+  //   return [];
+  // }
 }
 
 module.exports = AppDAO;

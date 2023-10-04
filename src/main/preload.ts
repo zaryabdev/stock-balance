@@ -9,12 +9,21 @@ const electronHandler = {
     sendMessage(channel: Channels, ...args: unknown[]) {
       ipcRenderer.send(channel, ...args);
     },
-    createCustomer(preloadData) {
-      console.log('Inside preload create:customer');
-      console.log({ preloadData });
+    createCustomer(data) {
       debugger;
-      ipcRenderer.send('create:customer', preloadData);
+      console.log('Inside preload create:customer');
+      console.log(data);
+      ipcRenderer.send('create:customer', data);
     },
+    // on(channel, func) {
+    //   const validChannels = ['create:customer-response'];
+    //   console.log('Inside on Channel check');
+    //   if (validChannels.includes(channel)) {
+    //     debugger;
+    //     console.log('Yooo channel' + channel);
+    //     ipcRenderer.on(channel, (event, ...args) => func(...args));
+    //   }
+    // },
     on(channel: Channels, func: (...args: unknown[]) => void) {
       const subscription = (_event: IpcRendererEvent, ...args: unknown[]) =>
         func(...args);
