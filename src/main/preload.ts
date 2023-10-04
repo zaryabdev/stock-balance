@@ -2,11 +2,11 @@
 /* eslint no-unused-vars: off */
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 
-export type Channels = 'ipc-example';
+export type MEDIA_CHANNELS = 'ipc-example';
 
 const electronHandler = {
   ipcRenderer: {
-    sendMessage(channel: Channels, ...args: unknown[]) {
+    sendMessage(channel: MEDIA_CHANNELS, ...args: unknown[]) {
       ipcRenderer.send(channel, ...args);
     },
     createCustomer(data) {
@@ -24,7 +24,8 @@ const electronHandler = {
     //     ipcRenderer.on(channel, (event, ...args) => func(...args));
     //   }
     // },
-    on(channel: Channels, func: (...args: unknown[]) => void) {
+    on(channel: MEDIA_CHANNELS, func: (...args: unknown[]) => void) {
+      debugger;
       const subscription = (_event: IpcRendererEvent, ...args: unknown[]) =>
         func(...args);
       ipcRenderer.on(channel, subscription);
@@ -33,7 +34,8 @@ const electronHandler = {
         ipcRenderer.removeListener(channel, subscription);
       };
     },
-    once(channel: Channels, func: (...args: unknown[]) => void) {
+    once(channel: MEDIA_CHANNELS, func: (...args: unknown[]) => void) {
+      debugger;
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
     },
   },

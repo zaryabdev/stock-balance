@@ -12,7 +12,8 @@ class CustomerRepository {
         CREATE TABLE IF NOT EXISTS customers (
         id TEXT,
         name TEXT,
-        address TEXT
+        address TEXT,
+        timestamp TEXT
         )`;
 
     return this.dao.run(sql);
@@ -20,14 +21,15 @@ class CustomerRepository {
 
   create(data, callbackFunction) {
     debugger;
+    const timestamp = Date.now();
     console.log('create called for CustomerRepository');
     const { id, name, address } = data;
 
     console.log({ id, name, address });
     console.log(callbackFunction);
     this.dao.run(
-      'INSERT INTO customers (id, name, address) VALUES (?,?,?)',
-      [id, name, address],
+      'INSERT INTO customers (id, name, address, timestamp) VALUES (?,?,?,?)',
+      [id, name, address, timestamp],
       callbackFunction,
     );
   }

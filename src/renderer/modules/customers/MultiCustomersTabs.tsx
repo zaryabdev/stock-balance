@@ -25,7 +25,7 @@ const initialItems = [
   },
 ];
 
-function MultiCustomerGrid(params: type) {
+function MultiCustomerTabs(params: type) {
   const [activeKey, setActiveKey] = useState(initialItems[0].key);
   const [items, setItems] = useState(initialItems);
   const newTabIndex = useRef(0);
@@ -108,7 +108,7 @@ function MultiCustomerGrid(params: type) {
     //   debugger;
     // });
 
-    window.electron.ipcRenderer.once('create:customer-response', (arg) => {
+    window.electron.ipcRenderer.on('create:customer-response', (arg) => {
       debugger;
       // eslint-disable-next-line no-console
       console.log(arg);
@@ -142,4 +142,4 @@ function CustomerForm({ form }) {
   );
 }
 
-export default MultiCustomerGrid;
+export default MultiCustomerTabs;

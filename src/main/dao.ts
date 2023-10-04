@@ -44,6 +44,7 @@ class AppDAO {
         if (callbackFunction) callbackFunction(res);
       }
     });
+
     debugger;
   }
 
