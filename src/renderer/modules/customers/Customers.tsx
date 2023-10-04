@@ -13,12 +13,12 @@ import {
 } from 'react';
 
 import CustomerList from './CustomerList';
-import MultiCustomerGrid from './MultiCustomerGrid';
+import MultiCustomersTabs from './MultiCustomersTabs';
 
 function CustomerSearch(params: type) {
   return (
     <div>
-      <Input placeholder="Search cutomer" iconRender={<SearchOutlined />} />
+      <Input placeholder="Search cutomer" iconrender={<SearchOutlined />} />
     </div>
   );
 }
@@ -31,7 +31,7 @@ function Customers() {
         <CustomerList />
       </Col>
       <Col span={20}>
-        <MultiCustomerGrid />
+        <MultiCustomersTabs />
       </Col>
     </Row>
   );

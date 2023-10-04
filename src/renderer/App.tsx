@@ -74,7 +74,7 @@ export default function App() {
     <Router>
       <ConfigProvider
         theme={{
-          algorithm: [theme.compactAlgorithm],
+          algorithm: [theme.darkAlgorithm],
         }}
       >
         <Layout style={{ minHeight: '100vh' }}>
