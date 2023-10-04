@@ -1,5 +1,6 @@
 import Fuse from 'fuse.js';
-import { nanoid } from 'nanoid';
+import { v4 as uuidv4 } from 'uuid';
+
 import React, {
   useCallback,
   useEffect,
@@ -59,7 +60,7 @@ const CustomerGridSample = ({ label }) => {
   };
 
   function genId() {
-    console.log(nanoid());
+    console.log(uuidv4());
     // return genId();
   }
 

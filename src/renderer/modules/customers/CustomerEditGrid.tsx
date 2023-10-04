@@ -1,7 +1,6 @@
 import { HeartOutlined } from '@ant-design/icons';
 import { Avatar, Col, Descriptions, Row } from 'antd';
 import Fuse from 'fuse.js';
-import { nanoid } from 'nanoid';
 import React, {
   useCallback,
   useEffect,

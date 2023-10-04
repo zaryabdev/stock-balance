@@ -9,7 +9,8 @@ import {
   Tabs,
   Typography,
 } from 'antd';
-import { nanoid } from 'nanoid';
+import { v4 as uuidv4 } from 'uuid';
+
 import React, { useEffect, useRef, useState } from 'react';
 import CustomerEditGrid from './CustomerEditGrid';
 
@@ -20,7 +21,7 @@ const initialItems = [
   {
     label: 'Tab 1',
     children: <CustomerEditGrid label="CustomerGridSample Tab 1 Content" />,
-    key: nanoid(),
+    key: uuidv4(),
   },
 ];
 
@@ -42,7 +43,7 @@ function MultiCustomerGrid(params: type) {
       content: <CustomerForm form={form} />,
       onOk() {
         saveCustomerToDatabase();
-        const newActiveKey = nanoid();
+        const newActiveKey = uuidv4();
         const newPanes = [...items];
         newPanes.push({
           label: 'New Tab',
@@ -96,7 +97,7 @@ function MultiCustomerGrid(params: type) {
     debugger;
 
     window.electron.ipcRenderer.createCustomer({
-      id: nanoid(),
+      id: uuidv4(),
       name,
       address,
     });
