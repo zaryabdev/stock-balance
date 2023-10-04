@@ -29,9 +29,7 @@ function MultiCustomerGrid(params: type) {
   const [items, setItems] = useState(initialItems);
   const newTabIndex = useRef(0);
 
-  const [form] = Form.useForm<{ name: string; age: number }>();
-  const nameValue = Form.useWatch('name', form);
-  console.log(nameValue);
+  const [form] = Form.useForm<{ name: string; address: number }>();
 
   const onChange = (newActiveKey: string) => {
     setActiveKey(newActiveKey);
@@ -41,27 +39,9 @@ function MultiCustomerGrid(params: type) {
     confirm({
       title: 'Add new Customer',
       icon: <ExclamationCircleFilled />,
-      content: (
-        <>
-          <Form form={form} layout="vertical" autoComplete="off">
-            <Form.Item name="name" label="Name (Watch to trigger rerender)">
-              <Input />
-            </Form.Item>
-            <Form.Item name="age" label="Age (Not Watch)">
-              <InputNumber />
-            </Form.Item>
-          </Form>
-
-          <Typography>
-            <pre>Name Value: {nameValue}</pre>
-          </Typography>
-        </>
-      ),
+      content: <CustomerForm form={form} />,
       onOk() {
-        debugger;
-        console.log('yes OK');
         saveCustomerToDatabase();
-
         const newActiveKey = nanoid();
         const newPanes = [...items];
         newPanes.push({
@@ -111,13 +91,15 @@ function MultiCustomerGrid(params: type) {
     console.log('%c Going to call createCustomer', 'color: tomato');
 
     let name = form.getFieldValue('name');
+    let address = form.getFieldValue('address');
 
     debugger;
 
-    // window.electron.ipcRenderer.createCustomer({
-    //   id: nanoid(),
-    //   userName,
-    // });
+    window.electron.ipcRenderer.createCustomer({
+      id: nanoid(),
+      name,
+      address,
+    });
 
     // window.electron.ipcRenderer.on('create:packing_type', (responseData) => {
     //   console.log('create:packing_type event response');
@@ -140,12 +122,16 @@ function MultiCustomerGrid(params: type) {
   );
 }
 
-function CustomerForm({ name, addrress }) {
+function CustomerForm({ form }) {
   return (
-    <>
-      <Input onChange={(event) => (name = event.target.value)} />
-      <Input onChange={(event) => (addrress = event.target.value)} />
-    </>
+    <Form form={form} layout="vertical" autoComplete="off">
+      <Form.Item name="name" label="Name">
+        <Input />
+      </Form.Item>
+      <Form.Item name="address" label="Address">
+        <Input />
+      </Form.Item>
+    </Form>
   );
 }
 

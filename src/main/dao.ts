@@ -1,29 +1,33 @@
 import sqlite from 'sqlite3';
 
-const sqlite3 = sqlite.verbose();
+const { Database } = sqlite.verbose();
 // const Database = new sqlite3.Database(':memory:');
 
 const logger = require('./logger');
 
 class AppDAO {
   constructor(dbFilePath) {
-    this.db = new sqlite3.Database(dbFilePath, {
-      verbose: console.log('Connected to Database'),
+    this.db = new Database(dbFilePath, {
+      verbose: console.log('Connected to Sqlite Database'),
     });
   }
 
-  async run(sql, params = []) {
+  run(sql, params = {}, log) {
     logger.debug('DAO : run');
-    const stmt = this.db.prepare(sql);
-    try {
-      const { lastInsertRowid } = await stmt.run(params);
-      console.log(`lastInsertRowid : ${lastInsertRowid}`);
-      return lastInsertRowid;
-    } catch (error) {
-      logger.error('DAO : run');
-      console.log(error);
-    }
-    return 0;
+
+    const query = this.db.prepare(sql);
+
+    query.run({ ...params }, (err) => {
+      if (err) {
+        logger.error('DAO : run error');
+        logger.error(err);
+        return 0;
+      } else {
+        logger.info(`A new record has been inserted with ID ${this.lastID}`);
+
+        return this.lastID;
+      }
+    });
   }
 
   async get(sql, params = []) {

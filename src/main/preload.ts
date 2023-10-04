@@ -12,6 +12,7 @@ const electronHandler = {
     createCustomer(preloadData) {
       console.log('Inside preload create:customer');
       console.log({ preloadData });
+      debugger;
       ipcRenderer.send('create:customer', preloadData);
     },
     on(channel: Channels, func: (...args: unknown[]) => void) {
