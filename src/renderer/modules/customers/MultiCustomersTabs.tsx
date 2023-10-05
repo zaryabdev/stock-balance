@@ -108,10 +108,11 @@ function MultiCustomerTabs(params: type) {
     //   debugger;
     // });
 
-    window.electron.ipcRenderer.on('create:customer-response', (arg) => {
+    window.electron.ipcRenderer.on('create:customer-response', (response) => {
       debugger;
-      // eslint-disable-next-line no-console
-      console.log(arg);
+      console.log('create:customer-response reponse came back');
+
+      console.log(response);
     });
   }
 
