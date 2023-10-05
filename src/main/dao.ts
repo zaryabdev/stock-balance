@@ -38,6 +38,7 @@ class AppDAO {
         if (callbackFunction) callbackFunction(res, err);
       } else {
         res.status = STATUS.SUCCESS;
+        res.message = 'Record created successfully.';
         console.log('inside query.run');
         console.log(this.lastID);
         console.log('TEST');
