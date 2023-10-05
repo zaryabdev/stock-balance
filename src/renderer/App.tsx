@@ -10,6 +10,7 @@ import React, { FC, useState } from 'react';
 import 'react-datasheet-grid/dist/style.css';
 import { Link, Route, MemoryRouter as Router, Routes } from 'react-router-dom';
 import './App.css';
+import { Context } from './AppContext';
 import Customers from './modules/customers/Customers';
 
 const { Content, Sider } = Layout;
@@ -70,54 +71,59 @@ export default function App() {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+
+  const value = '';
+
   return (
-    <Router>
-      <ConfigProvider
-        theme={{
-          algorithm: [theme.darkAlgorithm],
-        }}
-      >
-        <Layout style={{ minHeight: '100vh' }}>
-          <Sider
-            theme="dark"
-            collapsible
-            collapsed={collapsed}
-            onCollapse={(value) => setCollapsed(value)}
-          >
-            <Menu
+    <Context.Provider value={value}>
+      <Router>
+        <ConfigProvider
+          theme={{
+            algorithm: [theme.darkAlgorithm],
+          }}
+        >
+          <Layout style={{ minHeight: '100vh' }}>
+            <Sider
               theme="dark"
-              defaultSelectedKeys={['/']}
-              mode="inline"
-              items={items}
-            />
-          </Sider>
-          <Layout>
-            <Content>
-              <Routes>
-                <Route path="/" element={<Customers />} />
-                <Route
-                  path="/stock"
-                  element={
-                    <SampleComponent label="Stock from SampleComponent" />
-                  }
-                />
-                <Route
-                  path="/vendor"
-                  element={
-                    <SampleComponent label="Vendor from SampleComponent " />
-                  }
-                />
-                <Route
-                  path="/settings"
-                  element={
-                    <SampleComponent label="Settings from SampleComponent" />
-                  }
-                />
-              </Routes>
-            </Content>
+              collapsible
+              collapsed={collapsed}
+              onCollapse={(value) => setCollapsed(value)}
+            >
+              <Menu
+                theme="dark"
+                defaultSelectedKeys={['/']}
+                mode="inline"
+                items={items}
+              />
+            </Sider>
+            <Layout>
+              <Content>
+                <Routes>
+                  <Route path="/" element={<Customers />} />
+                  <Route
+                    path="/stock"
+                    element={
+                      <SampleComponent label="Stock from SampleComponent" />
+                    }
+                  />
+                  <Route
+                    path="/vendor"
+                    element={
+                      <SampleComponent label="Vendor from SampleComponent " />
+                    }
+                  />
+                  <Route
+                    path="/settings"
+                    element={
+                      <SampleComponent label="Settings from SampleComponent" />
+                    }
+                  />
+                </Routes>
+              </Content>
+            </Layout>
           </Layout>
-        </Layout>
-      </ConfigProvider>
-    </Router>
+        </ConfigProvider>
+      </Router>
+    </Context.Provider>
   );
 }

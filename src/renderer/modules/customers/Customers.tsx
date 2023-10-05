@@ -12,13 +12,13 @@ import {
   useState,
 } from 'react';
 
-import CustomerList from './CustomerList';
+import List from './List';
 import MultiCustomersTabs from './MultiCustomersTabs';
 
-function CustomerSearch(params: type) {
+function SearchField(params: type) {
   return (
     <div>
-      <Input placeholder="Search cutomer" iconrender={<SearchOutlined />} />
+      <Input placeholder="Search" iconrender={<SearchOutlined />} />
     </div>
   );
 }
@@ -27,8 +27,8 @@ function Customers() {
   return (
     <Row gutter={[8, 8]}>
       <Col span={4}>
-        <CustomerSearch />
-        <CustomerList />
+        {/* <SearchField /> */}
+        <List />
       </Col>
       <Col span={20}>
         <MultiCustomersTabs />
