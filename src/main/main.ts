@@ -19,7 +19,7 @@ import { resolveHtmlPath } from './util';
 import AppDAO from './dao';
 import CustomerRepository from './repositories/customer-repo';
 
-const dao = new AppDAO('sqlite_demo');
+const dao = new AppDAO('db.sqlite3');
 const customerRepo = new CustomerRepository(dao);
 
 const STATUS = {
