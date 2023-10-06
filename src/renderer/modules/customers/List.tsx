@@ -37,8 +37,7 @@ const List: React.FC = ({ data, selectedRowKeys, setSelectedRowKeys }) => {
     selectedRowKeys: React.Key[],
     selectedRows: DataType[],
   ) => {
-    debugger;
-    console.log(`selectedRowKeys selectedRows:`);
+    console.log(`onSelectChange()`);
     console.log(selectedRowKeys);
     console.log(selectedRows);
 
@@ -133,7 +132,8 @@ const List: React.FC = ({ data, selectedRowKeys, setSelectedRowKeys }) => {
   ];
 
   const handleRowSelection = (record, rowIndex, event) => {
-    console.log(record, rowIndex, event);
+    // console.log(record, rowIndex, event);
+
     let { key } = record;
     let currentSelection = [...selectedRowKeys];
 
@@ -161,11 +161,11 @@ const List: React.FC = ({ data, selectedRowKeys, setSelectedRowKeys }) => {
         onRow={(record, rowIndex) => {
           return {
             onClick: (event) => {
-              console.log(record, rowIndex, event);
+              // console.log(record, rowIndex, event);
               handleRowSelection(record, rowIndex, event);
             },
             onDoubleClick: (event) => {
-              console.log(record, rowIndex, event);
+              // console.log(record, rowIndex, event);
             },
             // onContextMenu: (event) => {
             //   console.log(record, rowIndex, event);

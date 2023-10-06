@@ -22,7 +22,6 @@ class CustomerRepository {
   }
 
   create(data, callbackFunction) {
-    debugger;
     const timestamp = Date.now();
     console.log('create called for CustomerRepository');
     const { id, key, name, address, phone } = data;
@@ -42,9 +41,17 @@ class CustomerRepository {
     this.dao.all(`SELECT * FROM customers`, [], data, callbackFunction);
   }
 
-  delete(data) {
+  deleteRecords(data = [], callbackFunction) {
     console.log(`delete called`);
-    return this.dao.run(`DELETE FROM product_type WHERE id = ?`, [id]);
+
+    const idList = data.join(', ');
+
+    return this.dao.run(
+      `DELETE FROM customers WHERE id IN (?)`,
+      [idList],
+      data,
+      callbackFunction,
+    );
   }
 
   // update(item) {

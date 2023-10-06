@@ -146,13 +146,10 @@ ipcMain.on('ipc-example', async (event, arg) => {
 ipcMain.on('create:customer', (event, data) => {
   console.log('Inside Main create:customer');
   console.log(data);
-  debugger;
-
   const callbackFunction = (response, err) => {
     // const webContents = event.sender;
     // const win = BrowserWindow.fromWebContents(webContents);
     console.log('callback function called!!');
-    debugger;
     if (err) {
       console.log(err);
     }
@@ -160,8 +157,6 @@ ipcMain.on('create:customer', (event, data) => {
     if (response.status === STATUS.SUCCESS) {
       console.log('respose was success');
       // console.log(win);
-      debugger;
-
       event.reply('create:customer-response', response);
 
       // win.webContents.send('create:customer', response);
@@ -176,13 +171,10 @@ ipcMain.on('create:customer', (event, data) => {
 ipcMain.on('get:all:customers', (event, data) => {
   console.log('Inside Main get:all:customers');
   console.log(data);
-  debugger;
-
   const callbackFunction = (response, err) => {
     // const webContents = event.sender;
     // const win = BrowserWindow.fromWebContents(webContents);
     console.log('callback function called!!');
-    debugger;
     if (err) {
       console.log(err);
     }
@@ -190,8 +182,6 @@ ipcMain.on('get:all:customers', (event, data) => {
     if (response.status === STATUS.SUCCESS) {
       console.log('respose was success');
       // console.log(win);
-      debugger;
-
       event.reply('get:all:customers-response', response);
 
       // win.webContents.send('create:customer', response);
@@ -201,6 +191,31 @@ ipcMain.on('get:all:customers', (event, data) => {
   };
 
   customerRepo.getAll(data, callbackFunction);
+});
+
+ipcMain.on('delete:customers', (event, data) => {
+  console.log('Inside Main delete:customers');
+  console.log(data);
+  const callbackFunction = (response, err) => {
+    // const webContents = event.sender;
+    // const win = BrowserWindow.fromWebContents(webContents);
+    console.log('callback function called!!');
+    if (err) {
+      console.log(err);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('respose was success');
+      // console.log(win);
+      event.reply('delete:customers-response', response);
+
+      // win.webContents.send('create:customer', response);
+    } else {
+      console.log(response.message);
+    }
+  };
+
+  customerRepo.deleteRecords(data, callbackFunction);
 });
 
 app.on('window-all-closed', () => {

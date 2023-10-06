@@ -132,8 +132,8 @@ function Customers() {
       okType: 'danger',
       cancelText: 'No',
       onOk() {
+        debugger;
         let data = [...selectedRowKeys];
-
         window.electron.ipcRenderer.deleteCustomers(data);
       },
       onCancel() {
@@ -165,20 +165,16 @@ function Customers() {
   };
 
   window.electron.ipcRenderer.on('create:customer-response', (response) => {
-    debugger;
     console.log('create:customer-response reponse came back');
     console.log(response);
 
     if (response.status === STATUS.FAILED) {
-      debugger;
       console.log(response.message);
     }
 
     if (response.status === STATUS.SUCCESS) {
       console.log('response of create:customer-response ');
       console.log(response);
-      debugger;
-
       window.electron.ipcRenderer.getAllCustomers({});
 
       // const newActiveKey = uuidv4();
@@ -194,21 +190,42 @@ function Customers() {
   });
 
   window.electron.ipcRenderer.on('get:all:customers-response', (response) => {
-    debugger;
     console.log('get:all:customers-response reponse came back');
     console.log(response);
 
     if (response.status === STATUS.FAILED) {
-      debugger;
       console.log(response.message);
     }
 
     if (response.status === STATUS.SUCCESS) {
       console.log('response of get:all:customers-response ');
       console.log(response);
-      debugger;
-
       setCustomersList(response.data);
+
+      // const newActiveKey = uuidv4();
+      // const newPanes = [...tabs];
+      // newPanes.push({
+      //   label: 'New Tab',
+      //   children: <CustomerEditGrid label={`Tab ID =  ${newActiveKey}`} />,
+      //   key: newActiveKey,
+      // });
+      // setTabs(newPanes);
+      // setActiveTabKey(newActiveKey);
+    }
+  });
+
+  window.electron.ipcRenderer.on('delete:customers-response', (response) => {
+    console.log('delete:customers-response reponse came back');
+    console.log(response);
+
+    if (response.status === STATUS.FAILED) {
+      console.log(response.message);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('response of delete:customers-response ');
+      console.log(response);
+      debugger;
 
       // const newActiveKey = uuidv4();
       // const newPanes = [...tabs];
@@ -268,8 +285,6 @@ function Customers() {
           selectedRowKeys={selectedRowKeys}
           setSelectedRowKeys={setSelectedRowKeys}
         />
-
-        {JSON.stringify(selectedRowKeys)}
       </Col>
       <Col span={19}>
         <MultiCustomersTabs />
