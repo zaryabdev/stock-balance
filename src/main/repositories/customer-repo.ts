@@ -44,6 +44,16 @@ class CustomerRepository {
   deleteRecords(data = [], callbackFunction) {
     console.log(`delete called`);
 
+    if (data.length === 0) {
+      const res = {
+        status: 'SUCCESS',
+        data: { ...data },
+        message: 'No records were deleted',
+      };
+      callbackFunction(res);
+      return;
+    }
+
     const idList = data.join(', ');
 
     return this.dao.run(

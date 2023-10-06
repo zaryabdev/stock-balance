@@ -34,7 +34,7 @@ class AppDAO {
         if (callbackFunction) callbackFunction(res, err);
       } else {
         res.status = STATUS.SUCCESS;
-        res.message = 'Record created successfully.';
+        res.message = 'Query ran successfully.';
         if (callbackFunction) callbackFunction(res);
       }
     });

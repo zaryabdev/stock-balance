@@ -227,6 +227,16 @@ function Customers() {
       console.log(response);
       debugger;
 
+      if (response.status === STATUS.FAILED) {
+        console.log(response.message);
+      }
+
+      if (response.status === STATUS.SUCCESS) {
+        console.log('response of delete:customers-response  ');
+        console.log(response);
+        window.electron.ipcRenderer.getAllCustomers({});
+      }
+
       // const newActiveKey = uuidv4();
       // const newPanes = [...tabs];
       // newPanes.push({
