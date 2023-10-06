@@ -13,40 +13,59 @@ const STATUS = {
 class AppDAO {
   constructor(dbFilePath) {
     this.db = new sqlite3.Database(dbFilePath, {
-      verbose: console.log(`Connected to Database located at ${dbFilePath}`),
+      verbose: console.log(`Connected to Database : ${dbFilePath}`),
     });
   }
 
-  run(sql, params = [], callbackFunction) {
-    console.log('DAO : run');
-    console.log(callbackFunction);
-
-    let res = {
-      status: '',
-      data: {},
-      message: '',
-    };
+  run(sql, params = [], data, callbackFunction) {
     const query = this.db.prepare(sql);
 
-    console.log('before query.run');
+    const res = {
+      status: '',
+      data: { ...data },
+      message: '',
+    };
 
     query.run([...params], (err) => {
-      debugger;
       if (err) {
         res.status = STATUS.FAILED;
-        console.log(err);
+        res.message = 'Error occured in query run command.';
+        console.error(err);
         if (callbackFunction) callbackFunction(res, err);
       } else {
         res.status = STATUS.SUCCESS;
         res.message = 'Record created successfully.';
-        console.log('inside query.run');
-        console.log(this.lastID);
-        console.log('TEST');
         if (callbackFunction) callbackFunction(res);
       }
     });
+  }
 
-    debugger;
+  all(sql, params = [], data, callbackFunction) {
+    console.log('DAO : all');
+    const query = this.db.prepare(sql);
+    const res = {
+      status: '',
+      data: { ...data },
+      message: '',
+    };
+
+    query.all([...params], (err, rows) => {
+      if (err) {
+        res.status = STATUS.FAILED;
+        res.message = 'Error occured in query all command.';
+        console.error(err);
+        if (callbackFunction) callbackFunction(res, err);
+      } else {
+        rows.forEach((row) => {
+          console.log(row);
+        });
+
+        res.status = STATUS.SUCCESS;
+        res.message = 'Records fetched successfully.';
+        res.data = rows;
+        if (callbackFunction) callbackFunction(res);
+      }
+    });
   }
 
   // async get(sql, params = []) {
@@ -61,20 +80,6 @@ class AppDAO {
   //     console.log(error);
   //   }
   //   return {};
-  // }
-
-  // async all(sql, params = []) {
-  //   logger.debug('DAO : all');
-  //   const stmt = this.db.prepare(sql);
-  //   try {
-  //     const resultSet = await stmt.all(params);
-  //     console.log(resultSet);
-  //     return resultSet;
-  //   } catch (error) {
-  //     logger.error('DAO : all');
-  //     console.log(error);
-  //   }
-  //   return [];
   // }
 }
 

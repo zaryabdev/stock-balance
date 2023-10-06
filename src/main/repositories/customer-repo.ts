@@ -11,8 +11,10 @@ class CustomerRepository {
     const sql = `
         CREATE TABLE IF NOT EXISTS customers (
         id TEXT,
+        key TEXT,
         name TEXT,
         address TEXT,
+        phone TEXT,
         timestamp TEXT
         )`;
 
@@ -23,15 +25,21 @@ class CustomerRepository {
     debugger;
     const timestamp = Date.now();
     console.log('create called for CustomerRepository');
-    const { id, name, address } = data;
+    const { id, key, name, address, phone } = data;
 
-    console.log({ id, name, address });
+    console.log({ id, key, name, address, phone });
     console.log(callbackFunction);
     this.dao.run(
-      'INSERT INTO customers (id, name, address, timestamp) VALUES (?,?,?,?)',
-      [id, name, address, timestamp],
+      'INSERT INTO customers (id, key, name, address, phone, timestamp) VALUES (?,?,?,?,?,?)',
+      [id, key, name, address, phone, timestamp],
+      data,
       callbackFunction,
     );
+  }
+
+  getAll(data, callbackFunction) {
+    logger.debug(`getAll called`);
+    this.dao.all(`SELECT * FROM customers`, [], data, callbackFunction);
   }
 
   // update(item) {
@@ -55,11 +63,6 @@ class CustomerRepository {
   // getById(id) {
   //   console.log(`getById called`);
   //   return this.dao.get(`SELECT * FROM product_type WHERE id = ?`, [id]);
-  // }
-
-  // getAll() {
-  //   logger.debug(`getAll called`);
-  //   return this.dao.all(`SELECT * FROM product_type`);
   // }
 }
 

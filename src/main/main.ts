@@ -173,6 +173,36 @@ ipcMain.on('create:customer', (event, data) => {
   customerRepo.create(data, callbackFunction);
 });
 
+ipcMain.on('get:all:customers', (event, data) => {
+  console.log('Inside Main get:all:customers');
+  console.log(data);
+  debugger;
+
+  const callbackFunction = (response, err) => {
+    // const webContents = event.sender;
+    // const win = BrowserWindow.fromWebContents(webContents);
+    console.log('callback function called!!');
+    debugger;
+    if (err) {
+      console.log(err);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('respose was success');
+      // console.log(win);
+      debugger;
+
+      event.reply('get:all:customers-response', response);
+
+      // win.webContents.send('create:customer', response);
+    } else {
+      console.log(response.message);
+    }
+  };
+
+  customerRepo.getAll(data, callbackFunction);
+});
+
 app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even
   // after all windows have been closed

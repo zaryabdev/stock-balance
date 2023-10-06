@@ -26,52 +26,10 @@ import { v4 as uuidv4 } from 'uuid';
 import CustomerEditGrid from './CustomerEditGrid';
 const { confirm } = Modal;
 
+import { STATUS } from '../../contants';
 import List from './List';
 import MultiCustomersTabs from './MultiCustomersTabs';
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
-
-const data: DataType[] = [
-  {
-    key: '1',
-    name: 'John Brown',
-  },
-  {
-    key: '2',
-    name: 'Joe Black',
-  },
-  {
-    key: '3',
-    name: 'Jim Green',
-  },
-  {
-    key: '4',
-    name: 'Jim Red',
-  },
-  {
-    key: '5',
-    name: 'Lala Red',
-  },
-  {
-    key: '6',
-    name: 'Pom Blue',
-  },
-  {
-    key: '7',
-    name: 'Tina Green',
-  },
-  {
-    key: '8',
-    name: 'Joe Yellow',
-  },
-  {
-    key: '9',
-    name: 'Tha Pink',
-  },
-  {
-    key: '10',
-    name: 'Thoi Pink',
-  },
-];
 
 const initialItems = [
   {
@@ -87,6 +45,7 @@ const initialItems = [
 ];
 
 function Customers() {
+  const [customersList, setCustomersList] = useState([]);
   const [form] = Form.useForm<{ name: string; address: number }>();
 
   const [tabs, setTabs] = useState(initialItems);
@@ -99,6 +58,10 @@ function Customers() {
   ]);
 
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    window.electron.ipcRenderer.getAllCustomers({});
+  }, []);
 
   const start = () => {
     setLoading(true);
@@ -117,22 +80,26 @@ function Customers() {
       icon: <UserAddOutlined />,
       content: <CustomerForm form={form} />,
       onOk() {
-        saveCustomerToDatabase();
-        const newActiveKey = uuidv4();
-        const newPanes = [...tabs];
-        newPanes.push({
-          label: 'New Tab',
-          children: <CustomerEditGrid label={`Tab ID =  ${newActiveKey}`} />,
-          key: newActiveKey,
-        });
-        setTabs(newPanes);
-        setActiveTabKey(newActiveKey);
+        let id = uuidv4();
+        let name = form.getFieldValue('name');
+        let address = form.getFieldValue('address');
+        let phone = form.getFieldValue('phone');
+
+        let data = {
+          id,
+          key: id,
+          name,
+          address,
+          phone,
+        };
+
+        window.electron.ipcRenderer.createCustomer(data);
       },
       onCancel() {},
     });
   };
 
-  const remove = (targetKey: TargetKey) => {
+  const removeTab = (targetKey: TargetKey) => {
     let newActiveKey = activeTabKey;
     let lastIndex = -1;
     tabs.forEach((item, i) => {
@@ -140,7 +107,9 @@ function Customers() {
         lastIndex = i - 1;
       }
     });
+
     const newPanes = tabs.filter((item) => item.key !== targetKey);
+
     if (newPanes.length && newActiveKey === targetKey) {
       if (lastIndex >= 0) {
         newActiveKey = newPanes[lastIndex].key;
@@ -152,33 +121,63 @@ function Customers() {
     setActiveTabKey(newActiveKey);
   };
 
-  function saveCustomerToDatabase(params: type) {
-    let name = form.getFieldValue('name');
-    let address = form.getFieldValue('address');
-
-    let data = {
-      id: uuidv4(),
-      name,
-      address,
-    };
-
+  window.electron.ipcRenderer.on('create:customer-response', (response) => {
     debugger;
+    console.log('create:customer-response reponse came back');
+    console.log(response);
 
-    window.electron.ipcRenderer.createCustomer(data);
-
-    // window.electron.ipcRenderer.on('create:packing_type', (responseData) => {
-    //   console.log(responseData);
-    //   console.log('window.electron.ipcRenderer.on');
-    //   debugger;
-    // });
-
-    window.electron.ipcRenderer.on('create:customer-response', (response) => {
+    if (response.status === STATUS.FAILED) {
       debugger;
-      console.log('create:customer-response reponse came back');
+      console.log(response.message);
+    }
 
+    if (response.status === STATUS.SUCCESS) {
+      console.log('response of create:customer-response ');
       console.log(response);
-    });
-  }
+      debugger;
+
+      window.electron.ipcRenderer.getAllCustomers({});
+
+      // const newActiveKey = uuidv4();
+      // const newPanes = [...tabs];
+      // newPanes.push({
+      //   label: 'New Tab',
+      //   children: <CustomerEditGrid label={`Tab ID =  ${newActiveKey}`} />,
+      //   key: newActiveKey,
+      // });
+      // setTabs(newPanes);
+      // setActiveTabKey(newActiveKey);
+    }
+  });
+
+  window.electron.ipcRenderer.on('get:all:customers-response', (response) => {
+    debugger;
+    console.log('get:all:customers-response reponse came back');
+    console.log(response);
+
+    if (response.status === STATUS.FAILED) {
+      debugger;
+      console.log(response.message);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('response of get:all:customers-response ');
+      console.log(response);
+      debugger;
+
+      setCustomersList(response.data);
+
+      // const newActiveKey = uuidv4();
+      // const newPanes = [...tabs];
+      // newPanes.push({
+      //   label: 'New Tab',
+      //   children: <CustomerEditGrid label={`Tab ID =  ${newActiveKey}`} />,
+      //   key: newActiveKey,
+      // });
+      // setTabs(newPanes);
+      // setActiveTabKey(newActiveKey);
+    }
+  });
 
   return (
     <Row gutter={[8, 8]}>
@@ -213,7 +212,7 @@ function Customers() {
           </Button>
         </div>
         <List
-          data={data}
+          data={customersList}
           selectedRowKeys={selectedRowKeys}
           setSelectedRowKeys={setSelectedRowKeys}
         />
@@ -232,6 +231,9 @@ function CustomerForm({ form }) {
         <Input />
       </Form.Item>
       <Form.Item name="address" label="Address">
+        <Input />
+      </Form.Item>
+      <Form.Item name="phone" label="Phone">
         <Input />
       </Form.Item>
     </Form>

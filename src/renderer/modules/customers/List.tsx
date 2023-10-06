@@ -7,7 +7,7 @@ import React, { useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
 
 interface DataType {
-  key: string;
+  id: string;
   name: string;
 }
 
