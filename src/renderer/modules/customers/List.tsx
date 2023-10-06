@@ -37,11 +37,11 @@ const List: React.FC = ({ data, selectedRowKeys, setSelectedRowKeys }) => {
     selectedRowKeys: React.Key[],
     selectedRows: DataType[],
   ) => {
-    console.log(
-      `selectedRowKeys: ${selectedRowKeys}`,
-      'selectedRows: ',
-      selectedRows,
-    );
+    debugger;
+    console.log(`selectedRowKeys selectedRows:`);
+    console.log(selectedRowKeys);
+    console.log(selectedRows);
+
     setSelectedRowKeys(selectedRowKeys);
   };
 

@@ -21,6 +21,12 @@ const electronHandler = {
       console.log(data);
       ipcRenderer.send('get:all:customers', data);
     },
+    deleteCustomers(data) {
+      debugger;
+      console.log('Inside preload delete:customers');
+      console.log(data);
+      ipcRenderer.send('delete:customers', data);
+    },
     // on(channel, func) {
     //   const validChannels = ['create:customer-response'];
     //   console.log('Inside on Channel check');

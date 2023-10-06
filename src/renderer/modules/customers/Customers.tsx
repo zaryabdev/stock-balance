@@ -1,4 +1,4 @@
-import { UserAddOutlined } from '@ant-design/icons';
+import { ExclamationCircleFilled, UserAddOutlined } from '@ant-design/icons';
 import {
   Avatar,
   Button,
@@ -46,16 +46,15 @@ const initialItems = [
 
 function Customers() {
   const [customersList, setCustomersList] = useState([]);
-  const [form] = Form.useForm<{ name: string; address: number }>();
-
+  const [selectedCutomer, setSelectedCutomer] = useState({});
+  const [form] = Form.useForm<{
+    name: string;
+    address: string;
+    phone: string;
+  }>();
   const [tabs, setTabs] = useState(initialItems);
   const [activeTabKey, setActiveTabKey] = useState(initialItems[0].key);
-
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([
-    '1',
-    '3',
-    '5',
-  ]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
   const [loading, setLoading] = useState(false);
 
@@ -96,6 +95,50 @@ function Customers() {
         window.electron.ipcRenderer.createCustomer(data);
       },
       onCancel() {},
+    });
+  };
+
+  const editSelectedCustomer = () => {
+    confirm({
+      title: 'Edit Customer',
+      icon: <UserAddOutlined />,
+      content: <CustomerForm form={form} />,
+      onOk() {
+        let id = uuidv4();
+        let name = form.getFieldValue('name');
+        let address = form.getFieldValue('address');
+        let phone = form.getFieldValue('phone');
+
+        let data = {
+          id,
+          key: id,
+          name,
+          address,
+          phone,
+        };
+
+        window.electron.ipcRenderer.createCustomer(data);
+      },
+      onCancel() {},
+    });
+  };
+
+  const showDeleteConfirm = () => {
+    confirm({
+      title: 'Are you sure delete this task?',
+      icon: <ExclamationCircleFilled />,
+      content: 'Some descriptions',
+      okText: 'Yes',
+      okType: 'danger',
+      cancelText: 'No',
+      onOk() {
+        let data = [...selectedRowKeys];
+
+        window.electron.ipcRenderer.deleteCustomers(data);
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
     });
   };
 
@@ -195,6 +238,15 @@ function Customers() {
           <Button
             type="default"
             size="middle"
+            onClick={editSelectedCustomer}
+            loading={loading}
+            // disabled={!hasSelected}
+          >
+            Edit
+          </Button>
+          <Button
+            type="default"
+            size="middle"
             onClick={start}
             loading={loading}
             disabled={!hasSelected}
@@ -204,7 +256,7 @@ function Customers() {
           <Button
             type="default"
             size="middle"
-            onClick={start}
+            onClick={showDeleteConfirm}
             loading={loading}
             disabled={!hasSelected}
           >
@@ -216,6 +268,8 @@ function Customers() {
           selectedRowKeys={selectedRowKeys}
           setSelectedRowKeys={setSelectedRowKeys}
         />
+
+        {JSON.stringify(selectedRowKeys)}
       </Col>
       <Col span={19}>
         <MultiCustomersTabs />
@@ -226,7 +280,16 @@ function Customers() {
 
 function CustomerForm({ form }) {
   return (
-    <Form form={form} layout="vertical" autoComplete="off">
+    <Form
+      form={form}
+      initialValues={{
+        name: '',
+        address: '',
+        phone: '',
+      }}
+      layout="vertical"
+      autoComplete="off"
+    >
       <Form.Item name="name" label="Name">
         <Input />
       </Form.Item>

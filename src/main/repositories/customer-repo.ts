@@ -42,6 +42,11 @@ class CustomerRepository {
     this.dao.all(`SELECT * FROM customers`, [], data, callbackFunction);
   }
 
+  delete(data) {
+    console.log(`delete called`);
+    return this.dao.run(`DELETE FROM product_type WHERE id = ?`, [id]);
+  }
+
   // update(item) {
   //   console.log(`update called`);
   //   const { id, name } = item;
@@ -53,11 +58,6 @@ class CustomerRepository {
   //   );
   //   console.log({ resultSet });
   //   return resultSet;
-  // }
-
-  // delete(id) {
-  //   console.log(`delete called`);
-  //   return this.dao.run(`DELETE FROM product_type WHERE id = ?`, [id]);
   // }
 
   // getById(id) {
