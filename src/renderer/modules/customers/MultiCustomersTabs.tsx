@@ -117,7 +117,6 @@ function MultiCustomerTabs({ customersList, selectedCutomersToLoad }) {
   };
 
   const removeTab = (targetKey: TargetKey) => {
-    debugger;
     let newActiveKey = activeTabKey;
     let lastIndex = -1;
     tabs.forEach((item, i) => {
