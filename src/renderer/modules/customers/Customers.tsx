@@ -42,6 +42,7 @@ const initialCustomerState = {
 function Customers() {
   const [customersList, setCustomersList] = useState([]);
   const [selectedCutomer, setSelectedCutomer] = useState(initialCustomerState);
+  const [selectedCutomersToLoad, setSelectedCutomersToLoad] = useState([]);
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [form] = Form.useForm<{
@@ -51,7 +52,7 @@ function Customers() {
   }>();
 
   useEffect(() => {
-    window.electron.ipcRenderer.getAllCustomers({});
+    getAllCustomers({});
   }, []);
 
   const createNewCustomer = () => {
@@ -131,7 +132,9 @@ function Customers() {
     });
   };
 
-  const loadSelectedCustomers = () => {};
+  const loadSelectedCustomers = () => {
+    setSelectedCutomersToLoad([...selectedRowKeys]);
+  };
 
   const showDeleteConfirm = () => {
     confirm({
@@ -168,6 +171,10 @@ function Customers() {
     setSelectedRowKeys(keys);
   };
 
+  function getAllCustomers(params: type) {
+    window.electron.ipcRenderer.getAllCustomers({});
+  }
+
   window.electron.ipcRenderer.on('create:customer-response', (response) => {
     console.log('create:customer-response reponse came back');
     console.log(response);
@@ -179,7 +186,7 @@ function Customers() {
     if (response.status === STATUS.SUCCESS) {
       console.log('response of create:customer-response ');
       console.log(response);
-      window.electron.ipcRenderer.getAllCustomers({});
+      getAllCustomers({});
 
       // const newActiveKey = uuidv4();
       // const newPanes = [...tabs];
@@ -203,7 +210,7 @@ function Customers() {
     if (response.status === STATUS.SUCCESS) {
       console.log('response of update:customer-response ');
       console.log(response);
-      window.electron.ipcRenderer.getAllCustomers({});
+      getAllCustomers({});
 
       // const newActiveKey = uuidv4();
       // const newPanes = [...tabs];
@@ -328,7 +335,7 @@ function Customers() {
       <Col span={18}>
         <MultiCustomersTabs
           customersList={customersList}
-          selectedRowKeys={selectedRowKeys}
+          selectedCutomersToLoad={selectedCutomersToLoad}
         />
       </Col>
     </Row>
