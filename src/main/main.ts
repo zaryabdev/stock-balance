@@ -199,7 +199,7 @@ ipcMain.on('delete:customers', (event, data) => {
   const callbackFunction = (response, err) => {
     // const webContents = event.sender;
     // const win = BrowserWindow.fromWebContents(webContents);
-    console.log('callback function called!!');
+    console.log('callback function called!! for delete');
     if (err) {
       console.log(err);
     }

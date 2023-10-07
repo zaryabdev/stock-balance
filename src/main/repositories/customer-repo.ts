@@ -54,14 +54,11 @@ class CustomerRepository {
       return;
     }
 
-    const idList = data.join(', ');
+    let newIds = data.join("','");
+    let withQuote = `'${newIds}'`;
+    let sql = `DELETE FROM customers WHERE id IN (${withQuote})`;
 
-    return this.dao.run(
-      `DELETE FROM customers WHERE id IN (?)`,
-      [idList],
-      data,
-      callbackFunction,
-    );
+    return this.dao.run(sql, [], data, callbackFunction);
   }
 
   // update(item) {
