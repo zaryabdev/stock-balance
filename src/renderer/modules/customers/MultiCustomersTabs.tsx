@@ -11,9 +11,30 @@ import {
 
 import React, { useEffect, useRef, useState } from 'react';
 
-function MultiCustomerTabs({ items, activeKey, setActiveKey, removeTab }) {
+const SampleComponent: FC = ({ label }) => {
+  return (
+    <div>
+      <center>
+        <h1>{label}</h1>
+      </center>
+    </div>
+  );
+};
+
+const initialTabsState = [
+  {
+    label: 'Tab 1',
+    children: <SampleComponent label="CustomerGridSample Tab 1 Content" />,
+    key: 'sameple',
+  },
+];
+
+function MultiCustomerTabs({ customersList, selectedRowKeys }) {
+  const [activeTabKey, setActiveTabKey] = useState(initialTabsState[0].key);
+  const [tabs, setTabs] = useState(initialTabsState);
+
   const onChange = (newActiveKey: string) => {
-    setActiveKey(newActiveKey);
+    setActiveTabKey(newActiveKey);
   };
 
   const onEdit = (
@@ -27,15 +48,37 @@ function MultiCustomerTabs({ items, activeKey, setActiveKey, removeTab }) {
     }
   };
 
+  const removeTab = (targetKey: TargetKey) => {
+    let newActiveKey = activeTabKey;
+    let lastIndex = -1;
+    tabs.forEach((item, i) => {
+      if (item.key === targetKey) {
+        lastIndex = i - 1;
+      }
+    });
+    const newPanes = tabs.filter((item) => item.key !== targetKey);
+    if (newPanes.length && newActiveKey === targetKey) {
+      if (lastIndex >= 0) {
+        newActiveKey = newPanes[lastIndex].key;
+      } else {
+        newActiveKey = newPanes[0].key;
+      }
+    }
+    setTabs(newPanes);
+    setActiveTabKey(newActiveKey);
+  };
+
   return (
     <div>
+      {customersList.length} {JSON.stringify(selectedRowKeys)}
+      <hr />
       <Tabs
         type="editable-card"
         hideAdd
         onChange={onChange}
-        activeKey={activeKey}
+        activeKey={activeTabKey}
         onEdit={onEdit}
-        items={items}
+        items={initialTabsState}
       />
     </div>
   );

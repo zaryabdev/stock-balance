@@ -31,19 +31,6 @@ import List from './List';
 import MultiCustomersTabs from './MultiCustomersTabs';
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
-const initialItems = [
-  {
-    label: 'Tab 1',
-    children: <CustomerEditGrid label="CustomerGridSample Tab 1 Content" />,
-    key: uuidv4(),
-  },
-  {
-    label: 'Tab 2',
-    children: <CustomerEditGrid label="CustomerGridSample Tab 2 Content" />,
-    key: uuidv4(),
-  },
-];
-
 const initialCustomerState = {
   id: '',
   key: '',
@@ -55,29 +42,17 @@ const initialCustomerState = {
 function Customers() {
   const [customersList, setCustomersList] = useState([]);
   const [selectedCutomer, setSelectedCutomer] = useState(initialCustomerState);
+
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [form] = Form.useForm<{
     name: string;
     address: string;
     phone: string;
   }>();
-  const [tabs, setTabs] = useState(initialItems);
-  const [activeTabKey, setActiveTabKey] = useState(initialItems[0].key);
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     window.electron.ipcRenderer.getAllCustomers({});
   }, []);
-
-  const start = () => {
-    setLoading(true);
-    // ajax request after empty completing
-    setTimeout(() => {
-      // setSelectedRowKeys([]);
-      setLoading(false);
-    }, 1000);
-  };
 
   const createNewCustomer = () => {
     confirm({
@@ -156,6 +131,8 @@ function Customers() {
     });
   };
 
+  const loadSelectedCustomers = () => {};
+
   const showDeleteConfirm = () => {
     confirm({
       title: 'Are you sure delete this task?',
@@ -189,26 +166,6 @@ function Customers() {
     }
 
     setSelectedRowKeys(keys);
-  };
-
-  const removeTab = (targetKey: TargetKey) => {
-    // let newActiveKey = activeTabKey;
-    // let lastIndex = -1;
-    // tabs.forEach((item, i) => {
-    //   if (item.key === targetKey) {
-    //     lastIndex = i - 1;
-    //   }
-    // });
-    // const newPanes = tabs.filter((item) => item.key !== targetKey);
-    // if (newPanes.length && newActiveKey === targetKey) {
-    //   if (lastIndex >= 0) {
-    //     newActiveKey = newPanes[lastIndex].key;
-    //   } else {
-    //     newActiveKey = newPanes[0].key;
-    //   }
-    // }
-    // setTabs(newPanes);
-    // setActiveTabKey(newActiveKey);
   };
 
   window.electron.ipcRenderer.on('create:customer-response', (response) => {
@@ -346,10 +303,9 @@ function Customers() {
           <Button
             type="default"
             size="middle"
-            onClick={start}
+            onClick={loadSelectedCustomers}
             // loading={loading}
-            // disabled={selectedRowKeys.length < 1}
-            disabled
+            disabled={selectedRowKeys.length < 1}
           >
             Load
           </Button>
@@ -370,8 +326,10 @@ function Customers() {
         />
       </Col>
       <Col span={18}>
-        {JSON.stringify(selectedCutomer)}
-        <MultiCustomersTabs />
+        <MultiCustomersTabs
+          customersList={customersList}
+          selectedRowKeys={selectedRowKeys}
+        />
       </Col>
     </Row>
   );
