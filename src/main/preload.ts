@@ -14,6 +14,11 @@ const electronHandler = {
       console.log(data);
       ipcRenderer.send('create:customer', data);
     },
+    updateCustomer(data) {
+      console.log('Inside preload update:customer');
+      console.log(data);
+      ipcRenderer.send('update:customer', data);
+    },
     getAllCustomers(data) {
       console.log('Inside preload get:all:customers');
       console.log(data);

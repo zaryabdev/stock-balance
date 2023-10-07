@@ -44,9 +44,17 @@ const initialItems = [
   },
 ];
 
+const initialCustomerState = {
+  id: '',
+  key: '',
+  name: '',
+  phone: '',
+  address: '',
+};
+
 function Customers() {
   const [customersList, setCustomersList] = useState([]);
-  const [selectedCutomer, setSelectedCutomer] = useState({});
+  const [selectedCutomer, setSelectedCutomer] = useState(initialCustomerState);
   const [form] = Form.useForm<{
     name: string;
     address: string;
@@ -71,13 +79,20 @@ function Customers() {
     }, 1000);
   };
 
-  const hasSelected = selectedRowKeys.length > 0;
-
   const createNewCustomer = () => {
     confirm({
       title: 'Add new Customer',
       icon: <UserAddOutlined />,
-      content: <CustomerForm form={form} />,
+      content: (
+        <CustomerForm
+          form={form}
+          initialValues={{
+            name: '',
+            address: '',
+            phone: '',
+          }}
+        />
+      ),
       onOk() {
         let id = uuidv4();
         let name = form.getFieldValue('name');
@@ -93,8 +108,11 @@ function Customers() {
         };
 
         window.electron.ipcRenderer.createCustomer(data);
+        form.resetFields();
       },
-      onCancel() {},
+      onCancel() {
+        form.resetFields();
+      },
     });
   };
 
@@ -102,24 +120,39 @@ function Customers() {
     confirm({
       title: 'Edit Customer',
       icon: <UserAddOutlined />,
-      content: <CustomerForm form={form} />,
+      content: (
+        <CustomerForm
+          form={form}
+          initialValues={{
+            name: selectedCutomer.name,
+            address: selectedCutomer.address,
+            phone: selectedCutomer.phone,
+          }}
+        />
+      ),
       onOk() {
-        let id = uuidv4();
+        debugger;
+        let id = selectedCutomer.id;
+        let key = selectedCutomer.key;
+
         let name = form.getFieldValue('name');
         let address = form.getFieldValue('address');
         let phone = form.getFieldValue('phone');
 
         let data = {
           id,
-          key: id,
+          key,
           name,
           address,
           phone,
         };
 
-        window.electron.ipcRenderer.createCustomer(data);
+        window.electron.ipcRenderer.updateCustomer(data);
+        form.resetFields();
       },
-      onCancel() {},
+      onCancel() {
+        form.resetFields();
+      },
     });
   };
 
@@ -132,7 +165,6 @@ function Customers() {
       okType: 'danger',
       cancelText: 'No',
       onOk() {
-        debugger;
         let data = [...selectedRowKeys];
         window.electron.ipcRenderer.deleteCustomers(data);
       },
@@ -142,26 +174,41 @@ function Customers() {
     });
   };
 
-  const removeTab = (targetKey: TargetKey) => {
-    let newActiveKey = activeTabKey;
-    let lastIndex = -1;
-    tabs.forEach((item, i) => {
-      if (item.key === targetKey) {
-        lastIndex = i - 1;
-      }
-    });
+  const handleSelectedRowKeys = (keys: any) => {
+    console.log('Selected row keys');
+    console.log(keys);
 
-    const newPanes = tabs.filter((item) => item.key !== targetKey);
+    if (keys.length === 0) {
+      setSelectedCutomer(initialCustomerState);
+    } else if (keys.length === 1) {
+      const foundItem = customersList.find((c) => c.key === keys[0]);
 
-    if (newPanes.length && newActiveKey === targetKey) {
-      if (lastIndex >= 0) {
-        newActiveKey = newPanes[lastIndex].key;
-      } else {
-        newActiveKey = newPanes[0].key;
-      }
+      setSelectedCutomer(foundItem);
+    } else {
+      setSelectedCutomer(initialCustomerState);
     }
-    setTabs(newPanes);
-    setActiveTabKey(newActiveKey);
+
+    setSelectedRowKeys(keys);
+  };
+
+  const removeTab = (targetKey: TargetKey) => {
+    // let newActiveKey = activeTabKey;
+    // let lastIndex = -1;
+    // tabs.forEach((item, i) => {
+    //   if (item.key === targetKey) {
+    //     lastIndex = i - 1;
+    //   }
+    // });
+    // const newPanes = tabs.filter((item) => item.key !== targetKey);
+    // if (newPanes.length && newActiveKey === targetKey) {
+    //   if (lastIndex >= 0) {
+    //     newActiveKey = newPanes[lastIndex].key;
+    //   } else {
+    //     newActiveKey = newPanes[0].key;
+    //   }
+    // }
+    // setTabs(newPanes);
+    // setActiveTabKey(newActiveKey);
   };
 
   window.electron.ipcRenderer.on('create:customer-response', (response) => {
@@ -174,6 +221,30 @@ function Customers() {
 
     if (response.status === STATUS.SUCCESS) {
       console.log('response of create:customer-response ');
+      console.log(response);
+      window.electron.ipcRenderer.getAllCustomers({});
+
+      // const newActiveKey = uuidv4();
+      // const newPanes = [...tabs];
+      // newPanes.push({
+      //   label: 'New Tab',
+      //   children: <CustomerEditGrid label={`Tab ID =  ${newActiveKey}`} />,
+      //   key: newActiveKey,
+      // });
+      // setTabs(newPanes);
+      // setActiveTabKey(newActiveKey);
+    }
+  });
+  window.electron.ipcRenderer.on('update:customer-response', (response) => {
+    console.log('update:customer-response reponse came back');
+    console.log(response);
+
+    if (response.status === STATUS.FAILED) {
+      console.log(response.message);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('response of update:customer-response ');
       console.log(response);
       window.electron.ipcRenderer.getAllCustomers({});
 
@@ -223,10 +294,9 @@ function Customers() {
     }
 
     if (response.status === STATUS.SUCCESS) {
+      setSelectedRowKeys([]);
       console.log('response of delete:customers-response ');
       console.log(response);
-      debugger;
-
       if (response.status === STATUS.FAILED) {
         console.log(response.message);
       }
@@ -257,8 +327,8 @@ function Customers() {
             type="default"
             size="middle"
             onClick={createNewCustomer}
-            loading={loading}
-            // disabled={!hasSelected}
+            // loading={loading}
+            disabled={selectedRowKeys.length > 0}
           >
             Add
           </Button>
@@ -266,8 +336,10 @@ function Customers() {
             type="default"
             size="middle"
             onClick={editSelectedCustomer}
-            loading={loading}
-            // disabled={!hasSelected}
+            // loading={loading}
+            disabled={
+              selectedRowKeys.length === 0 || selectedRowKeys.length > 1
+            }
           >
             Edit
           </Button>
@@ -275,8 +347,9 @@ function Customers() {
             type="default"
             size="middle"
             onClick={start}
-            loading={loading}
-            disabled={!hasSelected}
+            // loading={loading}
+            // disabled={selectedRowKeys.length < 1}
+            disabled
           >
             Load
           </Button>
@@ -284,8 +357,8 @@ function Customers() {
             type="default"
             size="middle"
             onClick={showDeleteConfirm}
-            loading={loading}
-            disabled={!hasSelected}
+            // loading={loading}
+            disabled={selectedRowKeys.length < 1}
           >
             Delete
           </Button>
@@ -293,30 +366,34 @@ function Customers() {
         <List
           data={customersList}
           selectedRowKeys={selectedRowKeys}
-          setSelectedRowKeys={setSelectedRowKeys}
+          handleSelectedRowKeys={handleSelectedRowKeys}
         />
       </Col>
       <Col span={18}>
+        {JSON.stringify(selectedCutomer)}
         <MultiCustomersTabs />
       </Col>
     </Row>
   );
 }
 
-function CustomerForm({ form }) {
+function CustomerForm({ form, initialValues }) {
+  form.setFieldValue('name', initialValues.name);
+  form.setFieldValue('address', initialValues.address);
+  form.setFieldValue('phone', initialValues.phone);
+
+  const nameField = useRef(null);
+
+  useEffect(() => {
+    if (nameField && nameField.current) {
+      nameField.current.focus();
+    }
+  }, [nameField]);
+
   return (
-    <Form
-      form={form}
-      initialValues={{
-        name: '',
-        address: '',
-        phone: '',
-      }}
-      layout="vertical"
-      autoComplete="off"
-    >
+    <Form form={form} layout="vertical" autoComplete="on">
       <Form.Item name="name" label="Name">
-        <Input />
+        <Input type="text" ref={nameField} />
       </Form.Item>
       <Form.Item name="address" label="Address">
         <Input />

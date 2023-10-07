@@ -13,7 +13,7 @@ interface DataType {
 
 type DataIndex = keyof DataType;
 
-const List: React.FC = ({ data, selectedRowKeys, setSelectedRowKeys }) => {
+const List: React.FC = ({ data, selectedRowKeys, handleSelectedRowKeys }) => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
@@ -41,7 +41,7 @@ const List: React.FC = ({ data, selectedRowKeys, setSelectedRowKeys }) => {
     console.log(selectedRowKeys);
     console.log(selectedRows);
 
-    setSelectedRowKeys(selectedRowKeys);
+    handleSelectedRowKeys(selectedRowKeys);
   };
 
   const rowSelection = {
@@ -53,7 +53,7 @@ const List: React.FC = ({ data, selectedRowKeys, setSelectedRowKeys }) => {
     dataIndex: DataIndex,
   ): ColumnType<DataType> => ({
     filterDropdown: ({
-      setSelectedKeys,
+      handleSelectedRowKeys,
       selectedKeys,
       confirm,
       clearFilters,
@@ -65,7 +65,7 @@ const List: React.FC = ({ data, selectedRowKeys, setSelectedRowKeys }) => {
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
           onChange={(e) =>
-            setSelectedKeys(e.target.value ? [e.target.value] : [])
+            handleSelectedRowKeys(e.target.value ? [e.target.value] : [])
           }
           onPressEnter={() =>
             handleSearch(selectedKeys as string[], confirm, dataIndex)
@@ -140,11 +140,11 @@ const List: React.FC = ({ data, selectedRowKeys, setSelectedRowKeys }) => {
     if (currentSelection.includes(key)) {
       let filteredSelection = currentSelection.filter((el) => el !== key);
 
-      setSelectedRowKeys(filteredSelection);
+      handleSelectedRowKeys(filteredSelection);
     } else {
       currentSelection.push(key);
 
-      setSelectedRowKeys(currentSelection);
+      handleSelectedRowKeys(currentSelection);
     }
   };
 

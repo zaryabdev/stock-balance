@@ -61,18 +61,18 @@ class CustomerRepository {
     return this.dao.run(sql, [], data, callbackFunction);
   }
 
-  // update(item) {
-  //   console.log(`update called`);
-  //   const { id, name } = item;
-  //   const resultSet = this.dao.run(
-  //     `UPDATE product_type
-  //       SET name = ?
-  //       WHERE id = ?`,
-  //     [name, id],
-  //   );
-  //   console.log({ resultSet });
-  //   return resultSet;
-  // }
+  update(data, callbackFunction) {
+    const { id, key, name, address, phone } = data;
+    console.log('update called for CustomerRepository');
+    console.log({ id, key, name, address, phone });
+
+    this.dao.run(
+      'UPDATE customers SET  name = ?, address = ?, phone = ? WHERE id = ?',
+      [name, address, phone, id],
+      data,
+      callbackFunction,
+    );
+  }
 
   // getById(id) {
   //   console.log(`getById called`);

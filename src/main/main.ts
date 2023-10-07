@@ -167,6 +167,30 @@ ipcMain.on('create:customer', (event, data) => {
 
   customerRepo.create(data, callbackFunction);
 });
+ipcMain.on('update:customer', (event, data) => {
+  console.log('Inside Main update:customer');
+  console.log(data);
+  const callbackFunction = (response, err) => {
+    // const webContents = event.sender;
+    // const win = BrowserWindow.fromWebContents(webContents);
+    console.log('callback function called!!');
+    if (err) {
+      console.log(err);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('respose was success');
+      // console.log(win);
+      event.reply('update:customer-response', response);
+
+      // win.webContents.send('create:customer', response);
+    } else {
+      console.log(response.message);
+    }
+  };
+
+  customerRepo.update(data, callbackFunction);
+});
 
 ipcMain.on('get:all:customers', (event, data) => {
   console.log('Inside Main get:all:customers');
