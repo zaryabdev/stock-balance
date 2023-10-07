@@ -251,7 +251,7 @@ function Customers() {
 
   return (
     <Row gutter={[8, 8]}>
-      <Col span={5}>
+      <Col span={6}>
         <div style={{ margin: 4 }}>
           <Button
             type="default"
@@ -296,7 +296,7 @@ function Customers() {
           setSelectedRowKeys={setSelectedRowKeys}
         />
       </Col>
-      <Col span={19}>
+      <Col span={18}>
         <MultiCustomersTabs />
       </Col>
     </Row>

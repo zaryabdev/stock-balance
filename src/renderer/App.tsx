@@ -1,4 +1,5 @@
 import {
+  RestOutlined,
   SettingOutlined,
   ShoppingCartOutlined,
   StockOutlined,
@@ -18,7 +19,13 @@ const { Content, Sider } = Layout;
 type MenuItem = Required<MenuProps>['items'][number];
 
 const SampleComponent: FC = ({ label }) => {
-  return <div>{label}</div>;
+  return (
+    <div>
+      <center>
+        <h1>{label}</h1>
+      </center>
+    </div>
+  );
 };
 
 function getItem(
@@ -62,6 +69,13 @@ const items: MenuItem[] = [
     '/settings',
     <Link to="/settings">
       <SettingOutlined />
+    </Link>,
+  ),
+  getItem(
+    'Trash',
+    '/trash',
+    <Link to="/trash">
+      <RestOutlined />
     </Link>,
   ),
 ];
@@ -116,6 +130,12 @@ export default function App() {
                     path="/settings"
                     element={
                       <SampleComponent label="Settings from SampleComponent" />
+                    }
+                  />
+                  <Route
+                    path="/trash"
+                    element={
+                      <SampleComponent label="Trash from SampleComponent" />
                     }
                   />
                 </Routes>
