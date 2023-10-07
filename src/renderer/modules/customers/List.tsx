@@ -126,6 +126,7 @@ const List: React.FC = ({ data, selectedRowKeys, handleSelectedRowKeys }) => {
       title: 'Customers',
       dataIndex: 'name',
       key: 'name',
+      ellipsis: true,
       width: '100%',
       ...getColumnSearchProps('name'),
     },
@@ -154,7 +155,7 @@ const List: React.FC = ({ data, selectedRowKeys, handleSelectedRowKeys }) => {
         columns={columns}
         rowSelection={{
           type: 'checkbox',
-          hideSelectAll: true,
+          hideSelectAll: false,
           ...rowSelection,
         }}
         dataSource={data}

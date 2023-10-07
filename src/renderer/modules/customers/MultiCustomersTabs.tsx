@@ -148,8 +148,6 @@ function MultiCustomerTabs({ customersList, selectedCutomersToLoad }) {
 
   return (
     <div>
-      activeTabKey : {activeTabKey}
-      {/* {customersList.length} {JSON.stringify(selectedCutomersToLoad)} */}
       <Tabs
         type="editable-card"
         hideAdd
