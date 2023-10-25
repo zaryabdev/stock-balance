@@ -1,19 +1,4 @@
-import {
-  CommentOutlined,
-  CustomerServiceOutlined,
-  DoubleLeftOutlined,
-  DoubleRightOutlined,
-  EditOutlined,
-  ExclamationCircleFilled,
-  HeartOutlined,
-  RestOutlined,
-  SaveOutlined,
-  SettingOutlined,
-  ShoppingCartOutlined,
-  StockOutlined,
-  UndoOutlined,
-  UserAddOutlined,
-} from '@ant-design/icons';
+import { EditOutlined, SaveOutlined, UndoOutlined } from '@ant-design/icons';
 import { Avatar, Col, Descriptions, FloatButton, Row } from 'antd';
 import Fuse from 'fuse.js';
 import React, {
@@ -88,7 +73,7 @@ const columns = [
 ];
 
 function CustomerEditGrid({ customerId }) {
-  const [data, setData] = useState([{ ...initialState }]);
+  const [data, setData] = useState([{ ...initialState, id: uuidv4() }]);
   const [prevData, setPrevData] = useState(data);
 
   const createdRowIds = useMemo(() => new Set(), []);
@@ -119,9 +104,11 @@ function CustomerEditGrid({ customerId }) {
       <DataSheetGrid
         value={data}
         columns={columns}
-        createRow={() => ({ ...initialState })}
+        createRow={() => ({ ...initialState, id: uuidv4() })}
         duplicateRow={({ rowData }) => ({ ...rowData, id: uuidv4() })}
         onChange={(newValue, operations) => {
+          console.log(newValue);
+
           for (const operation of operations) {
             if (operation.type === 'CREATE') {
               newValue
