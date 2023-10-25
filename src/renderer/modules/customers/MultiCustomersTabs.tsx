@@ -10,7 +10,7 @@ import {
 } from 'antd';
 
 import React, { useEffect, useRef, useState } from 'react';
-
+import CustomerEditGrid from './CustomerEditGrid';
 const SampleComponent: FC = ({ id, label }) => {
   return (
     <div>
@@ -26,9 +26,7 @@ const SampleComponent: FC = ({ id, label }) => {
 const initialTabsState = [
   {
     label: 'Tab 1',
-    children: (
-      <SampleComponent id="Sample" label="CustomerGridSample Tab 1 Content" />
-    ),
+    children: <CustomerEditGrid id="Sample" />,
     key: 'sameple',
   },
 ];
@@ -54,9 +52,7 @@ function MultiCustomerTabs({ customersList, selectedCutomersToLoad }) {
           if (el.key === key)
             arr.push({
               label: el.name,
-              children: (
-                <SampleComponent key={key} id={el.id} label={el.name} />
-              ),
+              children: <CustomerEditGrid id={el.id} />,
               key: key,
             });
         });
@@ -72,9 +68,7 @@ function MultiCustomerTabs({ customersList, selectedCutomersToLoad }) {
             if (el.key === key)
               arr.push({
                 label: el.name,
-                children: (
-                  <SampleComponent key={key} id={el.id} label={el.name} />
-                ),
+                children: <CustomerEditGrid id={el.id} />,
                 key: key,
               });
           });

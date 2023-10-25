@@ -12,35 +12,76 @@ import React, {
 import {
   DataSheetGrid,
   checkboxColumn,
+  floatColumn,
+  intColumn,
+  isoDateColumn,
   keyColumn,
   textColumn,
 } from 'react-datasheet-grid';
 
-function CustomerEditGrid({ label }) {
+function CustomerEditGrid({ id }) {
   const [data, setData] = useState([
-    { active: true, firstName: 'Elon', lastName: 'Musk' },
-    { active: false, firstName: 'Jeff', lastName: 'Bezos' },
+    {
+      date: '',
+      products: '',
+      carton: 0,
+      qtyCtn: 0,
+      totalQty: 0,
+      rateEach: 0,
+      debit: 0,
+      credit: 0,
+      balance: 0,
+    },
   ]);
 
   const columns = [
     {
-      ...keyColumn('active', checkboxColumn),
-      title: 'Active',
+      ...keyColumn('date', isoDateColumn),
+      title: 'Date',
     },
     {
-      ...keyColumn('firstName', textColumn),
-      title: 'First name',
+      ...keyColumn('products', textColumn),
+      title: 'Products',
     },
     {
-      ...keyColumn('lastName', textColumn),
-      title: 'Last name',
+      ...keyColumn('carton', intColumn),
+      title: 'Carton',
+    },
+    {
+      ...keyColumn('qtyCtn', intColumn),
+      title: 'qtyCtn',
+    },
+    {
+      ...keyColumn('totalQty', intColumn),
+      title: 'totalQty',
+    },
+    {
+      ...keyColumn('rateEach', floatColumn),
+      title: 'rateEach',
+    },
+    {
+      ...keyColumn('debit', floatColumn),
+      title: 'debit',
+    },
+    {
+      ...keyColumn('credit', floatColumn),
+      title: 'credit',
+    },
+    {
+      ...keyColumn('balance', floatColumn),
+      title: 'balance',
     },
   ];
 
+  const handleChange = (event) => {
+    console.log(event);
+    setData(event);
+  };
+
   return (
     <>
-      {label}
-      {/* <DataSheetGrid value={data} onChange={setData} columns={columns} /> */}
+      {id}
+      <DataSheetGrid value={data} onChange={handleChange} columns={columns} />
     </>
   );
 }
