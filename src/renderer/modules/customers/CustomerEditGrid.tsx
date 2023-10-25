@@ -1,5 +1,20 @@
-import { HeartOutlined } from '@ant-design/icons';
-import { Avatar, Col, Descriptions, Row } from 'antd';
+import {
+  CommentOutlined,
+  CustomerServiceOutlined,
+  DoubleLeftOutlined,
+  DoubleRightOutlined,
+  EditOutlined,
+  ExclamationCircleFilled,
+  HeartOutlined,
+  RestOutlined,
+  SaveOutlined,
+  SettingOutlined,
+  ShoppingCartOutlined,
+  StockOutlined,
+  UndoOutlined,
+  UserAddOutlined,
+} from '@ant-design/icons';
+import { Avatar, Col, Descriptions, FloatButton, Row } from 'antd';
 import Fuse from 'fuse.js';
 import React, {
   useCallback,
@@ -49,27 +64,27 @@ function CustomerEditGrid({ id }) {
     },
     {
       ...keyColumn('qtyCtn', intColumn),
-      title: 'qtyCtn',
+      title: 'Qty / Ctn',
     },
     {
       ...keyColumn('totalQty', intColumn),
-      title: 'totalQty',
+      title: 'Total Qty',
     },
     {
       ...keyColumn('rateEach', floatColumn),
-      title: 'rateEach',
+      title: 'Rate Each',
     },
     {
       ...keyColumn('debit', floatColumn),
-      title: 'debit',
+      title: 'Debit',
     },
     {
       ...keyColumn('credit', floatColumn),
-      title: 'credit',
+      title: 'Credit',
     },
     {
       ...keyColumn('balance', floatColumn),
-      title: 'balance',
+      title: 'Balance',
     },
   ];
 
@@ -80,8 +95,17 @@ function CustomerEditGrid({ id }) {
 
   return (
     <>
-      {id}
       <DataSheetGrid value={data} onChange={handleChange} columns={columns} />
+      <FloatButton.Group
+        trigger="hover"
+        type="primary"
+        shape="circle"
+        style={{ right: 24 }}
+        icon={<EditOutlined />}
+      >
+        <FloatButton tooltip="Undo" icon={<UndoOutlined />} />
+        <FloatButton tooltip="Save" icon={<SaveOutlined />} />
+      </FloatButton.Group>
     </>
   );
 }

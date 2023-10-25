@@ -157,8 +157,9 @@ export default function App() {
           </Layout>
           <FloatButton
             tooltip={`${toggleSideBar ? 'Hide sidebar' : 'Show sidebar'}`}
-            style={{ right: 24 }}
-            type="primary"
+            style={{ right: 94 }}
+            type="default"
+            shape="circle"
             icon={
               toggleSideBar ? <DoubleLeftOutlined /> : <DoubleRightOutlined />
             }
