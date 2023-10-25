@@ -86,7 +86,7 @@ const items: MenuItem[] = [
 
 export default function App() {
   const [collapsed, setCollapsed] = useState(true);
-  const [toggleSideBar, setToggleSideBar] = useState(true);
+  const [toggleSideBar, setToggleSideBar] = useState(false);
 
   const {
     token: { colorBgContainer },

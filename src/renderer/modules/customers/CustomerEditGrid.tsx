@@ -33,21 +33,23 @@ import {
   keyColumn,
   textColumn,
 } from 'react-datasheet-grid';
+import { v4 as uuidv4 } from 'uuid';
+
+const initialState = {
+  id: uuidv4(),
+  date: '2023-10-13',
+  products: '',
+  carton: 0,
+  qtyCtn: 0,
+  totalQty: 0,
+  rateEach: 0,
+  debit: 0,
+  credit: 0,
+  balance: 0,
+};
 
 function CustomerEditGrid({ id }) {
-  const [data, setData] = useState([
-    {
-      date: '',
-      products: '',
-      carton: 0,
-      qtyCtn: 0,
-      totalQty: 0,
-      rateEach: 0,
-      debit: 0,
-      credit: 0,
-      balance: 0,
-    },
-  ]);
+  const [data, setData] = useState([{ ...initialState }]);
 
   const columns = [
     {
@@ -88,14 +90,16 @@ function CustomerEditGrid({ id }) {
     },
   ];
 
-  const handleChange = (event) => {
-    console.log(event);
-    setData(event);
-  };
-
   return (
     <>
-      <DataSheetGrid value={data} onChange={handleChange} columns={columns} />
+      <DataSheetGrid
+        value={data}
+        columns={columns}
+        onChange={(newValue) => setData(newValue)}
+        createRow={() => ({ ...initialState })}
+        duplicateRow={({ rowData }) => ({ ...rowData, id: uuidv4() })}
+      />
+
       <FloatButton.Group
         trigger="hover"
         type="primary"
