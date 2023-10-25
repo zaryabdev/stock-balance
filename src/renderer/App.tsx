@@ -1,4 +1,8 @@
 import {
+  CustomerServiceOutlined,
+  DoubleLeftOutlined,
+  DoubleRightOutlined,
+  ExclamationCircleFilled,
   RestOutlined,
   SettingOutlined,
   ShoppingCartOutlined,
@@ -6,12 +10,12 @@ import {
   UserAddOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
-import { ConfigProvider, Layout, Menu, theme } from 'antd';
+import { ConfigProvider, FloatButton, Layout, Menu, theme } from 'antd';
 import React, { FC, useState } from 'react';
 import 'react-datasheet-grid/dist/style.css';
 import { Link, Route, MemoryRouter as Router, Routes } from 'react-router-dom';
 import './App.css';
-import { Context } from './AppContext';
+import Context from './AppContext';
 import Customers from './modules/customers/Customers';
 
 const { Content, Sider } = Layout;
@@ -82,14 +86,23 @@ const items: MenuItem[] = [
 
 export default function App() {
   const [collapsed, setCollapsed] = useState(true);
+  const [toggleSideBar, setToggleSideBar] = useState(true);
+
   const {
     token: { colorBgContainer },
   } = theme.useToken();
 
-  const value = '';
+  const hideSideBar = () => {
+    setToggleSideBar((prev) => !prev);
+  };
 
   return (
-    <Context.Provider value={value}>
+    <Context.Provider
+      value={{
+        toggleSideBar,
+        setToggleSideBar,
+      }}
+    >
       <Router>
         <ConfigProvider
           theme={{
@@ -142,6 +155,15 @@ export default function App() {
               </Content>
             </Layout>
           </Layout>
+          <FloatButton
+            tooltip={`${toggleSideBar ? 'Hide sidebar' : 'Show sidebar'}`}
+            style={{ right: 24 }}
+            type="primary"
+            icon={
+              toggleSideBar ? <DoubleLeftOutlined /> : <DoubleRightOutlined />
+            }
+            onClick={() => hideSideBar()}
+          />
         </ConfigProvider>
       </Router>
     </Context.Provider>

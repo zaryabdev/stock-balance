@@ -1,9 +1,16 @@
-import { ExclamationCircleFilled, UserAddOutlined } from '@ant-design/icons';
+import {
+  CustomerServiceOutlined,
+  DoubleLeftOutlined,
+  DoubleRightOutlined,
+  ExclamationCircleFilled,
+  UserAddOutlined,
+} from '@ant-design/icons';
 import {
   Avatar,
   Button,
   Col,
   Descriptions,
+  FloatButton,
   Form,
   Input,
   Modal,
@@ -14,16 +21,17 @@ import {
 import {
   default as React,
   useCallback,
+  useContext,
   useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
-  useRef,
-  useState,
   useState,
 } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import context from '../../AppContext';
 import CustomerEditGrid from './CustomerEditGrid';
+
 const { confirm } = Modal;
 
 import { STATUS } from '../../contants';
@@ -43,7 +51,7 @@ function Customers() {
   const [customersList, setCustomersList] = useState([]);
   const [selectedCutomer, setSelectedCutomer] = useState(initialCustomerState);
   const [selectedCutomersToLoad, setSelectedCutomersToLoad] = useState([]);
-
+  const appContext = useContext(context);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [form] = Form.useForm<{
     name: string;
@@ -285,7 +293,12 @@ function Customers() {
 
   return (
     <Row gutter={[8, 8]}>
-      <Col span={6}>
+      <Col
+        className={`${
+          appContext.toggleSideBar ? 'display-block' : 'visually-hidden'
+        }`}
+        span={6}
+      >
         <div style={{ margin: 4 }}>
           <Button
             type="default"
@@ -325,6 +338,15 @@ function Customers() {
           >
             Delete
           </Button>
+          <Button
+            type="default"
+            size="middle"
+            onClick={() => appContext.setToggleSideBar((prev) => !prev)}
+            // loading={loading}
+            // disabled={}
+          >
+            Delete
+          </Button>
         </div>
         <List
           data={customersList}
@@ -332,7 +354,7 @@ function Customers() {
           handleSelectedRowKeys={handleSelectedRowKeys}
         />
       </Col>
-      <Col span={18}>
+      <Col span={appContext.toggleSideBar ? 18 : 24}>
         <MultiCustomersTabs
           customersList={customersList}
           selectedCutomersToLoad={selectedCutomersToLoad}

@@ -9,3 +9,11 @@
 body {
   margin: 0 !important;
 }
+
+.display-block {
+  display: block;
+}
+
+.visually-hidden {
+  display: none;
+}
