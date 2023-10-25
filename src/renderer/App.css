@@ -21,14 +21,17 @@ body {
 .row-deleted .dsg-cell {
   /* Red */
   background: #fff1f0;
+  /* background: red; */
 }
 
 .row-created .dsg-cell {
   /* Green */
   background: #f6ffed;
+  /* background: green; */
 }
 
 .row-updated .dsg-cell {
   /* Orange */
   background: #fff7e6;
+  /* background: orange; */
 }

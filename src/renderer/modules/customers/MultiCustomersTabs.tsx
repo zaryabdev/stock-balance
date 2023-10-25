@@ -26,7 +26,7 @@ const SampleComponent: FC = ({ id, label }) => {
 const initialTabsState = [
   {
     label: 'Tab 1',
-    children: <CustomerEditGrid id="Sample" />,
+    children: <CustomerEditGrid customerId="Sample" />,
     key: 'sameple',
   },
 ];
@@ -52,7 +52,7 @@ function MultiCustomerTabs({ customersList, selectedCutomersToLoad }) {
           if (el.key === key)
             arr.push({
               label: el.name,
-              children: <CustomerEditGrid id={el.id} />,
+              children: <CustomerEditGrid customerId={el.id} />,
               key: key,
             });
         });
@@ -68,7 +68,7 @@ function MultiCustomerTabs({ customersList, selectedCutomersToLoad }) {
             if (el.key === key)
               arr.push({
                 label: el.name,
-                children: <CustomerEditGrid id={el.id} />,
+                children: <CustomerEditGrid customerId={el.id} />,
                 key: key,
               });
           });
