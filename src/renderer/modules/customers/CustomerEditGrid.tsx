@@ -19,11 +19,13 @@ import {
   textColumn,
 } from 'react-datasheet-grid';
 import { v4 as uuidv4 } from 'uuid';
+import { STATUS } from '../../contants';
 
 const initialState = {
-  id: uuidv4(),
+  id: '',
+  customer_id: '',
   date: '2023-10-13',
-  products: '',
+  products: 'products',
   carton: 0,
   qty_ctn: 0,
   total_qty: 0,
@@ -37,6 +39,10 @@ const columns = [
   {
     ...keyColumn('id', textColumn),
     title: 'ID',
+  },
+  {
+    ...keyColumn('customer_id', textColumn),
+    title: 'Customer ID',
   },
   {
     ...keyColumn('date', isoDateColumn),
@@ -78,10 +84,10 @@ const columns = [
 
 function CustomerEditGrid({ customerId }) {
   const [data, setData] = useState([
-    { ...initialState, id: uuidv4() },
-    { ...initialState, id: uuidv4() },
-    { ...initialState, id: uuidv4() },
-    { ...initialState, id: uuidv4() },
+    { ...initialState, id: uuidv4(), customer_id: customerId },
+    { ...initialState, id: uuidv4(), customer_id: customerId },
+    { ...initialState, id: uuidv4(), customer_id: customerId },
+    { ...initialState, id: uuidv4(), customer_id: customerId },
   ]);
   const [prevData, setPrevData] = useState(data);
 
@@ -104,6 +110,9 @@ function CustomerEditGrid({ customerId }) {
     const newData = data.filter(({ id }) => !deletedRowIds.has(id));
     setData(newData);
     setPrevData(newData);
+    console.log(newData);
+    debugger;
+    window.electron.ipcRenderer.createCustomerInvoice(newData);
 
     createdRowIds.clear();
     deletedRowIds.clear();

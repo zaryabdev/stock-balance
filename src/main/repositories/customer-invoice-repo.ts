@@ -30,55 +30,37 @@ class CustomerInvoicRepository {
     return this.dao.run(sql);
   }
 
-  create(data, callbackFunction) {
+  create(data = [], callbackFunction) {
     const timestamp = Date.now();
     console.log('create called for CustomerInvoicRepository');
-    const {
-      id,
-      customer_id,
-      date,
-      products,
-      carton,
-      qtyCtn,
-      total_qty,
-      rate_each,
-      debit,
-      credit,
-      balance,
-    } = data;
+    console.log(data);
 
-    console.log({
-      id,
-      customer_id,
-      date,
-      products,
-      carton,
-      qtyCtn,
-      total_qty,
-      rate_each,
-      debit,
-      credit,
-      balance,
-    });
+    if (data.length === 0) {
+      const res = {
+        status: 'SUCCESS',
+        data: [...data],
+        message: 'No records were created',
+      };
+      callbackFunction(res);
+      return;
+    }
+
     console.log(callbackFunction);
-    this.dao.run(
-      'INSERT INTO customer_invoice (id, customer_id, date, products, carton, qty_ctn, total_qty, rate_each, debit, credit, balance) VALUES (?, ?, ?, ?, ?, ?, ?, ? ?, ?, ?)',
-      [
-        id,
-        customer_id,
-        date,
-        products,
-        carton,
-        qtyCtn,
-        total_qty,
-        rate_each,
-        debit,
-        credit,
-        balance,
-      ],
-      data,
-      callbackFunction,
-    );
+
+    const valuesArr = data.map((el) => {
+      const _str = `('${el.id}','${el.customer_id}','${el.date}','${el.products}','${el.carton}','${el.qty_ctn}','${el.total_qty}','${el.rate_each}','${el.debit}','${el.credit}','${el.balance}')`;
+      return _str;
+    });
+
+    console.log(valuesArr);
+
+    const valuesStr = valuesArr.join(',');
+
+    console.log(valuesStr);
+
+    const query = `INSERT INTO customer_invoice (id, customer_id, date, products, carton, qty_ctn, total_qty, rate_each, debit, credit, balance) VALUES ${valuesStr};`;
+
+    this.dao.run(query, [], data, callbackFunction);
   }
 
   getAll(data, callbackFunction) {
