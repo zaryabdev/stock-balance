@@ -16,6 +16,7 @@ class CustomerInvoicRepository {
         CREATE TABLE IF NOT EXISTS customer_invoice (
         id TEXT,
         customer_id TEXT,
+        source TEXT,
         date TEXT,
         products TEXT,
         carton TEXT,
@@ -48,7 +49,7 @@ class CustomerInvoicRepository {
     console.log(callbackFunction);
 
     const valuesArr = data.map((el) => {
-      const _str = `('${el.id}','${el.customer_id}','${el.date}','${el.products}','${el.carton}','${el.qty_ctn}','${el.total_qty}','${el.rate_each}','${el.debit}','${el.credit}','${el.balance}')`;
+      const _str = `('${el.id}','${el.customer_id}','${el.source}','${el.date}','${el.products}','${el.carton}','${el.qty_ctn}','${el.total_qty}','${el.rate_each}','${el.debit}','${el.credit}','${el.balance}')`;
       return _str;
     });
 
@@ -58,7 +59,7 @@ class CustomerInvoicRepository {
 
     console.log(valuesStr);
 
-    const query = `INSERT INTO customer_invoice (id, customer_id, date, products, carton, qty_ctn, total_qty, rate_each, debit, credit, balance) VALUES ${valuesStr};`;
+    const query = `INSERT INTO customer_invoice (id, customer_id, source, date, products, carton, qty_ctn, total_qty, rate_each, debit, credit, balance) VALUES ${valuesStr};`;
 
     this.dao.run(query, [], data, callbackFunction);
   }

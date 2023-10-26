@@ -21,9 +21,15 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import { STATUS } from '../../contants';
 
+const SOURCE = {
+  memory: 'MEMORY',
+  database: 'DATABASE',
+};
+
 const initialState = {
   id: '',
   customer_id: '',
+  source: SOURCE.memory,
   date: '2023-10-13',
   products: 'products',
   carton: 0,
@@ -39,6 +45,10 @@ const columns = [
   {
     ...keyColumn('id', textColumn),
     title: 'ID',
+  },
+  {
+    ...keyColumn('source', textColumn),
+    title: 'Source',
   },
   {
     ...keyColumn('date', isoDateColumn),
