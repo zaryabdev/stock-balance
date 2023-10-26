@@ -1,4 +1,4 @@
-const logger = require('../logger');
+import logger from '../logger';
 
 class CustomerRepository {
   constructor(dao) {
@@ -54,9 +54,9 @@ class CustomerRepository {
       return;
     }
 
-    let newIds = data.join("','");
-    let withQuote = `'${newIds}'`;
-    let sql = `DELETE FROM customers WHERE id IN (${withQuote})`;
+    const newIds = data.join("','");
+    const withQuote = `'${newIds}'`;
+    const sql = `DELETE FROM customers WHERE id IN (${withQuote})`;
 
     return this.dao.run(sql, [], data, callbackFunction);
   }
@@ -80,4 +80,4 @@ class CustomerRepository {
   // }
 }
 
-module.exports = CustomerRepository;
+export default CustomerRepository;

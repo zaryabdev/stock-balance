@@ -3,8 +3,6 @@ import sqlite from 'sqlite3';
 const sqlite3 = sqlite.verbose();
 // const Database = new sqlite3.Database(':memory:');
 
-const logger = require('./logger');
-
 const STATUS = {
   SUCCESS: 'SUCCESS',
   FAILED: 'FAILED',
@@ -83,7 +81,7 @@ class AppDAO {
   // }
 }
 
-module.exports = AppDAO;
+export default AppDAO;
 
 // const sqlite3 = sqlite.verbose();
 // const db = new sqlite3.Database(':memory:');
