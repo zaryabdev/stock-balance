@@ -41,10 +41,6 @@ const columns = [
     title: 'ID',
   },
   {
-    ...keyColumn('customer_id', textColumn),
-    title: 'Customer ID',
-  },
-  {
     ...keyColumn('date', isoDateColumn),
     title: 'Date',
   },
@@ -84,10 +80,10 @@ const columns = [
 
 function CustomerEditGrid({ customerId }) {
   const [data, setData] = useState([
-    { ...initialState, id: uuidv4(), customer_id: customerId },
-    { ...initialState, id: uuidv4(), customer_id: customerId },
-    { ...initialState, id: uuidv4(), customer_id: customerId },
-    { ...initialState, id: uuidv4(), customer_id: customerId },
+    // { ...initialState, id: uuidv4(), customer_id: customerId },
+    // { ...initialState, id: uuidv4(), customer_id: customerId },
+    // { ...initialState, id: uuidv4(), customer_id: customerId },
+    // { ...initialState, id: uuidv4(), customer_id: customerId },
   ]);
   const [prevData, setPrevData] = useState(data);
 
@@ -112,7 +108,7 @@ function CustomerEditGrid({ customerId }) {
     setPrevData(newData);
     console.log(newData);
     debugger;
-    window.electron.ipcRenderer.createCustomerInvoice(newData);
+    window.electron.ipcRenderer.updateCustomerInvoice(newData);
 
     createdRowIds.clear();
     deletedRowIds.clear();
@@ -204,12 +200,20 @@ function CustomerEditGrid({ customerId }) {
 
   return (
     <>
-      {customerId}
+      Customer ID : {customerId}
       <DataSheetGrid
         value={data}
         columns={columns}
-        createRow={() => ({ ...initialState, id: uuidv4() })}
-        duplicateRow={({ rowData }) => ({ ...rowData, id: uuidv4() })}
+        createRow={() => ({
+          ...initialState,
+          id: uuidv4(),
+          customer_id: customerId,
+        })}
+        duplicateRow={({ rowData }) => ({
+          ...rowData,
+          id: uuidv4(),
+          customer_id: customerId,
+        })}
         onChange={(newValue, operations) => {
           console.log(newValue);
 

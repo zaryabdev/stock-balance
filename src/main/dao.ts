@@ -16,6 +16,9 @@ class AppDAO {
   }
 
   run(sql, params = [], data, callbackFunction) {
+    console.log('sql');
+    console.log(sql);
+
     const query = this.db.prepare(sql);
 
     const res = {

@@ -63,6 +63,70 @@ class CustomerInvoicRepository {
     this.dao.run(query, [], data, callbackFunction);
   }
 
+  update(data = [], callbackFunction) {
+    const timestamp = Date.now();
+    console.log('update called for CustomerInvoicRepository');
+    console.log(data);
+
+    if (data.length === 0) {
+      const res = {
+        status: 'SUCCESS',
+        data: [...data],
+        message: 'No records were updated',
+      };
+      callbackFunction(res);
+      return;
+    }
+
+    console.log(callbackFunction);
+
+    const valuesArr = data.map((el) => {
+      const _str = `('${el.id}','${el.customer_id}','${el.date}','${el.products}','${el.carton}','${el.qty_ctn}','${el.total_qty}','${el.rate_each}','${el.debit}','${el.credit}','${el.balance}')`;
+      return _str;
+    });
+
+    console.log(valuesArr);
+
+    const valuesStr = valuesArr.join(',');
+
+    console.log(valuesStr);
+
+    const query = `
+    BEGIN TRANSACTION;
+    INSERT INTO customer_invoice (id, customer_id, date, products, carton, qty_ctn, total_qty, rate_each, debit, credit, balance) VALUES ('6','4','f','f','f','f','f','f','f','f','f');
+    INSERT INTO customer_invoice (id, customer_id, date, products, carton, qty_ctn, total_qty, rate_each, debit, credit, balance) VALUES ('7','4','g','g','g','g','g','g','g','g','g');
+    UPDATE customer_invoice SET date='x', products='x', carton='x', qty_ctn='x', total_qty='x', rate_each='x', debit='x', credit='x', balance='x' WHERE customer_id='1' AND id='1';
+    UPDATE customer_invoice SET date='y', products='y', carton='y', qty_ctn='y', total_qty='y', rate_each='y', debit='y', credit='y', balance='y' WHERE customer_id='1' AND id='2';
+    COMMIT;`;
+
+    this.dao.run('BEGIN TRANSACTION', [], data, callbackFunction);
+    this.dao.run(
+      "INSERT INTO customer_invoice (id, customer_id, date, products, carton, qty_ctn, total_qty, rate_each, debit, credit, balance) VALUES ('6','4','f','f','f','f','f','f','f','f','f');",
+      [],
+      data,
+      callbackFunction,
+    );
+    this.dao.run(
+      "INSERT INTO customer_invoice (id, customer_id, date, products, carton, qty_ctn, total_qty, rate_each, debit, credit, balance) VALUES ('7','4','g','g','g','g','g','g','g','g','g');",
+      [],
+      data,
+      callbackFunction,
+    );
+    this.dao.run(
+      "UPDATE customer_invoice SET date='x', products='x', carton='x', qty_ctn='x', total_qty='x', rate_each='x', debit='x', credit='x', balance='x' WHERE customer_id='1' AND id='1';",
+      [],
+      data,
+      callbackFunction,
+    );
+    this.dao.run(
+      " UPDATE customer_invoice SET date='y', products='y', carton='y', qty_ctn='y', total_qty='y', rate_each='y', debit='y', credit='y', balance='y' WHERE customer_id='1' AND id='2';",
+      [],
+      data,
+      callbackFunction,
+    );
+    this.dao.run('COMMIT', [], data, callbackFunction);
+  }
+
   getAll(data, callbackFunction) {
     logger.debug(`getAll called`);
     this.dao.all(`SELECT * FROM customer_invoice`, [], data, callbackFunction);
@@ -86,55 +150,6 @@ class CustomerInvoicRepository {
     const sql = `DELETE FROM customer_invoice WHERE id IN (${withQuote})`;
 
     return this.dao.run(sql, [], data, callbackFunction);
-  }
-
-  update(data, callbackFunction) {
-    const {
-      id,
-      customer_id,
-      date,
-      products,
-      carton,
-      qtyCtn,
-      total_qty,
-      rate_each,
-      debit,
-      credit,
-      balance,
-    } = data;
-    console.log('update called for CustomerInvoicRepository');
-    console.log({
-      id,
-      customer_id,
-      date,
-      products,
-      carton,
-      qty_ctn,
-      total_qty,
-      rate_each,
-      debit,
-      credit,
-      balance,
-    });
-
-    this.dao.run(
-      'UPDATE customer_invoice SET  customer_id = ?, date = ?, products = ?, carton = ?, qty_ctn = ?, total_qty = ?, rate_each = ?, debit = ?, credit = ?, balance = ? WHERE id = ?',
-      [
-        customer_id,
-        date,
-        products,
-        carton,
-        qty_ctn,
-        total_qty,
-        rate_each,
-        debit,
-        credit,
-        balance,
-        id,
-      ],
-      data,
-      callbackFunction,
-    );
   }
 
   // getById(id) {

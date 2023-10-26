@@ -25,9 +25,9 @@ const electronHandler = {
       ipcRenderer.send('get:all:customers', data);
     },
     deleteCustomers(data) {
-      console.log('Inside preload delete:customers-invoice');
+      console.log('Inside preload delete:customers');
       console.log(data);
-      ipcRenderer.send('delete:customers-invoice', data);
+      ipcRenderer.send('delete:customers', data);
     },
     createCustomerInvoice(data) {
       console.log('Inside preload create:customer-invoice');

@@ -34,16 +34,18 @@ const initialTabsState = [
   },
 ];
 
-function MultiCustomerTabs({ customersList, selectedCutomersToLoad }) {
-  const [activeTabKey, setActiveTabKey] = useState(initialTabsState[0].key);
-  const [tabs, setTabs] = useState(initialTabsState);
+function MultiCustomerTabs({ customersList, selectedCutomersToLoad = [] }) {
+  const [activeTabKey, setActiveTabKey] = useState('');
+  const [tabs, setTabs] = useState([]);
 
   useEffect(() => {
-    const tabsToCreate = getTabs(selectedCutomersToLoad, tabs, customersList);
-    const activeKeyToSet = getActiveKey(tabsToCreate, activeTabKey);
+    if (selectedCutomersToLoad.length > 0) {
+      const tabsToCreate = getTabs(selectedCutomersToLoad, tabs, customersList);
+      const activeKeyToSet = getActiveKey(tabsToCreate, activeTabKey);
 
-    setTabs(tabsToCreate);
-    setActiveTabKey(activeKeyToSet);
+      setTabs(tabsToCreate);
+      setActiveTabKey(activeKeyToSet);
+    }
   }, [selectedCutomersToLoad]);
 
   function getTabs(keys: type, currentTabs, list) {
