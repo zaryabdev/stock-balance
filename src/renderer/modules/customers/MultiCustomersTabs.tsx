@@ -8,9 +8,10 @@ import {
   Tabs,
   Typography,
 } from 'antd';
-
 import React, { useEffect, useRef, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import CustomerEditGrid from './CustomerEditGrid';
+
 const SampleComponent: FC = ({ id, label }) => {
   return (
     <div>
@@ -23,11 +24,13 @@ const SampleComponent: FC = ({ id, label }) => {
   );
 };
 
+const tempId = uuidv4();
+
 const initialTabsState = [
   {
     label: 'Tab 1',
-    children: <CustomerEditGrid customerId="Sample" />,
-    key: 'sameple',
+    children: <CustomerEditGrid customerId={tempId} />,
+    key: tempId,
   },
 ];
 
@@ -53,7 +56,7 @@ function MultiCustomerTabs({ customersList, selectedCutomersToLoad }) {
             arr.push({
               label: el.name,
               children: <CustomerEditGrid customerId={el.id} />,
-              key: key,
+              key,
             });
         });
       });
@@ -69,7 +72,7 @@ function MultiCustomerTabs({ customersList, selectedCutomersToLoad }) {
               arr.push({
                 label: el.name,
                 children: <CustomerEditGrid customerId={el.id} />,
-                key: key,
+                key,
               });
           });
         }

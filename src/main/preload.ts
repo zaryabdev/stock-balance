@@ -25,9 +25,29 @@ const electronHandler = {
       ipcRenderer.send('get:all:customers', data);
     },
     deleteCustomers(data) {
-      console.log('Inside preload delete:customers');
+      console.log('Inside preload delete:customers-invoice');
       console.log(data);
-      ipcRenderer.send('delete:customers', data);
+      ipcRenderer.send('delete:customers-invoice', data);
+    },
+    createCustomerInvoice(data) {
+      console.log('Inside preload create:customer-invoice');
+      console.log(data);
+      ipcRenderer.send('create:customer-invoice', data);
+    },
+    updateCustomerInvoice(data) {
+      console.log('Inside preload update:customer-invoice');
+      console.log(data);
+      ipcRenderer.send('update:customer-invoice', data);
+    },
+    getAllCustomersInvoice(data) {
+      console.log('Inside preload get:all:customers-invoice');
+      console.log(data);
+      ipcRenderer.send('get:all:customers-invoice', data);
+    },
+    deleteCustomersInvoice(data) {
+      console.log('Inside preload delete:customers-invoice');
+      console.log(data);
+      ipcRenderer.send('delete:customers-invoice', data);
     },
     // on(channel, func) {
     //   const validChannels = ['create:customer-response'];

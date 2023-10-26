@@ -35,6 +35,10 @@ const initialState = {
 
 const columns = [
   {
+    ...keyColumn('id', textColumn),
+    title: 'ID',
+  },
+  {
     ...keyColumn('date', isoDateColumn),
     title: 'Date',
   },
@@ -73,12 +77,19 @@ const columns = [
 ];
 
 function CustomerEditGrid({ customerId }) {
-  const [data, setData] = useState([{ ...initialState, id: uuidv4() }]);
+  const [data, setData] = useState([
+    { ...initialState, id: uuidv4() },
+    { ...initialState, id: uuidv4() },
+    { ...initialState, id: uuidv4() },
+    { ...initialState, id: uuidv4() },
+  ]);
   const [prevData, setPrevData] = useState(data);
 
   const createdRowIds = useMemo(() => new Set(), []);
   const deletedRowIds = useMemo(() => new Set(), []);
   const updatedRowIds = useMemo(() => new Set(), []);
+
+  // window.electron.ipcRenderer.
 
   const cancel = () => {
     setData(prevData);
@@ -99,8 +110,92 @@ function CustomerEditGrid({ customerId }) {
     updatedRowIds.clear();
   };
 
+  // IPC Main listeners
+  window.electron.ipcRenderer.on(
+    'create:customer-invoice-response',
+    (response) => {
+      console.log('create:customer-invoice-response reponse came back');
+      console.log(response);
+
+      if (response.status === STATUS.FAILED) {
+        console.log(response.message);
+      }
+
+      if (response.status === STATUS.SUCCESS) {
+        console.log('response of create:customer-invoice-response ');
+        console.log(response);
+        // getAllCustomers({});
+      }
+    },
+  );
+
+  window.electron.ipcRenderer.on(
+    'update:customer-customer-invoice',
+    (response) => {
+      console.log('update:customer-customer-invoice reponse came back');
+      console.log(response);
+
+      if (response.status === STATUS.FAILED) {
+        console.log(response.message);
+      }
+
+      if (response.status === STATUS.SUCCESS) {
+        console.log('response of update:customer-customer-invoice ');
+        console.log(response);
+        // getAllCustomers({});
+      }
+    },
+  );
+
+  window.electron.ipcRenderer.on(
+    'get:all:customer-invoice-response',
+    (response) => {
+      console.log('get:all:customer-invoice-response reponse came back');
+      console.log(response);
+
+      if (response.status === STATUS.FAILED) {
+        console.log(response.message);
+      }
+
+      if (response.status === STATUS.SUCCESS) {
+        console.log('response of get:all:customer-invoice-response ');
+        console.log(response);
+        // setCustomersList(response.data);
+      }
+    },
+  );
+
+  window.electron.ipcRenderer.on(
+    'delete:customer-invoice-response',
+    (response) => {
+      console.log('delete:customer-invoice-response reponse came back');
+      console.log(response);
+
+      if (response.status === STATUS.FAILED) {
+        console.log(response.message);
+      }
+
+      if (response.status === STATUS.SUCCESS) {
+        // setSelectedRowKeys([]);
+        console.log('response of delete:customer-invoice-response ');
+        console.log(response);
+
+        if (response.status === STATUS.FAILED) {
+          console.log(response.message);
+        }
+
+        if (response.status === STATUS.SUCCESS) {
+          console.log('response of delete:customer-invoice-response  ');
+          console.log(response);
+          // window.electron.ipcRenderer.getAllCustomers({});
+        }
+      }
+    },
+  );
+
   return (
     <>
+      {customerId}
       <DataSheetGrid
         value={data}
         columns={columns}
