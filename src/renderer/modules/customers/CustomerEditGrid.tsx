@@ -25,9 +25,9 @@ const initialState = {
   date: '2023-10-13',
   products: '',
   carton: 0,
-  qtyCtn: 0,
-  totalQty: 0,
-  rateEach: 0,
+  qty_ctn: 0,
+  total_qty: 0,
+  rate_each: 0,
   debit: 0,
   credit: 0,
   balance: 0,
@@ -43,31 +43,31 @@ const columns = [
     title: 'Products',
   },
   {
-    ...keyColumn('carton', intColumn),
+    ...keyColumn('carton', textColumn),
     title: 'Carton',
   },
   {
-    ...keyColumn('qtyCtn', intColumn),
+    ...keyColumn('qty_ctn', textColumn),
     title: 'Qty / Ctn',
   },
   {
-    ...keyColumn('totalQty', intColumn),
+    ...keyColumn('total_qty', textColumn),
     title: 'Total Qty',
   },
   {
-    ...keyColumn('rateEach', floatColumn),
+    ...keyColumn('rate_each', textColumn),
     title: 'Rate Each',
   },
   {
-    ...keyColumn('debit', floatColumn),
+    ...keyColumn('debit', textColumn),
     title: 'Debit',
   },
   {
-    ...keyColumn('credit', floatColumn),
+    ...keyColumn('credit', textColumn),
     title: 'Credit',
   },
   {
-    ...keyColumn('balance', floatColumn),
+    ...keyColumn('balance', textColumn),
     title: 'Balance',
   },
 ];

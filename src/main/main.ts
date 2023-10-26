@@ -17,10 +17,12 @@ import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
 import AppDAO from './dao';
+import CustomerInvoicRepository from './repositories/customer-invoice-repo';
 import CustomerRepository from './repositories/customer-repo';
 
 const dao = new AppDAO('db.sqlite3');
 const customerRepo = new CustomerRepository(dao);
+const customerInvoiceRepo = new CustomerInvoicRepository(dao);
 
 const STATUS = {
   SUCCESS: 'SUCCESS',
@@ -28,6 +30,7 @@ const STATUS = {
 };
 
 customerRepo.createTable();
+customerInvoiceRepo.createTable();
 
 const store = new Store();
 
@@ -127,7 +130,7 @@ const createWindow = async () => {
  * Add event listeners...
  */
 
-// IPC listener
+// IPC listener - store
 ipcMain.on('electron-store-get', async (event, val) => {
   event.returnValue = store.get(val);
 });
@@ -142,7 +145,7 @@ ipcMain.on('ipc-example', async (event, arg) => {
   event.reply('ipc-example', msgTemplate('pong'));
 });
 
-// customer
+// IPC listener - customer
 ipcMain.on('create:customer', (event, data) => {
   console.log('Inside Main create:customer');
   console.log(data);
@@ -167,6 +170,7 @@ ipcMain.on('create:customer', (event, data) => {
 
   customerRepo.create(data, callbackFunction);
 });
+
 ipcMain.on('update:customer', (event, data) => {
   console.log('Inside Main update:customer');
   console.log(data);
@@ -242,6 +246,108 @@ ipcMain.on('delete:customers', (event, data) => {
   customerRepo.deleteRecords(data, callbackFunction);
 });
 
+// IPC listener - customer-invoice
+ipcMain.on('create:customer-invoice', (event, data) => {
+  console.log('Inside Main create:customer-invoice');
+  console.log(data);
+  const callbackFunction = (response, err) => {
+    // const webContents = event.sender;
+    // const win = BrowserWindow.fromWebContents(webContents);
+    console.log('callback function called!!');
+    if (err) {
+      console.log(err);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('respose was success');
+      // console.log(win);
+      event.reply('create:customer-invoice-response', response);
+
+      // win.webContents.send('create:customer', response);
+    } else {
+      console.log(response.message);
+    }
+  };
+
+  customerInvoiceRepo.create(data, callbackFunction);
+});
+
+ipcMain.on('update:customer-invoice', (event, data) => {
+  console.log('Inside Main update:customer-invoice');
+  console.log(data);
+  const callbackFunction = (response, err) => {
+    // const webContents = event.sender;
+    // const win = BrowserWindow.fromWebContents(webContents);
+    console.log('callback function called!!');
+    if (err) {
+      console.log(err);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('respose was success');
+      // console.log(win);
+      event.reply('update:customer-customer-invoice', response);
+
+      // win.webContents.send('create:customer', response);
+    } else {
+      console.log(response.message);
+    }
+  };
+
+  customerInvoiceRepo.update(data, callbackFunction);
+});
+
+ipcMain.on('get:all:customer-invoice', (event, data) => {
+  console.log('Inside Main get:all:customer-invoice');
+  console.log(data);
+  const callbackFunction = (response, err) => {
+    // const webContents = event.sender;
+    // const win = BrowserWindow.fromWebContents(webContents);
+    console.log('callback function called!!');
+    if (err) {
+      console.log(err);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('respose was success');
+      // console.log(win);
+      event.reply('get:all:customer-invoice-response', response);
+
+      // win.webContents.send('create:customer', response);
+    } else {
+      console.log(response.message);
+    }
+  };
+
+  customerInvoiceRepo.getAll(data, callbackFunction);
+});
+
+ipcMain.on('delete:customer-invoice', (event, data) => {
+  console.log('Inside Main delete:customer-invoice');
+  console.log(data);
+  const callbackFunction = (response, err) => {
+    // const webContents = event.sender;
+    // const win = BrowserWindow.fromWebContents(webContents);
+    console.log('callback function called!! for delete');
+    if (err) {
+      console.log(err);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('respose was success');
+      // console.log(win);
+      event.reply('delete:customer-invoice-response', response);
+
+      // win.webContents.send('create:customer', response);
+    } else {
+      console.log(response.message);
+    }
+  };
+
+  customerInvoiceRepo.deleteRecords(data, callbackFunction);
+});
+
+// App listerns
 app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even
   // after all windows have been closed

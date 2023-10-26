@@ -7,9 +7,9 @@ class CustomerRepository {
   }
 
   createTable() {
-    console.log('createTable called for customers');
+    console.log('createTable called for customer');
     const sql = `
-        CREATE TABLE IF NOT EXISTS customers (
+        CREATE TABLE IF NOT EXISTS customer (
         id TEXT,
         key TEXT,
         name TEXT,
@@ -29,7 +29,7 @@ class CustomerRepository {
     console.log({ id, key, name, address, phone });
     console.log(callbackFunction);
     this.dao.run(
-      'INSERT INTO customers (id, key, name, address, phone, timestamp) VALUES (?,?,?,?,?,?)',
+      'INSERT INTO customer (id, key, name, address, phone, timestamp) VALUES (?,?,?,?,?,?)',
       [id, key, name, address, phone, timestamp],
       data,
       callbackFunction,
@@ -38,7 +38,7 @@ class CustomerRepository {
 
   getAll(data, callbackFunction) {
     logger.debug(`getAll called`);
-    this.dao.all(`SELECT * FROM customers`, [], data, callbackFunction);
+    this.dao.all(`SELECT * FROM customer`, [], data, callbackFunction);
   }
 
   deleteRecords(data = [], callbackFunction) {
@@ -56,7 +56,7 @@ class CustomerRepository {
 
     const newIds = data.join("','");
     const withQuote = `'${newIds}'`;
-    const sql = `DELETE FROM customers WHERE id IN (${withQuote})`;
+    const sql = `DELETE FROM customer WHERE id IN (${withQuote})`;
 
     return this.dao.run(sql, [], data, callbackFunction);
   }
@@ -67,7 +67,7 @@ class CustomerRepository {
     console.log({ id, key, name, address, phone });
 
     this.dao.run(
-      'UPDATE customers SET  name = ?, address = ?, phone = ? WHERE id = ?',
+      'UPDATE customer SET  name = ?, address = ?, phone = ? WHERE id = ?',
       [name, address, phone, id],
       data,
       callbackFunction,
