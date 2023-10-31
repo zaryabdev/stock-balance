@@ -1,3 +1,4 @@
+import { SOURCE } from '../../renderer/contants';
 import logger from '../logger';
 
 /*
@@ -17,6 +18,7 @@ class CustomerInvoicRepository {
         id TEXT,
         customer_id TEXT,
         source TEXT,
+        state TEXT,
         date TEXT,
         products TEXT,
         carton TEXT,
@@ -49,7 +51,7 @@ class CustomerInvoicRepository {
     console.log(callbackFunction);
 
     const valuesArr = data.map((el) => {
-      const _str = `('${el.id}','${el.customer_id}','${el.source}','${el.date}','${el.products}','${el.carton}','${el.qty_ctn}','${el.total_qty}','${el.rate_each}','${el.debit}','${el.credit}','${el.balance}')`;
+      const _str = `('${el.id}','${el.customer_id}','${el.source}','${el.state}','${el.date}','${el.products}','${el.carton}','${el.qty_ctn}','${el.total_qty}','${el.rate_each}','${el.debit}','${el.credit}','${el.balance}')`;
       return _str;
     });
 
@@ -59,7 +61,7 @@ class CustomerInvoicRepository {
 
     console.log(valuesStr);
 
-    const query = `INSERT INTO customer_invoice (id, customer_id, source, date, products, carton, qty_ctn, total_qty, rate_each, debit, credit, balance) VALUES ${valuesStr};`;
+    const query = `INSERT INTO customer_invoice (id, customer_id, source, state, date, products, carton, qty_ctn, total_qty, rate_each, debit, credit, balance) VALUES ${valuesStr};`;
 
     this.dao.run(query, [], data, callbackFunction);
   }
@@ -68,6 +70,19 @@ class CustomerInvoicRepository {
     const timestamp = Date.now();
     console.log('update called for CustomerInvoicRepository');
     console.log(data);
+
+    const toUpdate = [];
+    const toCreate = [];
+
+    for (let index = 0; index < data.length; index++) {
+      const element = data[index];
+
+      if (element.source === SOURCE.memory) {
+        toCreate.push(element);
+      } else if (element.source === SOURCE.database) {
+        toUpdate.push(element);
+      }
+    }
 
     if (data.length === 0) {
       const res = {

@@ -19,17 +19,13 @@ import {
   textColumn,
 } from 'react-datasheet-grid';
 import { v4 as uuidv4 } from 'uuid';
-import { STATUS } from '../../contants';
-
-const SOURCE = {
-  memory: 'MEMORY',
-  database: 'DATABASE',
-};
+import { SOURCE, STATE, STATUS } from '../../contants';
 
 const initialState = {
   id: '',
   customer_id: '',
   source: SOURCE.memory,
+  state: STATE.none,
   date: '2023-10-13',
   products: 'products',
   carton: 0,
@@ -49,6 +45,10 @@ const columns = [
   {
     ...keyColumn('source', textColumn),
     title: 'Source',
+  },
+  {
+    ...keyColumn('state', textColumn),
+    title: 'State',
   },
   {
     ...keyColumn('date', isoDateColumn),
@@ -118,7 +118,30 @@ function CustomerEditGrid({ customerId }) {
     setPrevData(newData);
     console.log(newData);
     debugger;
-    window.electron.ipcRenderer.updateCustomerInvoice(newData);
+
+    console.log(createdRowIds);
+    console.log(deletedRowIds);
+    console.log(updatedRowIds);
+
+    const withState = data.map((element) => {
+      if (createdRowIds.has(element.id)) {
+        element.state = STATE.created;
+      }
+
+      if (updatedRowIds.has(element.id)) {
+        element.state = STATE.updated;
+      }
+
+      if (deletedRowIds.has(element.id)) {
+        element.state = STATE.deleted;
+      }
+
+      return element;
+    });
+
+    window.electron.ipcRenderer.updateCustomerInvoice(withState);
+
+    // window.electron.ipcRenderer.createCustomerInvoice(toCreate);
 
     createdRowIds.clear();
     deletedRowIds.clear();
@@ -222,26 +245,33 @@ function CustomerEditGrid({ customerId }) {
         duplicateRow={({ rowData }) => ({
           ...rowData,
           id: uuidv4(),
-          customer_id: customerId,
         })}
         onChange={(newValue, operations) => {
           console.log(newValue);
-
+          debugger;
           for (const operation of operations) {
             if (operation.type === 'CREATE') {
-              newValue
-                .slice(operation.fromRowIndex, operation.toRowIndex)
-                .forEach(({ id }) => createdRowIds.add(id));
+              const newArray = newValue.slice(
+                operation.fromRowIndex,
+                operation.toRowIndex,
+              );
+
+              newArray.forEach(({ id }) => {
+                createdRowIds.add(id);
+              });
             }
 
             if (operation.type === 'UPDATE') {
-              newValue
-                .slice(operation.fromRowIndex, operation.toRowIndex)
-                .forEach(({ id }) => {
-                  if (!createdRowIds.has(id) && !deletedRowIds.has(id)) {
-                    updatedRowIds.add(id);
-                  }
-                });
+              const newArray = newValue.slice(
+                operation.fromRowIndex,
+                operation.toRowIndex,
+              );
+
+              newArray.forEach(({ id }) => {
+                if (!createdRowIds.has(id) && !deletedRowIds.has(id)) {
+                  updatedRowIds.add(id);
+                }
+              });
             }
 
             if (operation.type === 'DELETE') {
