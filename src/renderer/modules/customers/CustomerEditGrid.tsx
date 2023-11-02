@@ -138,7 +138,7 @@ function CustomerEditGrid({ customerId }) {
 
       return element;
     });
-
+    console.log(withState);
     window.electron.ipcRenderer.updateCustomerInvoice(withState);
 
     // window.electron.ipcRenderer.createCustomerInvoice(toCreate);

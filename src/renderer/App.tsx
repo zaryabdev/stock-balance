@@ -17,6 +17,7 @@ import { Link, Route, MemoryRouter as Router, Routes } from 'react-router-dom';
 import './App.css';
 import Context from './AppContext';
 import Customers from './modules/customers/Customers';
+import Settings from './modules/setting/Settings';
 
 const { Content, Sider } = Layout;
 
@@ -85,8 +86,8 @@ const items: MenuItem[] = [
 ];
 
 export default function App() {
-  const [collapsed, setCollapsed] = useState(true);
-  const [toggleSideBar, setToggleSideBar] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
+  const [toggleSideBar, setToggleSideBar] = useState(true);
 
   const {
     token: { colorBgContainer },
@@ -139,12 +140,7 @@ export default function App() {
                       <SampleComponent label="Vendor from SampleComponent " />
                     }
                   />
-                  <Route
-                    path="/settings"
-                    element={
-                      <SampleComponent label="Settings from SampleComponent" />
-                    }
-                  />
+                  <Route path="/settings" element={<Settings />} />
                   <Route
                     path="/trash"
                     element={
