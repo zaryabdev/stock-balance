@@ -27,7 +27,8 @@ const initialState = {
   source: SOURCE.memory,
   state: STATE.none,
   date: '2023-10-13',
-  products: 'products',
+  product: '',
+  payment: '',
   carton: 0,
   qty_ctn: 0,
   total_qty: 0,
@@ -39,9 +40,46 @@ const initialState = {
 
 const columns = [
   {
-    ...keyColumn('id', textColumn),
-    title: 'ID',
+    ...keyColumn('date', isoDateColumn),
+    title: 'Date',
   },
+  {
+    ...keyColumn('payment', textColumn),
+    title: 'Payment',
+  },
+  {
+    ...keyColumn('product', textColumn),
+    title: 'Product',
+  },
+  {
+    ...keyColumn('carton', intColumn),
+    title: 'Carton',
+  },
+  {
+    ...keyColumn('qty_ctn', intColumn),
+    title: 'Qty / Ctn',
+  },
+  {
+    ...keyColumn('total_qty', intColumn),
+    title: 'Total Qty',
+  },
+  {
+    ...keyColumn('rate_each', floatColumn),
+    title: 'Rate Each',
+  },
+  {
+    ...keyColumn('debit', floatColumn),
+    title: 'Debit',
+  },
+  {
+    ...keyColumn('credit', floatColumn),
+    title: 'Credit',
+  },
+  {
+    ...keyColumn('balance', floatColumn),
+    title: 'Balance',
+  },
+
   {
     ...keyColumn('source', textColumn),
     title: 'Source',
@@ -51,40 +89,8 @@ const columns = [
     title: 'State',
   },
   {
-    ...keyColumn('date', isoDateColumn),
-    title: 'Date',
-  },
-  {
-    ...keyColumn('products', textColumn),
-    title: 'Products',
-  },
-  {
-    ...keyColumn('carton', textColumn),
-    title: 'Carton',
-  },
-  {
-    ...keyColumn('qty_ctn', textColumn),
-    title: 'Qty / Ctn',
-  },
-  {
-    ...keyColumn('total_qty', textColumn),
-    title: 'Total Qty',
-  },
-  {
-    ...keyColumn('rate_each', textColumn),
-    title: 'Rate Each',
-  },
-  {
-    ...keyColumn('debit', textColumn),
-    title: 'Debit',
-  },
-  {
-    ...keyColumn('credit', textColumn),
-    title: 'Credit',
-  },
-  {
-    ...keyColumn('balance', textColumn),
-    title: 'Balance',
+    ...keyColumn('id', textColumn),
+    title: 'ID',
   },
 ];
 
@@ -108,6 +114,80 @@ function CustomerEditGrid({ customerId }) {
     createdRowIds.clear();
     deletedRowIds.clear();
     updatedRowIds.clear();
+  };
+
+  const handleChange = (newValue: any, operations: any) => {
+    {
+      console.log(newValue);
+      for (const operation of operations) {
+        if (operation.type === 'CREATE') {
+          const newArray = newValue.slice(
+            operation.fromRowIndex,
+            operation.toRowIndex,
+          );
+
+          newArray.forEach(({ id }) => {
+            createdRowIds.add(id);
+          });
+        }
+
+        if (operation.type === 'UPDATE') {
+          console.log(data);
+          console.log(updatedRowIds);
+
+          debugger;
+
+          const updatedArray = newValue.slice(
+            operation.fromRowIndex,
+            operation.toRowIndex,
+          );
+
+          updatedArray.forEach(({ id }) => {
+            if (!createdRowIds.has(id) && !deletedRowIds.has(id)) {
+              updatedRowIds.add(id);
+
+              for (let index = 0; index < newValue.length; index++) {
+                if (newValue[index].id === id) {
+                  let element = newValue[index];
+                  element.total_qty = element.carton * element.qty_ctn;
+                  newValue[index] = element;
+                }
+              }
+            }
+          });
+        }
+
+        if (operation.type === 'DELETE') {
+          let keptRows = 0;
+
+          // Make sure to use `data` and not `newValue`
+          data
+            .slice(operation.fromRowIndex, operation.toRowIndex)
+            .forEach(({ id }, i) => {
+              // If the row was updated, dismiss the update
+              // No need to update a row and immediately delete it
+              updatedRowIds.delete(id);
+
+              if (createdRowIds.has(id)) {
+                // Row was freshly created, simply ignore it
+                // No need to insert a row and immediately delete it
+                createdRowIds.delete(id);
+              } else {
+                // Add the row to the deleted Set
+                deletedRowIds.add(id);
+                // Insert it back into newValue to display it in red to the user
+                newValue.splice(
+                  operation.fromRowIndex + keptRows++,
+                  0,
+                  data[operation.fromRowIndex + i],
+                );
+              }
+            });
+        }
+      }
+
+      setData(newValue);
+    }
   };
 
   const commit = () => {
@@ -246,65 +326,7 @@ function CustomerEditGrid({ customerId }) {
           ...rowData,
           id: uuidv4(),
         })}
-        onChange={(newValue, operations) => {
-          console.log(newValue);
-          debugger;
-          for (const operation of operations) {
-            if (operation.type === 'CREATE') {
-              const newArray = newValue.slice(
-                operation.fromRowIndex,
-                operation.toRowIndex,
-              );
-
-              newArray.forEach(({ id }) => {
-                createdRowIds.add(id);
-              });
-            }
-
-            if (operation.type === 'UPDATE') {
-              const newArray = newValue.slice(
-                operation.fromRowIndex,
-                operation.toRowIndex,
-              );
-
-              newArray.forEach(({ id }) => {
-                if (!createdRowIds.has(id) && !deletedRowIds.has(id)) {
-                  updatedRowIds.add(id);
-                }
-              });
-            }
-
-            if (operation.type === 'DELETE') {
-              let keptRows = 0;
-
-              // Make sure to use `data` and not `newValue`
-              data
-                .slice(operation.fromRowIndex, operation.toRowIndex)
-                .forEach(({ id }, i) => {
-                  // If the row was updated, dismiss the update
-                  // No need to update a row and immediately delete it
-                  updatedRowIds.delete(id);
-
-                  if (createdRowIds.has(id)) {
-                    // Row was freshly created, simply ignore it
-                    // No need to insert a row and immediately delete it
-                    createdRowIds.delete(id);
-                  } else {
-                    // Add the row to the deleted Set
-                    deletedRowIds.add(id);
-                    // Insert it back into newValue to display it in red to the user
-                    newValue.splice(
-                      operation.fromRowIndex + keptRows++,
-                      0,
-                      data[operation.fromRowIndex + i],
-                    );
-                  }
-                });
-            }
-          }
-
-          setData(newValue);
-        }}
+        onChange={(newValue, operations) => handleChange(newValue, operations)}
         rowClassName={({ rowData }) => {
           if (deletedRowIds.has(rowData.id)) {
             return 'row-deleted';

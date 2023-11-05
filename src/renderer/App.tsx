@@ -12,7 +12,6 @@ import {
 import type { MenuProps } from 'antd';
 import { ConfigProvider, FloatButton, Layout, Menu, theme } from 'antd';
 import React, { FC, useState } from 'react';
-import 'react-datasheet-grid/dist/style.css';
 import { Link, Route, MemoryRouter as Router, Routes } from 'react-router-dom';
 import './App.css';
 import Context from './AppContext';
@@ -86,7 +85,7 @@ const items: MenuItem[] = [
 ];
 
 export default function App() {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const [toggleSideBar, setToggleSideBar] = useState(true);
 
   const {
@@ -107,7 +106,7 @@ export default function App() {
       <Router>
         <ConfigProvider
           theme={{
-            algorithm: [theme.defaultAlgorithm],
+            algorithm: [theme.compactAlgorithm],
           }}
         >
           <Layout style={{ minHeight: '100vh' }}>

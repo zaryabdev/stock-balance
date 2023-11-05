@@ -20,14 +20,15 @@ class CustomerInvoicRepository {
         source TEXT,
         state TEXT,
         date TEXT,
-        products TEXT,
-        carton TEXT,
-        qty_ctn TEXT,
-        total_qty TEXT,
-        rate_each TEXT,
-        debit TEXT,
-        credit TEXT,
-        balance TEXT
+        product TEXT,
+        payment TEXT,
+        carton INTEGER,
+        qty_ctn INTEGER,
+        total_qty INTEGER,
+        rate_each REAL,
+        debit REAL,
+        credit REAL,
+        balance REAL
         )`;
 
     return this.dao.run(sql);
