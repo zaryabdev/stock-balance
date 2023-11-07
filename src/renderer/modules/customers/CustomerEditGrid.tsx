@@ -46,6 +46,7 @@ const columns = [
   {
     ...keyColumn('payment', textColumn),
     title: 'Payment',
+    width: 200,
   },
   {
     ...keyColumn('product', textColumn),
