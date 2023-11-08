@@ -68,46 +68,57 @@ class CustomerInvoicRepository {
 
   update(data = [], callbackFunction) {
     // const timestamp = Date.now();
-    // console.log('update called for CustomerInvoicRepository');
-    // console.log(data);
-    // const toCreate = [];
-    // const toUpdate = [];
-    // const toDelete = [];
-    // for (let index = 0; index < data.length; index++) {
-    //   const record = data[index];
-    //   if (record.source === SOURCE.memory) {
-    //     if (record.state === STATE.created || record.state === STATE.updated) {
-    //       toCreate.push({
-    //         ...record,
-    //         source: SOURCE.database,
-    //         state: STATE.created,
-    //       });
-    //     }
-    //   } else if (record.source === SOURCE.database) {
-    //     if (record.state === STATE.updated) {
-    //       toUpdate.push({
-    //         ...record,
-    //         source: SOURCE.database,
-    //         state: STATE.updated,
-    //       });
-    //     }
-    //     if (record.state === STATE.deleted) {
-    //       toDelete.push({
-    //         ...record,
-    //         source: SOURCE.database,
-    //         state: STATE.deleted,
-    //       });
-    //     }
-    //   }
-    // }
+    console.log('update called for CustomerInvoicRepository');
+    console.log(data);
+    const toCreate = [];
+    const toUpdate = [];
+    const toDelete = [];
+
+    for (let index = 0; index < data.length; index++) {
+      const record = data[index];
+      if (record.source === SOURCE.memory) {
+        if (record.state === STATE.created || record.state === STATE.updated) {
+          toCreate.push({
+            ...record,
+            source: SOURCE.database,
+            state: STATE.created,
+          });
+        }
+      } else if (record.source === SOURCE.database) {
+        if (record.state === STATE.updated) {
+          toUpdate.push({
+            ...record,
+            source: SOURCE.database,
+            state: STATE.updated,
+          });
+        }
+        if (record.state === STATE.deleted) {
+          toDelete.push({
+            ...record,
+            source: SOURCE.database,
+            state: STATE.deleted,
+          });
+        }
+      }
+    }
+
+    console.log('toCreate');
+    console.log(toCreate);
+    console.log('toUpdate');
+    console.log(toUpdate);
+    console.log('toCreate');
+    console.log(toDelete);
+
     // const valuesArr = data.map((el) => {
     //   const _str = `('${el.id}','${el.customer_id}','${el.source}','${el.state}','${el.date}','${el.products}','${el.carton}','${el.qty_ctn}','${el.total_qty}','${el.rate_each}','${el.debit}','${el.credit}','${el.balance}')`;
     //   return _str;
     // });
+
     // console.log(valuesArr);
     // const valuesStr = valuesArr.join(',');
     // console.log(valuesStr);
     // const query = `INSERT INTO customer_invoice (id, customer_id, source, state, date, products, carton, qty_ctn, total_qty, rate_each, debit, credit, balance) VALUES ${valuesStr};`;
+
     // if (data.length === 0) {
     //   const res = {
     //     status: 'SUCCESS',
@@ -157,7 +168,7 @@ class CustomerInvoicRepository {
     //   data,
     //   callbackFunction,
     // );
-    // this.dao.run('COMMIT', [], data, callbackFunction);
+    this.dao.run('COMMIT', [], data, callbackFunction);
   }
 
   getAll(data, callbackFunction) {

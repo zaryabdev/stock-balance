@@ -348,7 +348,11 @@ function CustomerEditGrid({ customerId }) {
         icon={<EditOutlined />}
       >
         <FloatButton tooltip="Undo" onClick={cancel} icon={<UndoOutlined />} />
-        <FloatButton tooltip="Save" onClick={commit} icon={<SaveOutlined />} />
+        <FloatButton
+          tooltip={`Save ${customerId}`}
+          onClick={commit}
+          icon={<SaveOutlined />}
+        />
       </FloatButton.Group>
     </>
   );
