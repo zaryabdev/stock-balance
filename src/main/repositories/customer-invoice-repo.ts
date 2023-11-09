@@ -74,8 +74,20 @@ class CustomerInvoicRepository {
     const toUpdate = [];
     const toDelete = [];
 
+    // const callbackFunction = (response, err) => {
+    //   if (err) {
+    //     console.log(err);
+    //   }
+    //   if (response.status === STATUS.SUCCESS) {
+    //     event.reply('get:all:customer-invoice-response', response);
+    //   } else {
+    //     console.log(response.message);
+    //   }
+    // };
+
     for (let index = 0; index < data.length; index++) {
       const record = data[index];
+
       if (record.source === SOURCE.memory) {
         if (record.state === STATE.created || record.state === STATE.updated) {
           toCreate.push({
@@ -92,6 +104,7 @@ class CustomerInvoicRepository {
             state: STATE.updated,
           });
         }
+
         if (record.state === STATE.deleted) {
           toDelete.push({
             ...record,

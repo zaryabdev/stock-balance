@@ -202,11 +202,9 @@ function CustomerEditGrid({ customerId }) {
   const commit = () => {
     /* Perform insert, update, and delete to the database here */
 
-    const newData = data.filter(({ id }) => !deletedRowIds.has(id));
-    setData(newData);
-    setPrevData(newData);
-    console.log(newData);
-    debugger;
+    // const newData = data.filter(({ id }) => !deletedRowIds.has(id));
+
+    // console.log(newData);
 
     console.log(createdRowIds);
     console.log(deletedRowIds);
@@ -227,9 +225,14 @@ function CustomerEditGrid({ customerId }) {
 
       return element;
     });
-    console.log(withState);
-    window.electron.ipcRenderer.updateCustomerInvoice(withState);
 
+    console.log(withState);
+
+    setData(withState);
+    setPrevData(withState);
+
+    debugger;
+    window.electron.ipcRenderer.updateCustomerInvoice(withState);
     // window.electron.ipcRenderer.createCustomerInvoice(toCreate);
 
     createdRowIds.clear();
