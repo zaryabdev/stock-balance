@@ -34,37 +34,37 @@ class CustomerInvoicRepository {
     return this.dao.run(sql);
   }
 
-  // create(data = [], callbackFunction) {
-  //   console.log('create called for CustomerInvoicRepository');
-  //   console.log(data);
+  create(data = [], callbackFunction) {
+    console.log('create called for CustomerInvoicRepository');
+    console.log(data);
 
-  //   if (data.length === 0) {
-  //     const res = {
-  //       status: 'SUCCESS',
-  //       data: [...data],
-  //       message: 'No records were created',
-  //     };
-  //     callbackFunction(res);
-  //     return;
-  //   }
+    if (data.length === 0) {
+      const res = {
+        status: 'SUCCESS',
+        data: [...data],
+        message: 'No records were created',
+      };
+      callbackFunction(res);
+      return;
+    }
 
-  //   console.log(callbackFunction);
+    console.log(callbackFunction);
 
-  //   const valuesArr = data.map((el) => {
-  //     const _str = `('${el.id}','${el.customer_id}','${el.source}','${el.state}','${el.date}','${el.products}','${el.carton}','${el.qty_ctn}','${el.total_qty}','${el.rate_each}','${el.debit}','${el.credit}','${el.balance}')`;
-  //     return _str;
-  //   });
+    const valuesArr = data.map((el) => {
+      const _str = `('${el.id}','${el.customer_id}','${el.source}','${el.state}','${el.date}','${el.products}','${el.carton}','${el.qty_ctn}','${el.total_qty}','${el.rate_each}','${el.debit}','${el.credit}','${el.balance}')`;
+      return _str;
+    });
 
-  //   console.log(valuesArr);
+    console.log(valuesArr);
 
-  //   const valuesStr = valuesArr.join(',');
+    const valuesStr = valuesArr.join(',');
 
-  //   console.log(valuesStr);
+    console.log(valuesStr);
 
-  //   const query = `INSERT INTO customer_invoice (id, customer_id, source, state, date, products, carton, qty_ctn, total_qty, rate_each, debit, credit, balance) VALUES ${valuesStr};`;
+    const query = `INSERT INTO customer_invoice (id, customer_id, source, state, date, products, carton, qty_ctn, total_qty, rate_each, debit, credit, balance) VALUES ${valuesStr};`;
 
-  //   this.dao.run(query, [], data, callbackFunction);
-  // }
+    this.dao.run(query, [], data, callbackFunction);
+  }
 
   update(data = [], callbackFunction) {
     // const timestamp = Date.now();
@@ -109,15 +109,21 @@ class CustomerInvoicRepository {
     console.log('toCreate');
     console.log(toDelete);
 
-    // const valuesArr = data.map((el) => {
-    //   const _str = `('${el.id}','${el.customer_id}','${el.source}','${el.state}','${el.date}','${el.products}','${el.carton}','${el.qty_ctn}','${el.total_qty}','${el.rate_each}','${el.debit}','${el.credit}','${el.balance}')`;
-    //   return _str;
-    // });
+    const valuesArr = toCreate.map((el) => {
+      const _str = `('${el.id}','${el.customer_id}','${el.source}','${el.state}','${el.date}','${el.product}','${el.carton}','${el.qty_ctn}','${el.total_qty}','${el.rate_each}','${el.debit}','${el.credit}','${el.balance}')`;
+      return _str;
+    });
 
-    // console.log(valuesArr);
-    // const valuesStr = valuesArr.join(',');
-    // console.log(valuesStr);
-    // const query = `INSERT INTO customer_invoice (id, customer_id, source, state, date, products, carton, qty_ctn, total_qty, rate_each, debit, credit, balance) VALUES ${valuesStr};`;
+    console.log(valuesArr);
+    const valuesStr = valuesArr.join(',');
+    console.log(valuesStr);
+
+    const inserstQuery = `INSERT INTO customer_invoice (id, customer_id, source, state, date, product, carton, qty_ctn, total_qty, rate_each, debit, credit, balance) VALUES ${valuesStr};`;
+
+    console.log('Run this in DBeaver');
+    console.log(inserstQuery);
+
+    this.dao.run(inserstQuery, [], data, callbackFunction);
 
     // if (data.length === 0) {
     //   const res = {
@@ -128,6 +134,7 @@ class CustomerInvoicRepository {
     //   callbackFunction(res);
     //   return;
     // }
+
     // console.log(callbackFunction);
     // const valuesArr = data.map((el) => {
     //   const _str = `('${el.id}','${el.customer_id}','${el.date}','${el.products}','${el.carton}','${el.qty_ctn}','${el.total_qty}','${el.rate_each}','${el.debit}','${el.credit}','${el.balance}')`;
@@ -168,12 +175,25 @@ class CustomerInvoicRepository {
     //   data,
     //   callbackFunction,
     // );
-    this.dao.run('COMMIT', [], data, callbackFunction);
+    // this.dao.run('COMMIT', [], data, callbackFunction);
   }
 
   getAll(data, callbackFunction) {
     logger.debug(`getAll called`);
     this.dao.all(`SELECT * FROM customer_invoice`, [], data, callbackFunction);
+  }
+
+  getById(data, callbackFunction) {
+    logger.debug(`getById called`);
+
+    let id = data.id;
+
+    let getQuery = `SELECT * FROM customer_invoice WHERE customer_id = '${id}';`;
+
+    console.log('Run this in DBeaver');
+    console.log(getQuery);
+
+    this.dao.all(getQuery, [], data, callbackFunction);
   }
 
   deleteRecords(data = [], callbackFunction) {

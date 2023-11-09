@@ -322,6 +322,32 @@ ipcMain.on('get:all:customer-invoice', (event, data) => {
   customerInvoiceRepo.getAll(data, callbackFunction);
 });
 
+ipcMain.on('get:all:customer-invoices:id', (event, data) => {
+  console.log('Inside Main get:all:customer-invoices:id');
+  console.log(data);
+
+  const callbackFunction = (response, err) => {
+    // const webContents = event.sender;
+    // const win = BrowserWindow.fromWebContents(webContents);
+    console.log('callback function called!!');
+    if (err) {
+      console.log(err);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('respose was success');
+      // console.log(win);
+      event.reply('get:all:customer-invoices:id-response', response);
+
+      // win.webContents.send('create:customer', response);
+    } else {
+      console.log(response.message);
+    }
+  };
+
+  customerInvoiceRepo.getById(data, callbackFunction);
+});
+
 ipcMain.on('delete:customer-invoice', (event, data) => {
   console.log('Inside Main delete:customer-invoice');
   console.log(data);

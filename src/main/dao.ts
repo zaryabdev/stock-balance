@@ -57,6 +57,8 @@ class AppDAO {
         console.error(err);
         if (callbackFunction) callbackFunction(res, err);
       } else {
+        console.log('Get all by ID query ran ✔');
+
         rows.forEach((row) => {
           console.log(row);
         });
@@ -64,6 +66,8 @@ class AppDAO {
         res.status = STATUS.SUCCESS;
         res.message = 'Records fetched successfully.';
         res.data = rows;
+        res.meta = data;
+
         if (callbackFunction) callbackFunction(res);
       }
     });

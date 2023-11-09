@@ -21,81 +21,81 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import { SOURCE, STATE, STATUS } from '../../contants';
 
-const initialState = {
-  id: '',
-  customer_id: '',
-  source: SOURCE.memory,
-  state: STATE.none,
-  date: '2023-10-13',
-  product: '',
-  payment: '',
-  carton: 0,
-  qty_ctn: 0,
-  total_qty: 0,
-  rate_each: 0,
-  debit: 0,
-  credit: 0,
-  balance: 0,
-};
-
-const columns = [
-  {
-    ...keyColumn('date', isoDateColumn),
-    title: 'Date',
-  },
-  {
-    ...keyColumn('payment', textColumn),
-    title: 'Payment',
-    width: 200,
-  },
-  {
-    ...keyColumn('product', textColumn),
-    title: 'Product',
-  },
-  {
-    ...keyColumn('carton', intColumn),
-    title: 'Carton',
-  },
-  {
-    ...keyColumn('qty_ctn', intColumn),
-    title: 'Qty / Ctn',
-  },
-  {
-    ...keyColumn('total_qty', intColumn),
-    title: 'Total Qty',
-  },
-  {
-    ...keyColumn('rate_each', floatColumn),
-    title: 'Rate Each',
-  },
-  {
-    ...keyColumn('debit', floatColumn),
-    title: 'Debit',
-  },
-  {
-    ...keyColumn('credit', floatColumn),
-    title: 'Credit',
-  },
-  {
-    ...keyColumn('balance', floatColumn),
-    title: 'Balance',
-  },
-
-  {
-    ...keyColumn('source', textColumn),
-    title: 'Source',
-  },
-  {
-    ...keyColumn('state', textColumn),
-    title: 'State',
-  },
-  {
-    ...keyColumn('id', textColumn),
-    title: 'ID',
-  },
-];
-
 function CustomerEditGrid({ customerId }) {
+  const initialState = {
+    id: '',
+    customer_id: '',
+    source: SOURCE.memory,
+    state: STATE.none,
+    date: '2023-10-13',
+    product: '',
+    payment: '',
+    carton: 0,
+    qty_ctn: 0,
+    total_qty: 0,
+    rate_each: 0,
+    debit: 0,
+    credit: 0,
+    balance: 0,
+  };
+
+  const columns = [
+    {
+      ...keyColumn('date', isoDateColumn),
+      title: 'Date',
+    },
+    {
+      ...keyColumn('payment', textColumn),
+      title: 'Payment',
+      width: 200,
+    },
+    {
+      ...keyColumn('product', textColumn),
+      title: 'Product',
+    },
+    {
+      ...keyColumn('carton', intColumn),
+      title: 'Carton',
+    },
+    {
+      ...keyColumn('qty_ctn', intColumn),
+      title: 'Qty / Ctn',
+    },
+    {
+      ...keyColumn('total_qty', intColumn),
+      title: 'Total Qty',
+    },
+    {
+      ...keyColumn('rate_each', floatColumn),
+      title: 'Rate Each',
+    },
+    {
+      ...keyColumn('debit', floatColumn),
+      title: 'Debit',
+    },
+    {
+      ...keyColumn('credit', floatColumn),
+      title: 'Credit',
+    },
+    {
+      ...keyColumn('balance', floatColumn),
+      title: 'Balance',
+    },
+
+    {
+      ...keyColumn('source', textColumn),
+      title: 'Source',
+    },
+    {
+      ...keyColumn('state', textColumn),
+      title: 'State',
+    },
+    {
+      ...keyColumn('id', textColumn),
+      title: 'ID',
+    },
+  ];
+
   const [data, setData] = useState([
     // { ...initialState, id: uuidv4(), customer_id: customerId },
     // { ...initialState, id: uuidv4(), customer_id: customerId },
@@ -108,7 +108,15 @@ function CustomerEditGrid({ customerId }) {
   const deletedRowIds = useMemo(() => new Set(), []);
   const updatedRowIds = useMemo(() => new Set(), []);
 
-  // window.electron.ipcRenderer.
+  useEffect(() => {
+    getAllRecordsById(customerId);
+  }, [customerId]);
+
+  function getAllRecordsById(customerId) {
+    window.electron.ipcRenderer.getAllCustomerInvoicesById({
+      id: customerId,
+    });
+  }
 
   const cancel = () => {
     setData(prevData);
@@ -267,9 +275,9 @@ function CustomerEditGrid({ customerId }) {
   );
 
   window.electron.ipcRenderer.on(
-    'get:all:customer-invoice-response',
+    'get:all:customer-invoices:id-response',
     (response) => {
-      console.log('get:all:customer-invoice-response reponse came back');
+      console.log('get:all:customer-invoices:id-response reponse came back');
       console.log(response);
 
       if (response.status === STATUS.FAILED) {
@@ -277,9 +285,12 @@ function CustomerEditGrid({ customerId }) {
       }
 
       if (response.status === STATUS.SUCCESS) {
-        console.log('response of get:all:customer-invoice-response ');
+        console.log('response of get:all:customer-invoices:id-response ');
         console.log(response);
-        // setCustomersList(response.data);
+        // debugger;
+        if (response.meta.id === customerId) {
+          setData(response.data);
+        }
       }
     },
   );

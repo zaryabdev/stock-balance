@@ -44,6 +44,11 @@ const electronHandler = {
       console.log(data);
       ipcRenderer.send('get:all:customers-invoice', data);
     },
+    getAllCustomerInvoicesById(data) {
+      console.log('Inside preload get:all:customer-invoices:id');
+      console.log(data);
+      ipcRenderer.send('get:all:customer-invoices:id', data);
+    },
     deleteCustomersInvoice(data) {
       console.log('Inside preload delete:customers-invoice');
       console.log(data);
