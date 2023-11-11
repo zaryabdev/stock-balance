@@ -70,6 +70,17 @@ class CustomerInvoicRepository {
     // const timestamp = Date.now();
     console.log('update called for CustomerInvoicRepository');
     console.log(data);
+
+    if (data.length === 0) {
+      const res = {
+        status: 'SUCCESS',
+        data: [...data],
+        message: 'No records were created',
+      };
+      callbackFunction(res);
+      return;
+    }
+
     const toCreate = [];
     const toUpdate = [];
     const toDelete = [];
