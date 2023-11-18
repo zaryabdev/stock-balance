@@ -16,14 +16,16 @@ class AppDAO {
   }
 
   run(sql, params = [], data, callbackFunction) {
-    console.log('sql');
+    console.log('-------------SQL START----------------');
+    console.log('This SQL will run ');
     console.log(sql);
+    console.log('-------------SQL END----------------');
 
     const query = this.db.prepare(sql);
 
     const res = {
       status: '',
-      data: { ...data },
+      data,
       message: '',
     };
 

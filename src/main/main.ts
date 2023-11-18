@@ -274,7 +274,7 @@ ipcMain.on('create:customer-invoice', (event, data) => {
 
 ipcMain.on('update:customer-invoice', (event, data) => {
   console.log('Inside Main update:customer-invoice');
-  console.log(data);
+  // console.log(data);
   const callbackFunction = (response, err) => {
     // const webContents = event.sender;
     // const win = BrowserWindow.fromWebContents(webContents);

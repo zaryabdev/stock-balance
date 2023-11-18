@@ -272,7 +272,7 @@ function CustomerEditGrid({ customerId }) {
       if (response.status === STATUS.SUCCESS) {
         console.log('response of update:customer-customer-invoice ');
         console.log(response);
-        // getAllCustomers({});
+        getAllRecordsById(customerId);
       }
     },
   );
