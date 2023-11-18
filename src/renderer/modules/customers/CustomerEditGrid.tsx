@@ -98,9 +98,6 @@ function CustomerEditGrid({ customerId }) {
 
   const [data, setData] = useState([
     // { ...initialState, id: uuidv4(), customer_id: customerId },
-    // { ...initialState, id: uuidv4(), customer_id: customerId },
-    // { ...initialState, id: uuidv4(), customer_id: customerId },
-    // { ...initialState, id: uuidv4(), customer_id: customerId },
   ]);
   const [prevData, setPrevData] = useState(data);
 
@@ -152,16 +149,16 @@ function CustomerEditGrid({ customerId }) {
           );
 
           updatedArray.forEach(({ id }) => {
+            console.log(!createdRowIds.has(id) && !deletedRowIds.has(id));
             if (!createdRowIds.has(id) && !deletedRowIds.has(id)) {
               updatedRowIds.add(id);
-
-              for (let index = 0; index < newValue.length; index++) {
-                if (newValue[index].id === id) {
-                  let element = newValue[index];
-                  element.total_qty = element.carton * element.qty_ctn;
-                  element.state = STATE.updated;
-                  newValue[index] = element;
-                }
+            }
+            for (let index = 0; index < newValue.length; index++) {
+              if (newValue[index].id === id) {
+                let element = newValue[index];
+                element.total_qty = element.carton * element.qty_ctn;
+                element.state = STATE.updated;
+                newValue[index] = element;
               }
             }
           });
