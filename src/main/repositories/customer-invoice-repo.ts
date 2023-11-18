@@ -38,7 +38,7 @@ class CustomerInvoicRepository {
           toCreate.push({
             ...record,
             source: SOURCE.database,
-            state: STATE.created,
+            state: STATE.none,
           });
         }
         if (record.state === STATE.deleted) {
@@ -46,8 +46,20 @@ class CustomerInvoicRepository {
             `Ignored record ${record.id}, state : ${record.state}, source : ${record.source}`,
           );
         }
+        if (record.state === STATE.none) {
+          console.log(
+            `Ignored record ${record.id}, state : ${record.state}, source : ${record.source}`,
+          );
+        }
       } else if (record.source === SOURCE.database) {
+        if (record.state === STATE.none) {
+          console.log(
+            `Ignored record ${record.id}, state : ${record.state}, source : ${record.source}`,
+          );
+        }
+
         if (record.state === STATE.created) {
+          // This can never happen
           console.log(
             `Ignored record ${record.id}, state : ${record.state}, source : ${record.source}`,
           );
@@ -57,7 +69,7 @@ class CustomerInvoicRepository {
           toUpdate.push({
             ...record,
             source: SOURCE.database,
-            state: STATE.updated,
+            state: STATE.none,
           });
         }
 
@@ -123,7 +135,7 @@ class CustomerInvoicRepository {
         for (let index = 0; index < toUpdate.length; index++) {
           const record = toUpdate[index];
           let query = `
-          UPDATE customer_invoice SET date='${record.date}', product='${record.product}', carton='${record.carton}', qty_ctn='${record.qty_ctn}', total_qty='${record.total_qty}', rate_each='${record.rate_each}', debit='${record.debit}', credit='${record.credit}', balance='${record.balance}' WHERE id='${record.id}';
+          UPDATE customer_invoice SET state='${record.state}', date='${record.date}', product='${record.product}', carton='${record.carton}', qty_ctn='${record.qty_ctn}', total_qty='${record.total_qty}', rate_each='${record.rate_each}', debit='${record.debit}', credit='${record.credit}', balance='${record.balance}' WHERE id='${record.id}';
         `;
 
           currentThis.dao.run(query, [], data, (res) => {
@@ -202,7 +214,7 @@ class CustomerInvoicRepository {
     console.log(callbackFunction);
 
     const valuesArr = data.map((el) => {
-      const _str = `('${el.id}','${el.customer_id}','${el.source}','${el.state}','${el.date}','${el.products}','${el.carton}','${el.qty_ctn}','${el.total_qty}','${el.rate_each}','${el.debit}','${el.credit}','${el.balance}')`;
+      const _str = `('${el.id}','${el.customer_id}','${el.source}','${STATE.none}','${el.date}','${el.products}','${el.carton}','${el.qty_ctn}','${el.total_qty}','${el.rate_each}','${el.debit}','${el.credit}','${el.balance}')`;
       return _str;
     });
 
@@ -227,7 +239,7 @@ class CustomerInvoicRepository {
 
     let id = data.id;
 
-    let getQuery = `SELECT * FROM customer_invoice WHERE customer_id = '${id}';`;
+    let getQuery = `SELECT * FROM customer_invoice WHERE customer_id = '${id}' AND STATE != 'DELETED';`;
 
     console.log('Run this in DBeaver');
     console.log(getQuery);

@@ -299,7 +299,7 @@ ipcMain.on('update:customer-invoice', (event, data) => {
 
 ipcMain.on('get:all:customer-invoice', (event, data) => {
   console.log('Inside Main get:all:customer-invoice');
-  console.log(data);
+  // console.log(data);
   const callbackFunction = (response, err) => {
     // const webContents = event.sender;
     // const win = BrowserWindow.fromWebContents(webContents);
@@ -324,7 +324,7 @@ ipcMain.on('get:all:customer-invoice', (event, data) => {
 
 ipcMain.on('get:all:customer-invoices:id', (event, data) => {
   console.log('Inside Main get:all:customer-invoices:id');
-  console.log(data);
+  // console.log(data);
 
   const callbackFunction = (response, err) => {
     // const webContents = event.sender;

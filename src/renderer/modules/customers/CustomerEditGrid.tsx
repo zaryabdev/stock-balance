@@ -26,7 +26,7 @@ function CustomerEditGrid({ customerId }) {
     id: '',
     customer_id: '',
     source: SOURCE.memory,
-    state: STATE.none,
+    state: STATE.created,
     date: '2023-10-13',
     product: '',
     payment: '',
@@ -159,6 +159,7 @@ function CustomerEditGrid({ customerId }) {
                 if (newValue[index].id === id) {
                   let element = newValue[index];
                   element.total_qty = element.carton * element.qty_ctn;
+                  element.state = STATE.updated;
                   newValue[index] = element;
                 }
               }
@@ -167,31 +168,35 @@ function CustomerEditGrid({ customerId }) {
         }
 
         if (operation.type === 'DELETE') {
+          debugger;
           let keptRows = 0;
 
           // Make sure to use `data` and not `newValue`
-          data
-            .slice(operation.fromRowIndex, operation.toRowIndex)
-            .forEach(({ id }, i) => {
-              // If the row was updated, dismiss the update
-              // No need to update a row and immediately delete it
-              updatedRowIds.delete(id);
+          let slicedData = data.slice(
+            operation.fromRowIndex,
+            operation.toRowIndex,
+          );
 
-              if (createdRowIds.has(id)) {
-                // Row was freshly created, simply ignore it
-                // No need to insert a row and immediately delete it
-                createdRowIds.delete(id);
-              } else {
-                // Add the row to the deleted Set
-                deletedRowIds.add(id);
-                // Insert it back into newValue to display it in red to the user
-                newValue.splice(
-                  operation.fromRowIndex + keptRows++,
-                  0,
-                  data[operation.fromRowIndex + i],
-                );
-              }
-            });
+          slicedData.forEach(({ id }, i) => {
+            // If the row was updated, dismiss the update
+            // No need to update a row and immediately delete it
+            updatedRowIds.delete(id);
+
+            if (createdRowIds.has(id)) {
+              // Row was freshly created, simply ignore it
+              // No need to insert a row and immediately delete it
+              createdRowIds.delete(id);
+            } else {
+              // Add the row to the deleted Set
+              deletedRowIds.add(id);
+              // Insert it back into newValue to display it in red to the user
+              let ele = data[operation.fromRowIndex + i];
+              ele.state = STATE.deleted;
+              debugger;
+              console.log(ele);
+              newValue.splice(operation.fromRowIndex + keptRows++, 0, ele);
+            }
+          });
         }
       }
 
@@ -205,7 +210,7 @@ function CustomerEditGrid({ customerId }) {
     // const newData = data.filter(({ id }) => !deletedRowIds.has(id));
 
     // console.log(newData);
-
+    debugger;
     console.log(createdRowIds);
     console.log(deletedRowIds);
     console.log(updatedRowIds);

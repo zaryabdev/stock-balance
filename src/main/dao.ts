@@ -16,8 +16,8 @@ class AppDAO {
   }
 
   run(sql, params = [], data, callbackFunction) {
-    console.log('-------------SQL START----------------');
     console.log('This SQL will run ');
+    console.log('-------------SQL START----------------');
     console.log(sql);
     console.log('-------------SQL END----------------');
 
