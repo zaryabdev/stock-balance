@@ -150,13 +150,15 @@ class CustomerInvoicRepository {
         console.log('All records updated');
 
         if (updatedRecords === 0) {
-          callbackFunction({
-            status: 'SUCCESS',
-            data: [...toCreate, ...toUpdate],
-            message: 'All records updated successfulyy',
-          });
-          toCreate = [];
-          toUpdate = [];
+          setTimeout(() => {
+            callbackFunction({
+              status: 'SUCCESS',
+              data: [...toCreate, ...toUpdate],
+              message: 'All records updated successfulyy',
+            });
+            toCreate = [];
+            toUpdate = [];
+          }, 500);
         }
       } else {
         console.log('Length of toUpdate' + toUpdate.length);
