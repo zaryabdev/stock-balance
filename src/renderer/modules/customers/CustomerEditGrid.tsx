@@ -60,6 +60,9 @@ function CustomerEditGrid({ customerId, type }) {
       ...keyColumn('product', textColumn),
       title: 'Product',
       width: 200,
+      // component: ProductAutoFill,
+      // keepFocus: true,
+      // onColumnChange: handleChange,
     },
     {
       ...keyColumn('carton', intColumn),
@@ -130,7 +133,7 @@ function CustomerEditGrid({ customerId, type }) {
     updatedRowIds.clear();
   };
 
-  const handleChange = (newValue: any, operations: any) => {
+  function handleChange(newValue: any, operations: any) {
     {
       console.log(newValue);
       for (const operation of operations) {
@@ -207,7 +210,7 @@ function CustomerEditGrid({ customerId, type }) {
 
       setData(newValue);
     }
-  };
+  }
 
   const commit = () => {
     /* Perform insert, update, and delete to the database here */
@@ -295,9 +298,9 @@ function CustomerEditGrid({ customerId, type }) {
     // we use a date string to generate our filename.
     // const dateStr = date[0] + date[1] + date[2] + date[3] + date[4];
     // ticket title. and margin-top + margin-left
-    doc.text('Report.', 14, 15);
+    // doc.text(`Customer ID : ${customerId}`, 14, 15);
     // we define the name of our PDF file.
-    doc.save(`sample_3.pdf`);
+    doc.save(`report_${customerId}.pdf`);
   };
 
   // IPC Main listeners
@@ -438,5 +441,81 @@ function CustomerEditGrid({ customerId, type }) {
     </>
   );
 }
+
+const ProductAutoFill = ({
+  focus,
+  active,
+  stopEditing,
+  rowData,
+  setRowData,
+  onColumnChange,
+}) => {
+  const [showInput, setShowinput] = useState(true);
+  const [text, setText] = useState('');
+
+  const ref = useRef();
+
+  const ITEMS = [
+    '16OZ BOWL',
+    '1500ML BOX',
+    '100Z BOWL',
+    '750ML',
+    '500ML',
+    '1000ML BOX',
+    '500ML',
+  ];
+
+  useEffect(() => {
+    if (active) {
+      setShowinput(true);
+      ref.current.focus();
+    } else {
+      setShowinput(false);
+    }
+    // if (focus) setShowinput(true);
+  }, [focus, active]);
+
+  function handleInput(e) {
+    const options = {
+      includeScore: true,
+      minMatchCharLength: 1,
+      threshold: 0.5,
+    };
+
+    let value = e.target.value;
+
+    const fuse = new Fuse(ITEMS, options);
+
+    const result = fuse.search(value);
+    console.log(`result`);
+    console.table(result);
+
+    if (result.length > 0) {
+      console.log(`From Auto Fil`);
+      console.log(rowData);
+      console.log(onColumnChange);
+      rowData.name = result[0].item;
+      console.log(result);
+      setText(result[0].item);
+    }
+  }
+
+  return (
+    <React.Fragment>
+      {
+        <input
+          style={{
+            display: showInput ? 'block' : 'none',
+            borderColor: 'white',
+          }}
+          ref={ref}
+          type="text"
+          onChange={(e) => handleInput(e)}
+        />
+      }
+      {<div style={{ display: !showInput ? 'block' : 'none' }}>{text}</div>}
+    </React.Fragment>
+  );
+};
 
 export default CustomerEditGrid;

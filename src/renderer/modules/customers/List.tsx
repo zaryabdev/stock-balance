@@ -5,7 +5,7 @@ import type { ColumnType, ColumnsType } from 'antd/es/table';
 import type { FilterConfirmProps } from 'antd/es/table/interface';
 import React, { useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
-
+import { STATUS, TYPE } from '../../contants';
 interface DataType {
   id: string;
   name: string;
@@ -13,7 +13,12 @@ interface DataType {
 
 type DataIndex = keyof DataType;
 
-const List: React.FC = ({ data, selectedRowKeys, handleSelectedRowKeys }) => {
+const List: React.FC = ({
+  data,
+  selectedRowKeys,
+  handleSelectedRowKeys,
+  option,
+}) => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
@@ -123,7 +128,15 @@ const List: React.FC = ({ data, selectedRowKeys, handleSelectedRowKeys }) => {
 
   const columns: ColumnsType<DataType> = [
     {
-      title: 'Customers',
+      title: `${
+        option === 'BOTH'
+          ? 'Customers | Vendors'
+          : option === TYPE.customer
+          ? 'Customers'
+          : option === TYPE.vendor
+          ? 'Vendors'
+          : 'Stock'
+      }`,
       dataIndex: 'name',
       key: 'name',
       ellipsis: true,

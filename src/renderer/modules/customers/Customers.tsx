@@ -353,66 +353,74 @@ function Customers() {
             buttonStyle="solid"
           />
         </div>
-        {selectedOption === 'STOCK' ? (
-          <h4>Stock</h4>
-        ) : (
-          <>
-            <div style={{ margin: 4 }}>
-              <Button
-                type="default"
-                size="middle"
-                onClick={createNewCustomer}
-                // loading={loading}
-                disabled={selectedRowKeys.length > 0}
-              >
-                Add
-              </Button>
-              <Button
-                type="default"
-                size="middle"
-                onClick={editSelectedCustomer}
-                // loading={loading}
-                disabled={
-                  selectedRowKeys.length === 0 || selectedRowKeys.length > 1
-                }
-              >
-                Edit
-              </Button>
-              <Button
-                type="default"
-                size="middle"
-                onClick={loadSelectedCustomers}
-                // loading={loading}
-                disabled={selectedRowKeys.length < 1}
-              >
-                Load
-              </Button>
-              <Button
-                type="default"
-                size="middle"
-                onClick={showDeleteConfirm}
-                // loading={loading}
-                disabled={selectedRowKeys.length < 1}
-              >
-                Delete
-              </Button>
-              <Button
-                type="default"
-                size="middle"
-                onClick={() => appContext.setToggleSideBar((prev) => !prev)}
-                // loading={loading}
-                // disabled={}
-              >
-                Hide
-              </Button>
-            </div>
-            <List
-              data={filteredCustomersList}
-              selectedRowKeys={selectedRowKeys}
-              handleSelectedRowKeys={handleSelectedRowKeys}
-            />
-          </>
-        )}
+
+        <>
+          <div style={{ margin: 4 }}>
+            <Button
+              type="default"
+              size="middle"
+              onClick={createNewCustomer}
+              // loading={loading}
+              disabled={
+                selectedRowKeys.length > 0 ||
+                selectedOption === 'STOCK' ||
+                selectedOption === 'BOTH'
+              }
+            >
+              Add
+            </Button>
+            <Button
+              type="default"
+              size="middle"
+              onClick={editSelectedCustomer}
+              // loading={loading}
+              disabled={
+                selectedRowKeys.length === 0 ||
+                selectedRowKeys.length > 1 ||
+                selectedOption === 'STOCK'
+              }
+            >
+              Edit
+            </Button>
+            <Button
+              type="default"
+              size="middle"
+              onClick={loadSelectedCustomers}
+              // loading={loading}
+              disabled={
+                selectedRowKeys.length < 1 || selectedOption === 'STOCK'
+              }
+            >
+              Load
+            </Button>
+            <Button
+              type="default"
+              size="middle"
+              onClick={showDeleteConfirm}
+              // loading={loading}
+              disabled={
+                selectedRowKeys.length < 1 || selectedOption === 'STOCK'
+              }
+            >
+              Delete
+            </Button>
+            <Button
+              type="default"
+              size="middle"
+              onClick={() => appContext.setToggleSideBar((prev) => !prev)}
+              // loading={loading}
+              // disabled={}
+            >
+              Hide
+            </Button>
+          </div>
+          <List
+            data={filteredCustomersList}
+            option={selectedOption}
+            selectedRowKeys={selectedRowKeys}
+            handleSelectedRowKeys={handleSelectedRowKeys}
+          />
+        </>
       </Col>
       <Col span={appContext.toggleSideBar ? 18 : 24}>
         <MultiCustomersTabs

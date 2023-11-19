@@ -173,6 +173,7 @@ const CustomerGridSample = ({ label }) => {
     </React.Fragment>
   );
 };
+
 const PackingAutoFill = ({
   focus,
   active,
@@ -239,6 +240,7 @@ const PackingAutoFill = ({
     </React.Fragment>
   );
 };
+
 const NameAutoFill = ({
   focus,
   active,
@@ -333,4 +335,5 @@ const NameAutoFill = ({
     </React.Fragment>
   );
 };
+
 export default CustomerGridSample;
