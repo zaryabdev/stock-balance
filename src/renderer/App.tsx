@@ -14,6 +14,7 @@ import { ConfigProvider, FloatButton, theme } from 'antd';
 import React, { useState } from 'react';
 import './App.css';
 import Context from './AppContext';
+import SampleList from './SampleList';
 import Customers from './modules/customers/Customers';
 
 export default function App() {
@@ -39,7 +40,9 @@ export default function App() {
           algorithm: [theme.compactAlgorithm],
         }}
       >
-        <Customers />
+        {/* <Customers /> */}
+
+        <SampleList></SampleList>
 
         <FloatButton
           tooltip={`${toggleSideBar ? 'Hide sidebar' : 'Show sidebar'}`}
