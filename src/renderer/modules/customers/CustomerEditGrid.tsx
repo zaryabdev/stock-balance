@@ -1,6 +1,13 @@
-import { EditOutlined, SaveOutlined, UndoOutlined } from '@ant-design/icons';
+import {
+  EditOutlined,
+  FilePdfOutlined,
+  SaveOutlined,
+  UndoOutlined,
+} from '@ant-design/icons';
 import { Avatar, Col, Descriptions, FloatButton, Row } from 'antd';
 import Fuse from 'fuse.js';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 import React, {
   useCallback,
   useEffect,
@@ -243,6 +250,56 @@ function CustomerEditGrid({ customerId, type }) {
     updatedRowIds.clear();
   };
 
+  const print = () => {
+    const doc = new jsPDF();
+
+    // define the columns we want and their titles
+    const tableColumn = [
+      'Date',
+      'Payment',
+      'Product',
+      'Carton',
+      'Qty / Ctn',
+      'Total Qty',
+      'Rate Each',
+      'Debit',
+      'Credit',
+      'Balance',
+    ];
+    // define an empty array of rows
+    const tableRows = [];
+
+    // for each ticket pass all its data into an array
+    data.forEach((record) => {
+      const inArr = [
+        record.date,
+        record.payment,
+        record.product,
+        record.carton,
+        record.qty_ctn,
+        record.total_qty,
+        record.rate_each,
+        record.debit,
+        record.credit,
+        record.balance,
+      ];
+      // push each tickcet's info into a row
+      tableRows.push(inArr);
+    });
+
+    debugger;
+
+    // startY is basically margin-top
+    doc.autoTable(tableColumn, tableRows, { startY: 20 });
+    const date = Date().split(' ');
+    // we use a date string to generate our filename.
+    // const dateStr = date[0] + date[1] + date[2] + date[3] + date[4];
+    // ticket title. and margin-top + margin-left
+    doc.text('Report.', 14, 15);
+    // we define the name of our PDF file.
+    doc.save(`sample_3.pdf`);
+  };
+
   // IPC Main listeners
   window.electron.ipcRenderer.on(
     'create:customer-invoice-response',
@@ -367,6 +424,11 @@ function CustomerEditGrid({ customerId, type }) {
         icon={<EditOutlined />}
       >
         <FloatButton tooltip="Undo" onClick={cancel} icon={<UndoOutlined />} />
+        <FloatButton
+          tooltip="Print"
+          onClick={print}
+          icon={<FilePdfOutlined />}
+        />
         <FloatButton
           tooltip={`Save ${customerId}`}
           onClick={commit}

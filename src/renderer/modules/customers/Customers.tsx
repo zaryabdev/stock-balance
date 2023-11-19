@@ -44,6 +44,7 @@ type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 const options = [
   { label: 'Customers', value: TYPE.customer },
   { label: 'Venders', value: TYPE.vendor },
+  { label: 'Both', value: 'BOTH' },
   { label: 'Stock', value: 'STOCK' },
 ];
 
@@ -77,10 +78,14 @@ function Customers() {
   }, []);
 
   useEffect(() => {
-    const filteredList = customersList.filter(
-      (item) => item.type === selectedOption,
-    );
-    setFilteredCustomersList(filteredList);
+    if (selectedOption === 'BOTH') {
+      setFilteredCustomersList(customersList);
+    } else {
+      const filteredList = customersList.filter(
+        (item) => item.type === selectedOption,
+      );
+      setFilteredCustomersList(filteredList);
+    }
   }, [selectedOption]);
 
   const handleSelectionChange = ({ target: { value } }: RadioChangeEvent) => {
