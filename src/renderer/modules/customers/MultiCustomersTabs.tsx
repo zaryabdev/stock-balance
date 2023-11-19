@@ -148,16 +148,14 @@ function MultiCustomerTabs({ customersList, selectedCutomersToLoad = [] }) {
   };
 
   return (
-    <div>
-      <Tabs
-        type="editable-card"
-        hideAdd
-        onChange={onChange}
-        activeKey={activeTabKey}
-        onEdit={onEdit}
-        items={tabs}
-      />
-    </div>
+    <Tabs
+      type="editable-card"
+      hideAdd
+      onChange={onChange}
+      activeKey={activeTabKey}
+      onEdit={onEdit}
+      items={tabs}
+    />
   );
 }
 

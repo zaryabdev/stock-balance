@@ -8,6 +8,11 @@
 
 body {
   margin: 0 !important;
+  overflow-x: hidden;
+}
+
+.dsg-container {
+  height: 580px !important;
 }
 
 .display-block {

@@ -390,8 +390,10 @@ function CustomerEditGrid({ customerId, type }) {
   );
 
   return (
-    <>
+    <div className="Hello">
       <DataSheetGrid
+        className=""
+        style={{ height: '400px' }}
         value={data}
         columns={columns}
         createRow={() => ({
@@ -423,7 +425,7 @@ function CustomerEditGrid({ customerId, type }) {
         trigger="hover"
         type="primary"
         shape="circle"
-        style={{ right: 24 }}
+        style={{ right: 30, bottom: 15 }}
         icon={<EditOutlined />}
       >
         <FloatButton tooltip="Undo" onClick={cancel} icon={<UndoOutlined />} />
@@ -438,7 +440,7 @@ function CustomerEditGrid({ customerId, type }) {
           icon={<SaveOutlined />}
         />
       </FloatButton.Group>
-    </>
+    </div>
   );
 }
 

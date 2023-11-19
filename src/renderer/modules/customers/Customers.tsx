@@ -45,7 +45,7 @@ const options = [
   { label: 'Customers', value: TYPE.customer },
   { label: 'Venders', value: TYPE.vendor },
   { label: 'Both', value: 'BOTH' },
-  { label: 'Stock', value: 'STOCK' },
+  { label: 'Stock & Balance', value: 'STOCK' },
 ];
 
 const initialCustomerState = {
@@ -399,7 +399,9 @@ function Customers() {
               onClick={showDeleteConfirm}
               // loading={loading}
               disabled={
-                selectedRowKeys.length < 1 || selectedOption === 'STOCK'
+                selectedRowKeys.length < 1 ||
+                selectedOption === 'STOCK' ||
+                selectedOption === 'BOTH'
               }
             >
               Delete

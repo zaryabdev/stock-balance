@@ -43,7 +43,7 @@ export default function App() {
         <Customers />
         <FloatButton
           tooltip={`${toggleSideBar ? 'Hide sidebar' : 'Show sidebar'}`}
-          style={{ right: 94 }}
+          style={{ right: 75, bottom: 15 }}
           type="default"
           shape="circle"
           icon={
