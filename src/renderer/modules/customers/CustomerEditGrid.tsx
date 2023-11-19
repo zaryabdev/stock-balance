@@ -21,7 +21,7 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import { SOURCE, STATE, STATUS } from '../../contants';
 
-function CustomerEditGrid({ customerId }) {
+function CustomerEditGrid({ customerId, type }) {
   const initialState = {
     id: '',
     customer_id: '',
@@ -52,6 +52,7 @@ function CustomerEditGrid({ customerId }) {
     {
       ...keyColumn('product', textColumn),
       title: 'Product',
+      width: 200,
     },
     {
       ...keyColumn('carton', intColumn),
@@ -82,18 +83,18 @@ function CustomerEditGrid({ customerId }) {
       title: 'Balance',
     },
 
-    {
-      ...keyColumn('source', textColumn),
-      title: 'Source',
-    },
-    {
-      ...keyColumn('state', textColumn),
-      title: 'State',
-    },
-    {
-      ...keyColumn('id', textColumn),
-      title: 'ID',
-    },
+    // {
+    //   ...keyColumn('source', textColumn),
+    //   title: 'Source',
+    // },
+    // {
+    //   ...keyColumn('state', textColumn),
+    //   title: 'State',
+    // },
+    // {
+    //   ...keyColumn('id', textColumn),
+    //   title: 'ID',
+    // },
   ];
 
   const [data, setData] = useState([
@@ -330,7 +331,6 @@ function CustomerEditGrid({ customerId }) {
 
   return (
     <>
-      Customer ID : {customerId}
       <DataSheetGrid
         value={data}
         columns={columns}
@@ -356,6 +356,9 @@ function CustomerEditGrid({ customerId }) {
           }
         }}
       />
+      <center>
+        Customer ID : {customerId} | Type : {type}
+      </center>
       <FloatButton.Group
         trigger="hover"
         type="primary"

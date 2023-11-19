@@ -36,10 +36,16 @@ import CustomerEditGrid from './CustomerEditGrid';
 
 const { confirm } = Modal;
 
-import { STATUS } from '../../contants';
+import { STATUS, TYPE } from '../../contants';
 import List from './List';
 import MultiCustomersTabs from './MultiCustomersTabs';
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
+
+const options = [
+  { label: 'Customers', value: TYPE.customer },
+  { label: 'Venders', value: TYPE.vendor },
+  { label: 'Stock', value: 'STOCK' },
+];
 
 const initialCustomerState = {
   id: '',
@@ -47,14 +53,19 @@ const initialCustomerState = {
   name: '',
   phone: '',
   address: '',
+  type: TYPE.customer,
 };
 
 function Customers() {
+  const appContext = useContext(context);
+
   const [customersList, setCustomersList] = useState([]);
+  const [filteredCustomersList, setFilteredCustomersList] = useState([]);
   const [selectedCutomer, setSelectedCutomer] = useState(initialCustomerState);
   const [selectedCutomersToLoad, setSelectedCutomersToLoad] = useState([]);
-  const appContext = useContext(context);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [selectedOption, setSelectedOption] = useState(TYPE.customer);
+
   const [form] = Form.useForm<{
     name: string;
     address: string;
@@ -65,9 +76,22 @@ function Customers() {
     getAllCustomers({});
   }, []);
 
+  useEffect(() => {
+    const filteredList = customersList.filter(
+      (item) => item.type === selectedOption,
+    );
+    setFilteredCustomersList(filteredList);
+  }, [selectedOption]);
+
+  const handleSelectionChange = ({ target: { value } }: RadioChangeEvent) => {
+    setSelectedOption(value);
+  };
+
   const createNewCustomer = () => {
     confirm({
-      title: 'Add new Customer',
+      title: `Add new ${
+        selectedOption === TYPE.customer ? 'Customer' : 'Vendor'
+      }`,
       icon: <UserAddOutlined />,
       content: (
         <CustomerForm
@@ -76,6 +100,7 @@ function Customers() {
             name: '',
             address: '',
             phone: '',
+            type: selectedOption,
           }}
         />
       ),
@@ -91,6 +116,7 @@ function Customers() {
           name,
           address,
           phone,
+          type: selectedOption,
         };
 
         window.electron.ipcRenderer.createCustomer(data);
@@ -104,7 +130,7 @@ function Customers() {
 
   const editSelectedCustomer = () => {
     confirm({
-      title: 'Edit Customer',
+      title: `Edit ${selectedOption === TYPE.customer ? 'Customer' : 'Vendor'}`,
       icon: <UserAddOutlined />,
       content: (
         <CustomerForm
@@ -113,11 +139,11 @@ function Customers() {
             name: selectedCutomer.name,
             address: selectedCutomer.address,
             phone: selectedCutomer.phone,
+            type: selectedOption,
           }}
         />
       ),
       onOk() {
-        debugger;
         let id = selectedCutomer.id;
         let key = selectedCutomer.key;
 
@@ -131,6 +157,7 @@ function Customers() {
           name,
           address,
           phone,
+          typw: selectedOption,
         };
 
         window.electron.ipcRenderer.updateCustomer(data);
@@ -148,9 +175,15 @@ function Customers() {
 
   const showDeleteConfirm = () => {
     confirm({
-      title: 'Are you sure delete this task?',
+      title: `Are you sure delete ${
+        selectedOption === TYPE.customer ? 'Customer' : 'Vendor'
+      }`,
       icon: <ExclamationCircleFilled />,
-      content: 'Some descriptions',
+      content: (
+        <span>
+          <code>{JSON.stringify(selectedRowKeys)}</code>
+        </span>
+      ),
       okText: 'Yes',
       okType: 'danger',
       cancelText: 'No',
@@ -245,7 +278,12 @@ function Customers() {
     if (response.status === STATUS.SUCCESS) {
       console.log('response of get:all:customers-response ');
       console.log(response);
-      setCustomersList(response.data);
+
+      const list = response.data;
+      const filteredList = list.filter((item) => item.type === selectedOption);
+
+      setCustomersList(list);
+      setFilteredCustomersList(filteredList);
 
       // const newActiveKey = uuidv4();
       // const newPanes = [...tabs];
@@ -302,59 +340,74 @@ function Customers() {
         span={6}
       >
         <div style={{ margin: 4 }}>
-          <Button
-            type="default"
-            size="middle"
-            onClick={createNewCustomer}
-            // loading={loading}
-            disabled={selectedRowKeys.length > 0}
-          >
-            Add
-          </Button>
-          <Button
-            type="default"
-            size="middle"
-            onClick={editSelectedCustomer}
-            // loading={loading}
-            disabled={
-              selectedRowKeys.length === 0 || selectedRowKeys.length > 1
-            }
-          >
-            Edit
-          </Button>
-          <Button
-            type="default"
-            size="middle"
-            onClick={loadSelectedCustomers}
-            // loading={loading}
-            disabled={selectedRowKeys.length < 1}
-          >
-            Load
-          </Button>
-          <Button
-            type="default"
-            size="middle"
-            onClick={showDeleteConfirm}
-            // loading={loading}
-            disabled={selectedRowKeys.length < 1}
-          >
-            Delete
-          </Button>
-          <Button
-            type="default"
-            size="middle"
-            onClick={() => appContext.setToggleSideBar((prev) => !prev)}
-            // loading={loading}
-            // disabled={}
-          >
-            Delete
-          </Button>
+          <Radio.Group
+            options={options}
+            onChange={handleSelectionChange}
+            value={selectedOption}
+            optionType="button"
+            buttonStyle="solid"
+          />
         </div>
-        <List
-          data={customersList}
-          selectedRowKeys={selectedRowKeys}
-          handleSelectedRowKeys={handleSelectedRowKeys}
-        />
+        {selectedOption === 'STOCK' ? (
+          <h4>Stock</h4>
+        ) : (
+          <>
+            <div style={{ margin: 4 }}>
+              <Button
+                type="default"
+                size="middle"
+                onClick={createNewCustomer}
+                // loading={loading}
+                disabled={selectedRowKeys.length > 0}
+              >
+                Add
+              </Button>
+              <Button
+                type="default"
+                size="middle"
+                onClick={editSelectedCustomer}
+                // loading={loading}
+                disabled={
+                  selectedRowKeys.length === 0 || selectedRowKeys.length > 1
+                }
+              >
+                Edit
+              </Button>
+              <Button
+                type="default"
+                size="middle"
+                onClick={loadSelectedCustomers}
+                // loading={loading}
+                disabled={selectedRowKeys.length < 1}
+              >
+                Load
+              </Button>
+              <Button
+                type="default"
+                size="middle"
+                onClick={showDeleteConfirm}
+                // loading={loading}
+                disabled={selectedRowKeys.length < 1}
+              >
+                Delete
+              </Button>
+              <Button
+                type="default"
+                size="middle"
+                onClick={() => appContext.setToggleSideBar((prev) => !prev)}
+                // loading={loading}
+                // disabled={}
+              >
+                Hide
+              </Button>
+            </div>
+            <List
+              data={filteredCustomersList}
+              selectedRowKeys={selectedRowKeys}
+              handleSelectedRowKeys={handleSelectedRowKeys}
+            />
+          </>
+        )}
       </Col>
       <Col span={appContext.toggleSideBar ? 18 : 24}>
         <MultiCustomersTabs

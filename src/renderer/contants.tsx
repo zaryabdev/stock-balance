@@ -14,3 +14,8 @@ export const STATE = {
   updated: 'UPDATED',
   deleted: 'DELETED',
 };
+
+export const TYPE = {
+  customer: 'CUSTOMER',
+  vendor: 'VENDOR',
+};

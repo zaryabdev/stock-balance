@@ -57,7 +57,7 @@ function MultiCustomerTabs({ customersList, selectedCutomersToLoad = [] }) {
           if (el.key === key)
             arr.push({
               label: el.name,
-              children: <CustomerEditGrid customerId={el.id} />,
+              children: <CustomerEditGrid customerId={el.id} type={el.type} />,
               key,
             });
         });
@@ -73,7 +73,9 @@ function MultiCustomerTabs({ customersList, selectedCutomersToLoad = [] }) {
             if (el.key === key)
               arr.push({
                 label: el.name,
-                children: <CustomerEditGrid customerId={el.id} />,
+                children: (
+                  <CustomerEditGrid customerId={el.id} type={el.type} />
+                ),
                 key,
               });
           });

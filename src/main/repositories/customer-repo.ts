@@ -15,6 +15,7 @@ class CustomerRepository {
         name TEXT,
         address TEXT,
         phone TEXT,
+        type TEXT,
         timestamp TEXT
         )`;
 
@@ -24,13 +25,13 @@ class CustomerRepository {
   create(data, callbackFunction) {
     const timestamp = Date.now();
     console.log('create called for CustomerRepository');
-    const { id, key, name, address, phone } = data;
+    const { id, key, name, address, phone, type } = data;
 
-    console.log({ id, key, name, address, phone });
+    console.log({ id, key, name, address, phone, type });
     console.log(callbackFunction);
     this.dao.run(
-      'INSERT INTO customer (id, key, name, address, phone, timestamp) VALUES (?,?,?,?,?,?)',
-      [id, key, name, address, phone, timestamp],
+      'INSERT INTO customer (id, key, name, address, phone, type, timestamp) VALUES (?,?,?,?,?,?,?)',
+      [id, key, name, address, phone, type, timestamp],
       data,
       callbackFunction,
     );
