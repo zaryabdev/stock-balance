@@ -40,10 +40,7 @@ export default function App() {
           algorithm: [theme.compactAlgorithm],
         }}
       >
-        {/* <Customers /> */}
-
-        <SampleList></SampleList>
-
+        <Customers />
         <FloatButton
           tooltip={`${toggleSideBar ? 'Hide sidebar' : 'Show sidebar'}`}
           style={{ right: 94 }}

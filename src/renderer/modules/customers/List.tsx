@@ -53,7 +53,7 @@ const List: React.FC = ({ data, selectedRowKeys, handleSelectedRowKeys }) => {
     dataIndex: DataIndex,
   ): ColumnType<DataType> => ({
     filterDropdown: ({
-      handleSelectedRowKeys,
+      setSelectedKeys,
       selectedKeys,
       confirm,
       clearFilters,
@@ -65,7 +65,7 @@ const List: React.FC = ({ data, selectedRowKeys, handleSelectedRowKeys }) => {
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
           onChange={(e) =>
-            handleSelectedRowKeys(e.target.value ? [e.target.value] : [])
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
           }
           onPressEnter={() =>
             handleSearch(selectedKeys as string[], confirm, dataIndex)
