@@ -53,7 +53,11 @@ const _choices = [
   { value: '60 OZ', label: '6OZ FPI', qty_ctn: 1000 },
 ];
 
-function MultiCustomerTabs({ customersList, selectedCutomersToLoad = [] }) {
+function MultiCustomerTabs({
+  customersList,
+  selectedCutomersToLoad = [],
+  getCurrentStock,
+}) {
   const [activeTabKey, setActiveTabKey] = useState('');
   const [tabs, setTabs] = useState([]);
 
@@ -81,6 +85,7 @@ function MultiCustomerTabs({ customersList, selectedCutomersToLoad = [] }) {
                   customerId={el.id}
                   type={el.type}
                   _choices={_choices}
+                  getCurrentStock={getCurrentStock}
                 />
               ),
               key,
@@ -103,6 +108,7 @@ function MultiCustomerTabs({ customersList, selectedCutomersToLoad = [] }) {
                     customerId={el.id}
                     type={el.type}
                     _choices={_choices}
+                    getCurrentStock={getCurrentStock}
                   />
                 ),
                 key,

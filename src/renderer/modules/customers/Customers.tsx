@@ -57,7 +57,7 @@ const initialCustomerState = {
   type: TYPE.customer,
 };
 
-function Customers() {
+function Customers({ getCurrentStock }) {
   const appContext = useContext(context);
 
   const [customersList, setCustomersList] = useState([]);
@@ -427,6 +427,7 @@ function Customers() {
       <Col span={appContext.toggleSideBar ? 18 : 24}>
         <MultiCustomersTabs
           customersList={customersList}
+          getCurrentStock={getCurrentStock}
           selectedCutomersToLoad={selectedCutomersToLoad}
         />
       </Col>

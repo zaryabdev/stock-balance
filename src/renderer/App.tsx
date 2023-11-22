@@ -48,7 +48,6 @@ export default function App() {
     if (response.status === STATUS.SUCCESS) {
       console.log('response of get:all:stock-response ');
       console.log(response);
-
       const list = response.data;
 
       setCurrentStock(list);
@@ -68,7 +67,7 @@ export default function App() {
           algorithm: [theme.compactAlgorithm],
         }}
       >
-        <Customers />
+        <Customers getCurrentStock={getCurrentStock} />
         <FloatButton
           tooltip={`${toggleSideBar ? 'Hide sidebar' : 'Show sidebar'}`}
           style={{ right: 75, bottom: 15 }}

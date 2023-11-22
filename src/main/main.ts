@@ -266,7 +266,7 @@ ipcMain.on('create:stock', (event, data) => {
     if (response.status === STATUS.SUCCESS) {
       console.log('respose was success');
       // console.log(win);
-      event.reply('create:customer-stock', response);
+      event.reply('create:stock', response);
 
       // win.webContents.send('create:customer', response);
     } else {
@@ -392,7 +392,7 @@ ipcMain.on('update:customer-invoice', (event, data) => {
     if (response.status === STATUS.SUCCESS) {
       console.log('respose was success');
       // console.log(win);
-      event.reply('update:customer-customer-invoice', response);
+      event.reply('update:customer-invoice', response);
 
       // win.webContents.send('create:customer', response);
     } else {

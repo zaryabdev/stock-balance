@@ -144,7 +144,7 @@ const selectColumn = (
     options.choices.find((choice) => choice.label === value)?.value ?? null,
 });
 
-function CustomerEditGrid({ customerId, type, _choices, stock = [] }) {
+function CustomerEditGrid({ customerId, type, _choices, getCurrentStock }) {
   const context = useContext(appContext);
   const initialState = {
     id: '',
@@ -334,9 +334,9 @@ function CustomerEditGrid({ customerId, type, _choices, stock = [] }) {
     // const newData = data.filter(({ id }) => !deletedRowIds.has(id));
 
     // console.log(newData);
-    console.log(createdRowIds);
-    console.log(deletedRowIds);
-    console.log(updatedRowIds);
+    // console.log(createdRowIds);
+    // console.log(deletedRowIds);
+    // console.log(updatedRowIds);
 
     const withState = data.map((element) => {
       if (createdRowIds.has(element.id)) {
@@ -356,83 +356,78 @@ function CustomerEditGrid({ customerId, type, _choices, stock = [] }) {
 
     setData(withState);
     setPrevData(withState);
-
-    const currentStock = [
-      // {
-      //   id: uuidv4(),
-      //   product: 'BOWL 100ML',
-      //   carton: 20,
-      //   qty_ctn: 12,
-      //   total_qty: 240,
-      // },
-      // {
-      //   id: uuidv4(),
-      //   product: '80ML CUP',
-      //   carton: 100,
-      //   qty_ctn: 1,
-      //   total_qty: 100,
-      // },
-      // {
-      //   id: uuidv4(),
-      //   product: '100ML BOX',
-      //   carton: 5,
-      //   qty_ctn: 12,
-      //   total_qty: 60,
-      // },
-      // {
-      //   id: uuidv4(),
-      //   product: '200ML BOX',
-      //   carton: 10,
-      //   qty_ctn: 12,
-      //   total_qty: 120,
-      // },
-      // {
-      //   id: uuidv4(),
-      //   product: '400ML BOX',
-      //   carton: 50,
-      //   qty_ctn: 1,
-      //   total_qty: 50,
-      // },
-      // {
-      //   id: uuidv4(),
-      //   product: 'ITEM ONE',
-      //   carton: 1,
-      //   qty_ctn: 10,
-      //   total_qty: 10,
-      // },
-    ];
-
+    debugger;
     let newStock = {};
-    debugger;
-    if (context && context.currentStock) {
-      context.currentStock.map((item) => {
-        let { product } = item;
-        newStock[product] = item;
-      });
-    }
 
-    debugger;
-    data.map((record) => {
+    withState.map((record) => {
+      debugger;
+
       if (newStock[record.product]) {
         let currentStock = newStock[record.product];
 
-        currentStock.carton = currentStock.carton + record.carton;
-        currentStock.total_qty = currentStock.total_qty + record.total_qty;
+        if (record.state === STATE.deleted) {
+          debugger;
+          // let carton = record.carton ? record.carton : 0;
+          // currentStock.carton = currentStock.carton - carton;
 
+          // let qty_ctn = record.qty_ctn ? record.qty_ctn : 0;
+          // currentStock.qty_ctn = currentStock.qty_ctn - qty_ctn;
+        } else {
+          currentStock.carton = currentStock.carton + record.carton;
+          currentStock.total_qty = currentStock.total_qty + record.total_qty;
+        }
         newStock[record.product] = currentStock;
       } else {
-        let currentStock = {
-          id: 'NEW',
-          product: record.product,
-          carton: record.carton,
-          qty_ctn: record.qty_ctn,
-          total_qty: record.total_qty,
-        };
+        if (record.state === STATE.deleted) {
+          // let carton = record.carton ? record.carton : 0;
+          // let qty_ctn = record.qty_ctn ? record.qty_ctn : 0;
+          // let total_qty = record.total_qty ? record.total_qty : 0;
 
-        newStock[record.product] = currentStock;
+          let currentStock = {
+            id: 'NEW',
+            product: record.product,
+            carton: 0,
+            qty_ctn: 0,
+            total_qty: 0,
+          };
+
+          newStock[record.product] = currentStock;
+        } else {
+          let currentStock = {
+            id: 'NEW',
+            product: record.product,
+            carton: record.carton,
+            qty_ctn: record.qty_ctn,
+            total_qty: record.total_qty,
+          };
+
+          newStock[record.product] = currentStock;
+        }
       }
     });
 
+    let currentCotextStock = {};
+
+    if (context && context.currentStock) {
+      context.currentStock.map((item) => {
+        let { product } = item;
+        currentCotextStock[product] = item;
+      });
+    }
+
+    console.log(currentCotextStock);
+    console.log(newStock);
+    debugger;
+
+    Object.keys(currentCotextStock).forEach(function (key, index) {
+      if (newStock[key]) {
+        newStock[key].id = currentCotextStock[key].id;
+      }
+    });
+
+    console.log(currentCotextStock);
+    console.log(newStock);
+    debugger;
     let updatedStock = [];
 
     Object.keys(newStock).forEach(function (key, index) {
@@ -441,6 +436,7 @@ function CustomerEditGrid({ customerId, type, _choices, stock = [] }) {
 
     console.log(withState);
     console.log(newStock);
+
     console.log(updatedStock);
 
     debugger;
@@ -531,7 +527,7 @@ function CustomerEditGrid({ customerId, type, _choices, stock = [] }) {
     doc.save(`report_${customerId}.pdf`);
   };
 
-  // IPC Main listeners
+  // IPC Main listeners Customer Invoice
   window.electron.ipcRenderer.on(
     'create:customer-invoice-response',
     (response) => {
@@ -550,24 +546,21 @@ function CustomerEditGrid({ customerId, type, _choices, stock = [] }) {
     },
   );
 
-  window.electron.ipcRenderer.on(
-    'update:customer-customer-invoice',
-    (response) => {
-      console.log('update:customer-customer-invoice reponse came back');
+  window.electron.ipcRenderer.on('update:customer-invoice', (response) => {
+    console.log('update:customer-invoice reponse came back');
+    console.log(response);
+
+    if (response.status === STATUS.FAILED) {
+      console.log(response.message);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('response of update:customer-invoice ');
       console.log(response);
 
-      if (response.status === STATUS.FAILED) {
-        console.log(response.message);
-      }
-
-      if (response.status === STATUS.SUCCESS) {
-        console.log('response of update:customer-customer-invoice ');
-        console.log(response);
-
-        getAllRecordsById(customerId);
-      }
-    },
-  );
+      getAllRecordsById(customerId);
+    }
+  });
 
   window.electron.ipcRenderer.on(
     'get:all:customer-invoices:id-response',
@@ -617,10 +610,30 @@ function CustomerEditGrid({ customerId, type, _choices, stock = [] }) {
       }
     },
   );
-  const [data2, setData2] = useState(['chocolate', 'strawberry', null]);
+
+  // IPC Main listeners Stock
+  window.electron.ipcRenderer.on('update:stock-response', (response) => {
+    console.log('update:stock-response reponse came back');
+    console.log(response);
+
+    if (response.status === STATUS.FAILED) {
+      console.log(response.message);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('response of update:stock-response ');
+      console.log(response);
+      getCurrentStock();
+      // setTimeout(() =>
+      // , 500);
+    }
+  });
 
   return (
     <div className="">
+      <pre>
+        <code>{JSON.stringify(context.currentStock)}</code>
+      </pre>
       <DataSheetGrid
         className=""
         style={{ height: '400px' }}
