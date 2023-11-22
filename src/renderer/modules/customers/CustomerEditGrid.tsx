@@ -17,6 +17,8 @@ import React, {
   useState,
 } from 'react';
 import {
+  CellProps,
+  Column,
   DataSheetGrid,
   checkboxColumn,
   floatColumn,
@@ -25,10 +27,167 @@ import {
   keyColumn,
   textColumn,
 } from 'react-datasheet-grid';
+import Select, { GroupBase, SelectInstance } from 'react-select';
+
 import { v4 as uuidv4 } from 'uuid';
 import { SOURCE, STATE, STATUS } from '../../contants';
 
-function CustomerEditGrid({ customerId, type }) {
+type Choice = {
+  label: string;
+  value: string;
+};
+
+type Row = {
+  flavor: string | null;
+  quantity: number | null;
+};
+
+type SelectOptions = {
+  choices: Choice[];
+  disabled?: boolean;
+};
+
+const SelectComponent = React.memo(
+  ({
+    active,
+    rowData,
+    setRowData,
+    focus,
+    stopEditing,
+    columnData,
+  }: CellProps<string | null, SelectOptions>) => {
+    const ref = useRef<SelectInstance<Choice, false, GroupBase<Choice>>>(null);
+
+    useLayoutEffect(() => {
+      if (focus) {
+        ref.current?.focus();
+      } else {
+        ref.current?.blur();
+      }
+    }, [focus]);
+    console.log('Inside SelectComponent');
+    return (
+      <Select
+        ref={ref}
+        styles={{
+          container: (provided) => ({
+            ...provided,
+            flex: 1,
+            alignSelf: 'stretch',
+            pointerEvents: focus ? undefined : 'none',
+          }),
+          control: (provided) => ({
+            ...provided,
+            height: '100%',
+            border: 'none',
+            boxShadow: 'none',
+            background: 'none',
+          }),
+          indicatorSeparator: (provided) => ({
+            ...provided,
+            opacity: 0,
+          }),
+          indicatorsContainer: (provided) => ({
+            ...provided,
+            opacity: active ? 1 : 0,
+          }),
+          placeholder: (provided) => ({
+            ...provided,
+            opacity: active ? 1 : 0,
+          }),
+        }}
+        isDisabled={columnData.disabled}
+        value={
+          columnData.choices.find(({ value }) => value === rowData) ?? null
+        }
+        menuPortalTarget={document.body}
+        menuIsOpen={focus}
+        onChange={(choice) => {
+          if (choice === null) return;
+
+          setRowData(choice.value);
+          setTimeout(stopEditing, 0);
+        }}
+        onMenuClose={() => stopEditing({ nextRow: false })}
+        options={columnData.choices}
+      />
+    );
+  },
+);
+
+const selectColumn = (
+  options: SelectOptions,
+): Column<string | null, SelectOptions> => ({
+  component: SelectComponent,
+  columnData: options,
+  disableKeys: true,
+  keepFocus: true,
+  disabled: options.disabled,
+  deleteValue: () => null,
+  copyValue: ({ rowData }) =>
+    options.choices.find((choice) => choice.value === rowData)?.label ?? null,
+  pasteValue: ({ value }) =>
+    options.choices.find((choice) => choice.label === value)?.value ?? null,
+});
+
+function CustomerEditGrid() {
+  console.log('Inside CustomerEditGrid');
+  // const [data, setData] = useState<Array<string | null>>([
+  //   'chocolate',
+  //   'strawberry',
+  //   null,
+  // ]);
+
+  const [data, setData] = useState<Row[]>([
+    // { flavor: 'chocolate', quantity: 3 },
+    // { flavor: 'strawberry', quantity: 5 },
+    // { flavor: null, quantity: null },
+  ]);
+
+  const columns: Column<Row>[] = [
+    {
+      ...keyColumn(
+        'flavor',
+        selectColumn({
+          choices: [
+            { value: 'chocolate', label: 'Chocolate' },
+            { value: 'strawberry', label: 'Strawberry' },
+            { value: 'vanilla', label: 'Vanilla' },
+          ],
+        }),
+      ),
+      title: 'Flavor',
+    },
+    {
+      ...keyColumn('quantity', intColumn),
+      title: 'Quantity',
+    },
+  ];
+
+  return (
+    <div style={{ marginBottom: 20 }}>
+      <DataSheetGrid
+        value={data}
+        onChange={setData}
+        columns={columns}
+        // columns={[
+        //   {
+        //     ...selectColumn({
+        //       choices: [
+        //         { value: 'chocolate', label: 'Chocolate' },
+        //         { value: 'strawberry', label: 'Strawberry' },
+        //         { value: 'vanilla', label: 'Vanilla' },
+        //       ],
+        //     }),
+        //     title: 'Flavor',
+        //   },
+        // ]}
+      />
+    </div>
+  );
+}
+
+function CustomerEditGrid2({ customerId, type }) {
   const initialState = {
     id: '',
     customer_id: '',
@@ -388,10 +547,11 @@ function CustomerEditGrid({ customerId, type }) {
       }
     },
   );
+  const [data2, setData2] = useState(['chocolate', 'strawberry', null]);
 
   return (
-    <div className="Hello">
-      <DataSheetGrid
+    <div className="">
+      {/* <DataSheetGrid
         className=""
         style={{ height: '400px' }}
         value={data}
@@ -417,6 +577,16 @@ function CustomerEditGrid({ customerId, type }) {
             return 'row-updated';
           }
         }}
+      /> */}
+      <DataSheetGrid
+        value={data2}
+        onChange={setData2}
+        columns={[
+          {
+            component: Select,
+            title: 'Flavor',
+          },
+        ]}
       />
       <center>
         Customer ID : {customerId} | Type : {type}
@@ -443,81 +613,5 @@ function CustomerEditGrid({ customerId, type }) {
     </div>
   );
 }
-
-const ProductAutoFill = ({
-  focus,
-  active,
-  stopEditing,
-  rowData,
-  setRowData,
-  onColumnChange,
-}) => {
-  const [showInput, setShowinput] = useState(true);
-  const [text, setText] = useState('');
-
-  const ref = useRef();
-
-  const ITEMS = [
-    '16OZ BOWL',
-    '1500ML BOX',
-    '100Z BOWL',
-    '750ML',
-    '500ML',
-    '1000ML BOX',
-    '500ML',
-  ];
-
-  useEffect(() => {
-    if (active) {
-      setShowinput(true);
-      ref.current.focus();
-    } else {
-      setShowinput(false);
-    }
-    // if (focus) setShowinput(true);
-  }, [focus, active]);
-
-  function handleInput(e) {
-    const options = {
-      includeScore: true,
-      minMatchCharLength: 1,
-      threshold: 0.5,
-    };
-
-    let value = e.target.value;
-
-    const fuse = new Fuse(ITEMS, options);
-
-    const result = fuse.search(value);
-    console.log(`result`);
-    console.table(result);
-
-    if (result.length > 0) {
-      console.log(`From Auto Fil`);
-      console.log(rowData);
-      console.log(onColumnChange);
-      rowData.name = result[0].item;
-      console.log(result);
-      setText(result[0].item);
-    }
-  }
-
-  return (
-    <React.Fragment>
-      {
-        <input
-          style={{
-            display: showInput ? 'block' : 'none',
-            borderColor: 'white',
-          }}
-          ref={ref}
-          type="text"
-          onChange={(e) => handleInput(e)}
-        />
-      }
-      {<div style={{ display: !showInput ? 'block' : 'none' }}>{text}</div>}
-    </React.Fragment>
-  );
-};
 
 export default CustomerEditGrid;
