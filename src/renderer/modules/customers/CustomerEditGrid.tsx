@@ -38,8 +38,20 @@ type Choice = {
 };
 
 type Row = {
-  flavor: string | null;
-  quantity: number | null;
+  id: string | null;
+  customer_id: string | null;
+  source: string | null;
+  state: string | null;
+  date: string | null;
+  product: string | null;
+  payment: string | null;
+  carton: number | null;
+  qty_ctn: number | null;
+  total_qty: number | null;
+  rate_each: number | null;
+  debit: number | null;
+  credit: number | null;
+  balance: number | null;
 };
 
 type SelectOptions = {
@@ -130,64 +142,7 @@ const selectColumn = (
     options.choices.find((choice) => choice.label === value)?.value ?? null,
 });
 
-function CustomerEditGrid() {
-  console.log('Inside CustomerEditGrid');
-  // const [data, setData] = useState<Array<string | null>>([
-  //   'chocolate',
-  //   'strawberry',
-  //   null,
-  // ]);
-
-  const [data, setData] = useState<Row[]>([
-    // { flavor: 'chocolate', quantity: 3 },
-    // { flavor: 'strawberry', quantity: 5 },
-    // { flavor: null, quantity: null },
-  ]);
-
-  const columns: Column<Row>[] = [
-    {
-      ...keyColumn(
-        'flavor',
-        selectColumn({
-          choices: [
-            { value: 'chocolate', label: 'Chocolate' },
-            { value: 'strawberry', label: 'Strawberry' },
-            { value: 'vanilla', label: 'Vanilla' },
-          ],
-        }),
-      ),
-      title: 'Flavor',
-    },
-    {
-      ...keyColumn('quantity', intColumn),
-      title: 'Quantity',
-    },
-  ];
-
-  return (
-    <div style={{ marginBottom: 20 }}>
-      <DataSheetGrid
-        value={data}
-        onChange={setData}
-        columns={columns}
-        // columns={[
-        //   {
-        //     ...selectColumn({
-        //       choices: [
-        //         { value: 'chocolate', label: 'Chocolate' },
-        //         { value: 'strawberry', label: 'Strawberry' },
-        //         { value: 'vanilla', label: 'Vanilla' },
-        //       ],
-        //     }),
-        //     title: 'Flavor',
-        //   },
-        // ]}
-      />
-    </div>
-  );
-}
-
-function CustomerEditGrid2({ customerId, type }) {
+function CustomerEditGrid({ customerId, type, _choices }) {
   const initialState = {
     id: '',
     customer_id: '',
@@ -205,7 +160,7 @@ function CustomerEditGrid2({ customerId, type }) {
     balance: 0,
   };
 
-  const columns = [
+  const columns: Column<Row>[] = [
     {
       ...keyColumn('date', isoDateColumn),
       title: 'Date',
@@ -215,13 +170,16 @@ function CustomerEditGrid2({ customerId, type }) {
       title: 'Payment',
       width: 200,
     },
+
     {
-      ...keyColumn('product', textColumn),
+      ...keyColumn(
+        'product',
+        selectColumn({
+          choices: _choices,
+        }),
+      ),
       title: 'Product',
       width: 200,
-      // component: ProductAutoFill,
-      // keepFocus: true,
-      // onColumnChange: handleChange,
     },
     {
       ...keyColumn('carton', intColumn),
@@ -266,8 +224,8 @@ function CustomerEditGrid2({ customerId, type }) {
     // },
   ];
 
-  const [data, setData] = useState([
-    // { ...initialState, id: uuidv4(), customer_id: customerId },
+  const [data, setData] = useState<Row[]>([
+    //   // { ...initialState, id: uuidv4(), customer_id: customerId },
   ]);
   const [prevData, setPrevData] = useState(data);
 
@@ -551,7 +509,7 @@ function CustomerEditGrid2({ customerId, type }) {
 
   return (
     <div className="">
-      {/* <DataSheetGrid
+      <DataSheetGrid
         className=""
         style={{ height: '400px' }}
         value={data}
@@ -577,16 +535,6 @@ function CustomerEditGrid2({ customerId, type }) {
             return 'row-updated';
           }
         }}
-      /> */}
-      <DataSheetGrid
-        value={data2}
-        onChange={setData2}
-        columns={[
-          {
-            component: Select,
-            title: 'Flavor',
-          },
-        ]}
       />
       <center>
         Customer ID : {customerId} | Type : {type}

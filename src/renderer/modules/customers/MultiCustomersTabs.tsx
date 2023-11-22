@@ -34,6 +34,25 @@ const initialTabsState = [
   },
 ];
 
+const _choices = [
+  { value: '900ML BOX', label: '900ML BOX', qty_ctn: 100 },
+  { value: '100ML BOX', label: '100ML BOX', qty_ctn: 100 },
+  { value: '200ML BOX', label: '200ML BOX', qty_ctn: 100 },
+  { value: '400ML BOX', label: '400ML BOX', qty_ctn: 100 },
+  { value: '500ML PAPER GLASS', label: '500ML PAPER GLASS', qty_ctn: 10 },
+  { value: '330ML PAPER GLASS', label: '330ML PAPER GLASS', qty_ctn: 10 },
+  { value: 'BOWL 500ML', label: 'BOWL 500ML', qty_ctn: 50 },
+  { value: 'BOWL 100ML', label: 'BOWL 100ML', qty_ctn: 50 },
+  { value: '160ML PAPER CUP', label: '160ML PAPER CUP', qty_ctn: 12 },
+  { value: 'IMLI SPOON', label: 'IMLI SPOON', qty_ctn: 12 },
+  { value: 'IMLI SPOON 2', label: 'IMLI SPOON 2', qty_ctn: 1 },
+  { value: '30ML CUP', label: '30ML CUP', qty_ctn: 1 },
+  { value: '80ML CUP', label: '80ML CUP', qty_ctn: 5 },
+  { value: '160ML CUP', label: '160ML CUP', qty_ctn: 5 },
+  { value: '200GM CUP', label: '200GM CUP', qty_ctn: 1000 },
+  { value: '60 OZ', label: '6OZ FPI', qty_ctn: 1000 },
+];
+
 function MultiCustomerTabs({ customersList, selectedCutomersToLoad = [] }) {
   const [activeTabKey, setActiveTabKey] = useState('');
   const [tabs, setTabs] = useState([]);
@@ -57,7 +76,13 @@ function MultiCustomerTabs({ customersList, selectedCutomersToLoad = [] }) {
           if (el.key === key)
             arr.push({
               label: el.name,
-              children: <CustomerEditGrid customerId={el.id} type={el.type} />,
+              children: (
+                <CustomerEditGrid
+                  customerId={el.id}
+                  type={el.type}
+                  _choices={_choices}
+                />
+              ),
               key,
             });
         });
@@ -74,7 +99,11 @@ function MultiCustomerTabs({ customersList, selectedCutomersToLoad = [] }) {
               arr.push({
                 label: el.name,
                 children: (
-                  <CustomerEditGrid customerId={el.id} type={el.type} />
+                  <CustomerEditGrid
+                    customerId={el.id}
+                    type={el.type}
+                    _choices={_choices}
+                  />
                 ),
                 key,
               });
