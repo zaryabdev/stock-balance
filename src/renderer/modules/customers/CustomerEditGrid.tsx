@@ -169,6 +169,7 @@ function CustomerEditGrid({ customerId, type, _choices, getCurrentStock }) {
     {
       ...keyColumn('date', isoDateColumn),
       title: 'Date',
+      width: 100,
     },
     {
       ...keyColumn('payment', textColumn),

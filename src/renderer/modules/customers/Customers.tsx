@@ -94,20 +94,35 @@ function Customers({ getCurrentStock }) {
 
   const createNewCustomer = () => {
     confirm({
-      title: `Add new ${
+      title: `Add New ${
         selectedOption === TYPE.customer ? 'Customer' : 'Vendor'
       }`,
+      width: selectedOption === TYPE.vendor ? 1000 : 500,
       icon: <UserAddOutlined />,
       content: (
-        <CustomerForm
-          form={form}
-          initialValues={{
-            name: '',
-            address: '',
-            phone: '',
-            type: selectedOption,
-          }}
-        />
+        <>
+          {selectedOption === TYPE.customer ? (
+            <CustomerForm
+              form={form}
+              initialValues={{
+                name: '',
+                address: '',
+                phone: '',
+                type: selectedOption,
+              }}
+            />
+          ) : (
+            <VendorForm
+              form={form}
+              initialValues={{
+                name: '',
+                address: '',
+                phone: '',
+                type: selectedOption,
+              }}
+            />
+          )}
+        </>
       ),
       onOk() {
         let id = uuidv4();
@@ -136,17 +151,32 @@ function Customers({ getCurrentStock }) {
   const editSelectedCustomer = () => {
     confirm({
       title: `Edit ${selectedOption === TYPE.customer ? 'Customer' : 'Vendor'}`,
+      width: selectedOption === TYPE.vendor ? 1000 : 500,
       icon: <UserAddOutlined />,
       content: (
-        <CustomerForm
-          form={form}
-          initialValues={{
-            name: selectedCutomer.name,
-            address: selectedCutomer.address,
-            phone: selectedCutomer.phone,
-            type: selectedOption,
-          }}
-        />
+        <>
+          {selectedOption === TYPE.customer ? (
+            <CustomerForm
+              form={form}
+              initialValues={{
+                name: '',
+                address: '',
+                phone: '',
+                type: selectedOption,
+              }}
+            />
+          ) : (
+            <VendorForm
+              form={form}
+              initialValues={{
+                name: '',
+                address: '',
+                phone: '',
+                type: selectedOption,
+              }}
+            />
+          )}
+        </>
       ),
       onOk() {
         let id = selectedCutomer.id;
@@ -359,6 +389,7 @@ function Customers({ getCurrentStock }) {
             <Button
               type="default"
               size="middle"
+              style={{ margin: 2 }}
               onClick={createNewCustomer}
               // loading={loading}
               disabled={
@@ -372,6 +403,7 @@ function Customers({ getCurrentStock }) {
             <Button
               type="default"
               size="middle"
+              style={{ margin: 2 }}
               onClick={editSelectedCustomer}
               // loading={loading}
               disabled={
@@ -385,6 +417,7 @@ function Customers({ getCurrentStock }) {
             <Button
               type="default"
               size="middle"
+              style={{ margin: 2 }}
               onClick={loadSelectedCustomers}
               // loading={loading}
               disabled={
@@ -396,6 +429,7 @@ function Customers({ getCurrentStock }) {
             <Button
               type="default"
               size="middle"
+              style={{ margin: 2 }}
               onClick={showDeleteConfirm}
               // loading={loading}
               disabled={
@@ -409,6 +443,7 @@ function Customers({ getCurrentStock }) {
             <Button
               type="default"
               size="middle"
+              style={{ margin: 2 }}
               onClick={() => appContext.setToggleSideBar((prev) => !prev)}
               // loading={loading}
               // disabled={}
@@ -450,6 +485,34 @@ function CustomerForm({ form, initialValues }) {
 
   return (
     <Form form={form} layout="vertical" autoComplete="on">
+      <Form.Item name="name" label="Name">
+        <Input type="text" ref={nameField} />
+      </Form.Item>
+      <Form.Item name="address" label="Address">
+        <Input />
+      </Form.Item>
+      <Form.Item name="phone" label="Phone">
+        <Input />
+      </Form.Item>
+    </Form>
+  );
+}
+
+function VendorForm({ form, initialValues }) {
+  form.setFieldValue('name', initialValues.name);
+  form.setFieldValue('address', initialValues.address);
+  form.setFieldValue('phone', initialValues.phone);
+
+  const nameField = useRef(null);
+
+  useEffect(() => {
+    if (nameField && nameField.current) {
+      nameField.current.focus();
+    }
+  }, [nameField]);
+
+  return (
+    <Form form={form} layout="inline" autoComplete="on">
       <Form.Item name="name" label="Name">
         <Input type="text" ref={nameField} />
       </Form.Item>
