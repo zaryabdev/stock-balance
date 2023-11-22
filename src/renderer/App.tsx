@@ -11,14 +11,20 @@ import {
 } from '@ant-design/icons';
 import { ConfigProvider, FloatButton, theme } from 'antd';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import Context from './AppContext';
 import SampleList from './SampleList';
+import { STATUS } from './contants';
 import Customers from './modules/customers/Customers';
 
 export default function App() {
   const [toggleSideBar, setToggleSideBar] = useState(true);
+  const [currentStock, setCurrentStock] = useState([]);
+
+  useEffect(() => {
+    getCurrentStock();
+  }, []);
 
   const {
     token: { colorBgContainer },
@@ -28,10 +34,32 @@ export default function App() {
     setToggleSideBar((prev) => !prev);
   };
 
+  function getCurrentStock(params: type) {
+    window.electron.ipcRenderer.getAllStock({});
+  }
+
+  window.electron.ipcRenderer.on('get:all:stock-response', (response) => {
+    console.log('get:all:stock-response reponse came back');
+    console.log(response);
+    if (response.status === STATUS.FAILED) {
+      console.log(response.message);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('response of get:all:stock-response ');
+      console.log(response);
+
+      const list = response.data;
+
+      setCurrentStock(list);
+    }
+  });
+
   return (
     <Context.Provider
       value={{
         toggleSideBar,
+        currentStock,
         setToggleSideBar,
       }}
     >
