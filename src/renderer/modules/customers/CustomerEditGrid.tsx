@@ -631,9 +631,6 @@ function CustomerEditGrid({ customerId, type, _choices, getCurrentStock }) {
 
   return (
     <div className="">
-      <pre>
-        <code>{JSON.stringify(context.currentStock)}</code>
-      </pre>
       <DataSheetGrid
         className=""
         style={{ height: '400px' }}

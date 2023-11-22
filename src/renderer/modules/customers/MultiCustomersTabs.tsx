@@ -10,6 +10,7 @@ import {
 } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import Stock from '../stock/Stock';
 import CustomerEditGrid from './CustomerEditGrid';
 
 const SampleComponent: FC = ({ id, label }) => {
@@ -58,8 +59,21 @@ function MultiCustomerTabs({
   selectedCutomersToLoad = [],
   getCurrentStock,
 }) {
-  const [activeTabKey, setActiveTabKey] = useState('');
-  const [tabs, setTabs] = useState([]);
+  const [activeTabKey, setActiveTabKey] = useState('STOCK');
+  const [tabs, setTabs] = useState([
+    {
+      label: 'Stock',
+      children: <Stock />,
+      key: 'STOCK',
+      closable: false,
+    },
+    {
+      label: 'Balance',
+      children: <h1>Balance</h1>,
+      key: 'BALANCE',
+      closable: false,
+    },
+  ]);
 
   useEffect(() => {
     if (selectedCutomersToLoad.length > 0) {

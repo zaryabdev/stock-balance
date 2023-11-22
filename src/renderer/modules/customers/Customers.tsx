@@ -44,8 +44,8 @@ type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 const options = [
   { label: 'Customers', value: TYPE.customer },
   { label: 'Venders', value: TYPE.vendor },
-  { label: 'Both', value: 'BOTH' },
-  { label: 'Stock & Balance', value: 'STOCK' },
+  { label: 'Customers & Vendors', value: 'BOTH' },
+  // { label: 'Stock & Balance', value: 'STOCK' },
 ];
 
 const initialCustomerState = {
