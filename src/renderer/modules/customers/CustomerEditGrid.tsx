@@ -10,6 +10,7 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import React, {
   useCallback,
+  useContext,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -30,6 +31,7 @@ import {
 import Select, { GroupBase, SelectInstance } from 'react-select';
 
 import { v4 as uuidv4 } from 'uuid';
+import appContext from '../../AppContext';
 import { SOURCE, STATE, STATUS } from '../../contants';
 
 type Choice = {
@@ -142,7 +144,8 @@ const selectColumn = (
     options.choices.find((choice) => choice.label === value)?.value ?? null,
 });
 
-function CustomerEditGrid({ customerId, type, _choices }) {
+function CustomerEditGrid({ customerId, type, _choices, stock = [] }) {
+  const context = useContext(appContext);
   const initialState = {
     id: '',
     customer_id: '',
@@ -269,8 +272,6 @@ function CustomerEditGrid({ customerId, type, _choices }) {
           console.log(data);
           console.log(updatedRowIds);
 
-          debugger;
-
           const updatedArray = newValue.slice(
             operation.fromRowIndex,
             operation.toRowIndex,
@@ -293,7 +294,6 @@ function CustomerEditGrid({ customerId, type, _choices }) {
         }
 
         if (operation.type === 'DELETE') {
-          debugger;
           let keptRows = 0;
 
           // Make sure to use `data` and not `newValue`
@@ -317,7 +317,6 @@ function CustomerEditGrid({ customerId, type, _choices }) {
               // Insert it back into newValue to display it in red to the user
               let ele = data[operation.fromRowIndex + i];
               ele.state = STATE.deleted;
-              debugger;
               console.log(ele);
               newValue.splice(operation.fromRowIndex + keptRows++, 0, ele);
             }
@@ -335,7 +334,6 @@ function CustomerEditGrid({ customerId, type, _choices }) {
     // const newData = data.filter(({ id }) => !deletedRowIds.has(id));
 
     // console.log(newData);
-    debugger;
     console.log(createdRowIds);
     console.log(deletedRowIds);
     console.log(updatedRowIds);
@@ -356,18 +354,133 @@ function CustomerEditGrid({ customerId, type, _choices }) {
       return element;
     });
 
-    console.log(withState);
-
     setData(withState);
     setPrevData(withState);
 
+    const currentStock = [
+      // {
+      //   id: uuidv4(),
+      //   product: 'BOWL 100ML',
+      //   carton: 20,
+      //   qty_ctn: 12,
+      //   total_qty: 240,
+      // },
+      // {
+      //   id: uuidv4(),
+      //   product: '80ML CUP',
+      //   carton: 100,
+      //   qty_ctn: 1,
+      //   total_qty: 100,
+      // },
+      // {
+      //   id: uuidv4(),
+      //   product: '100ML BOX',
+      //   carton: 5,
+      //   qty_ctn: 12,
+      //   total_qty: 60,
+      // },
+      // {
+      //   id: uuidv4(),
+      //   product: '200ML BOX',
+      //   carton: 10,
+      //   qty_ctn: 12,
+      //   total_qty: 120,
+      // },
+      // {
+      //   id: uuidv4(),
+      //   product: '400ML BOX',
+      //   carton: 50,
+      //   qty_ctn: 1,
+      //   total_qty: 50,
+      // },
+      // {
+      //   id: uuidv4(),
+      //   product: 'ITEM ONE',
+      //   carton: 1,
+      //   qty_ctn: 10,
+      //   total_qty: 10,
+      // },
+    ];
+
+    let newStock = {};
+    debugger;
+    if (context && context.currentStock) {
+      context.currentStock.map((item) => {
+        let { product } = item;
+        newStock[product] = item;
+      });
+    }
+
+    debugger;
+    data.map((record) => {
+      if (newStock[record.product]) {
+        let currentStock = newStock[record.product];
+
+        currentStock.carton = currentStock.carton + record.carton;
+        currentStock.total_qty = currentStock.total_qty + record.total_qty;
+
+        newStock[record.product] = currentStock;
+      } else {
+        let currentStock = {
+          id: 'NEW',
+          product: record.product,
+          carton: record.carton,
+          qty_ctn: record.qty_ctn,
+          total_qty: record.total_qty,
+        };
+
+        newStock[record.product] = currentStock;
+      }
+    });
+
+    let updatedStock = [];
+
+    Object.keys(newStock).forEach(function (key, index) {
+      updatedStock.push(newStock[key]);
+    });
+
+    console.log(withState);
+    console.log(newStock);
+    console.log(updatedStock);
+
     debugger;
     window.electron.ipcRenderer.updateCustomerInvoice(withState);
-    // window.electron.ipcRenderer.createCustomerInvoice(toCreate);
+    window.electron.ipcRenderer.updateStock(updatedStock);
 
     createdRowIds.clear();
     deletedRowIds.clear();
     updatedRowIds.clear();
+
+    //  const isInCurrentStock = currentStock.filter(stock=> stock.product === record.product);
+    //  const isInNewStock = newStock.filter(stock=> stock.product === record.product);
+
+    //   if(isInCurrentStock.length > 0 && isInNewStock.length === 0){
+    //     const _stock = isInCurrentStock[0]
+
+    //     let updatedStock = {
+    //       id : _stock.id,
+    //       product : _stock.product,
+    //       carton : _stock.carton + record.carton,
+    //       qty_ctn : _stock.qty_ctn,
+    //       total_qty : _stock.total_qty + record.total_qty,
+    //     }
+
+    //     newStock.push(updatedStock)
+
+    //   } else if(isInCurrentStock.length > 0 && isInNewStock.length > 0) {
+
+    //     const _stock = isInNewStock[0]
+
+    //     let updatedStock = {
+    //       id : _stock.id,
+    //       product : _stock.product,
+    //       carton : _stock.carton + record.carton,
+    //       qty_ctn : _stock.qty_ctn,
+    //       total_qty : _stock.total_qty + record.total_qty,
+    //     }
+
+    //     newStock.push(updatedStock)
+    //   }
   };
 
   const print = () => {
@@ -406,8 +519,6 @@ function CustomerEditGrid({ customerId, type, _choices }) {
       // push each tickcet's info into a row
       tableRows.push(inArr);
     });
-
-    debugger;
 
     // startY is basically margin-top
     doc.autoTable(tableColumn, tableRows, { startY: 20 });
@@ -452,6 +563,7 @@ function CustomerEditGrid({ customerId, type, _choices }) {
       if (response.status === STATUS.SUCCESS) {
         console.log('response of update:customer-customer-invoice ');
         console.log(response);
+
         getAllRecordsById(customerId);
       }
     },
@@ -470,7 +582,7 @@ function CustomerEditGrid({ customerId, type, _choices }) {
       if (response.status === STATUS.SUCCESS) {
         console.log('response of get:all:customer-invoices:id-response ');
         console.log(response);
-        // debugger;
+        // ;
         if (response.meta.id === customerId) {
           setData(response.data);
         }
