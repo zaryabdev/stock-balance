@@ -5,8 +5,10 @@ import {
   UndoOutlined,
 } from '@ant-design/icons';
 import { Avatar, Col, Descriptions, FloatButton, Row } from 'antd';
+import { format } from 'date-fns';
 import Fuse from 'fuse.js';
 import jsPDF from 'jspdf';
+
 import 'jspdf-autotable';
 import React, {
   useCallback,
@@ -151,7 +153,7 @@ function CustomerEditGrid({ customerId, type, _choices, getCurrentStock }) {
     customer_id: '',
     source: SOURCE.memory,
     state: STATE.created,
-    date: '2023-10-13',
+    date: format(new Date(), 'yyyy-MM-dd'),
     product: '',
     payment: '',
     carton: 0,
