@@ -39,13 +39,13 @@ const { confirm } = Modal;
 import { STATUS, TYPE } from '../../contants';
 import List from './List';
 import MultiCustomersTabs from './MultiCustomersTabs';
+
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
 const options = [
   { label: 'Customers', value: TYPE.customer },
   { label: 'Venders', value: TYPE.vendor },
-  { label: 'Customers & Vendors', value: 'BOTH' },
-  // { label: 'Stock & Balance', value: 'STOCK' },
+  { label: 'Customers & Vendors', value: TYPE.both },
 ];
 
 const initialCustomerState = {
@@ -78,7 +78,7 @@ function Customers({ getCurrentStock }) {
   }, []);
 
   useEffect(() => {
-    if (selectedOption === 'BOTH') {
+    if (selectedOption === TYPE.both) {
       setFilteredCustomersList(customersList);
     } else {
       const filteredList = customersList.filter(
@@ -393,9 +393,7 @@ function Customers({ getCurrentStock }) {
               onClick={createNewCustomer}
               // loading={loading}
               disabled={
-                selectedRowKeys.length > 0 ||
-                selectedOption === 'STOCK' ||
-                selectedOption === 'BOTH'
+                selectedRowKeys.length > 0 || selectedOption === TYPE.both
               }
             >
               Add
@@ -407,9 +405,7 @@ function Customers({ getCurrentStock }) {
               onClick={editSelectedCustomer}
               // loading={loading}
               disabled={
-                selectedRowKeys.length === 0 ||
-                selectedRowKeys.length > 1 ||
-                selectedOption === 'STOCK'
+                selectedRowKeys.length === 0 || selectedRowKeys.length > 1
               }
             >
               Edit
@@ -433,9 +429,7 @@ function Customers({ getCurrentStock }) {
               onClick={showDeleteConfirm}
               // loading={loading}
               disabled={
-                selectedRowKeys.length < 1 ||
-                selectedOption === 'STOCK' ||
-                selectedOption === 'BOTH'
+                selectedRowKeys.length < 1 || selectedOption === TYPE.both
               }
             >
               Delete

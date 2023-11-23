@@ -18,6 +18,7 @@ export const STATE = {
 export const TYPE = {
   customer: 'CUSTOMER',
   vendor: 'VENDOR',
+  both: 'BOTH',
 };
 
 export const MODE = {

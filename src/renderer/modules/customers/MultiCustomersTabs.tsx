@@ -69,7 +69,7 @@ function MultiCustomerTabs({
     },
     {
       label: 'Balance',
-      children: <h1>Balance</h1>,
+      children: <h1>Work In Progress...</h1>,
       key: 'BALANCE',
       closable: false,
     },
