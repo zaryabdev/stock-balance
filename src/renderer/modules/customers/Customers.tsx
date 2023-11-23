@@ -73,22 +73,60 @@ function Customers({ getCurrentStock }) {
     setOpenCreateModal(true);
   };
   const handleCreateModalOk = () => {
+    let id = uuidv4();
+    let name = form.getFieldValue('name');
+    let address = form.getFieldValue('address');
+    let phone = form.getFieldValue('phone');
+
+    let data = {
+      id,
+      key: id,
+      name,
+      address,
+      phone,
+      type: selectedOption,
+    };
+
+    window.electron.ipcRenderer.createCustomer(data);
+
+    form.resetFields();
     setOpenCreateModal(false);
   };
 
   const handleCreateModalCancel = () => {
     setOpenCreateModal(false);
+    form.resetFields();
   };
 
   const handleShowEditModal = () => {
     setOpenEditModal(true);
   };
   const handleEditModalOk = () => {
+    let id = selectedCutomer.id;
+    let key = selectedCutomer.key;
+
+    let name = form.getFieldValue('name');
+    let address = form.getFieldValue('address');
+    let phone = form.getFieldValue('phone');
+
+    let data = {
+      id,
+      key,
+      name,
+      address,
+      phone,
+      typw: selectedOption,
+    };
+
+    window.electron.ipcRenderer.updateCustomer(data);
+
+    form.resetFields();
     setOpenEditModal(false);
   };
 
   const handleEditModalCancel = () => {
     setOpenEditModal(false);
+    form.resetFields();
   };
 
   const [form] = Form.useForm<{
@@ -116,117 +154,117 @@ function Customers({ getCurrentStock }) {
     setSelectedOption(value);
   };
 
-  const createNewCustomer = () => {
-    confirm({
-      title: `Add New ${
-        selectedOption === TYPE.customer ? 'Customer' : 'Vendor'
-      }`,
-      width: selectedOption === TYPE.vendor ? 1000 : 500,
-      icon: <UserAddOutlined />,
-      content: (
-        <>
-          {selectedOption === TYPE.customer ? (
-            <CustomerForm
-              form={form}
-              initialValues={{
-                name: '',
-                address: '',
-                phone: '',
-                type: selectedOption,
-              }}
-            />
-          ) : (
-            <VendorForm
-              form={form}
-              initialValues={{
-                name: '',
-                address: '',
-                phone: '',
-                type: selectedOption,
-              }}
-            />
-          )}
-        </>
-      ),
-      onOk() {
-        let id = uuidv4();
-        let name = form.getFieldValue('name');
-        let address = form.getFieldValue('address');
-        let phone = form.getFieldValue('phone');
+  // const createNewCustomer = () => {
+  //   confirm({
+  //     title: `Add New ${
+  //       selectedOption === TYPE.customer ? 'Customer' : 'Vendor'
+  //     }`,
+  //     width: selectedOption === TYPE.vendor ? 1000 : 500,
+  //     icon: <UserAddOutlined />,
+  //     content: (
+  //       <>
+  //         {selectedOption === TYPE.customer ? (
+  //           <CustomerForm
+  //             form={form}
+  //             initialValues={{
+  //               name: '',
+  //               address: '',
+  //               phone: '',
+  //               type: selectedOption,
+  //             }}
+  //           />
+  //         ) : (
+  //           <VendorForm
+  //             form={form}
+  //             initialValues={{
+  //               name: '',
+  //               address: '',
+  //               phone: '',
+  //               type: selectedOption,
+  //             }}
+  //           />
+  //         )}
+  //       </>
+  //     ),
+  //     onOk() {
+  //       let id = uuidv4();
+  //       let name = form.getFieldValue('name');
+  //       let address = form.getFieldValue('address');
+  //       let phone = form.getFieldValue('phone');
 
-        let data = {
-          id,
-          key: id,
-          name,
-          address,
-          phone,
-          type: selectedOption,
-        };
+  //       let data = {
+  //         id,
+  //         key: id,
+  //         name,
+  //         address,
+  //         phone,
+  //         type: selectedOption,
+  //       };
 
-        window.electron.ipcRenderer.createCustomer(data);
-        form.resetFields();
-      },
-      onCancel() {
-        form.resetFields();
-      },
-    });
-  };
+  //       window.electron.ipcRenderer.createCustomer(data);
+  //       form.resetFields();
+  //     },
+  //     onCancel() {
+  //       form.resetFields();
+  //     },
+  //   });
+  // };
 
-  const editSelectedCustomer = () => {
-    confirm({
-      title: `Edit ${selectedOption === TYPE.customer ? 'Customer' : 'Vendor'}`,
-      width: selectedOption === TYPE.vendor ? 1000 : 500,
-      icon: <UserAddOutlined />,
-      content: (
-        <>
-          {selectedOption === TYPE.customer ? (
-            <CustomerForm
-              form={form}
-              initialValues={{
-                name: selectedCutomer.name,
-                address: selectedCutomer.address,
-                phone: selectedCutomer.phone,
-                type: selectedOption,
-              }}
-            />
-          ) : (
-            <VendorForm
-              form={form}
-              initialValues={{
-                name: selectedCutomer.name,
-                address: selectedCutomer.address,
-                phone: selectedCutomer.phone,
-                type: selectedOption,
-              }}
-            />
-          )}
-        </>
-      ),
-      onOk() {
-        let id = selectedCutomer.id;
-        let key = selectedCutomer.key;
+  // const editSelectedCustomer = () => {
+  //   confirm({
+  //     title: `Edit ${selectedOption === TYPE.customer ? 'Customer' : 'Vendor'}`,
+  //     width: selectedOption === TYPE.vendor ? 1000 : 500,
+  //     icon: <UserAddOutlined />,
+  //     content: (
+  //       <>
+  //         {selectedOption === TYPE.customer ? (
+  //           <CustomerForm
+  //             form={form}
+  //             initialValues={{
+  //               name: selectedCutomer.name,
+  //               address: selectedCutomer.address,
+  //               phone: selectedCutomer.phone,
+  //               type: selectedOption,
+  //             }}
+  //           />
+  //         ) : (
+  //           <VendorForm
+  //             form={form}
+  //             initialValues={{
+  //               name: selectedCutomer.name,
+  //               address: selectedCutomer.address,
+  //               phone: selectedCutomer.phone,
+  //               type: selectedOption,
+  //             }}
+  //           />
+  //         )}
+  //       </>
+  //     ),
+  //     onOk() {
+  //       let id = selectedCutomer.id;
+  //       let key = selectedCutomer.key;
 
-        let name = form.getFieldValue('name');
-        let address = form.getFieldValue('address');
-        let phone = form.getFieldValue('phone');
+  //       let name = form.getFieldValue('name');
+  //       let address = form.getFieldValue('address');
+  //       let phone = form.getFieldValue('phone');
 
-        let data = {
-          id,
-          key,
-          name,
-          address,
-          phone,
-          typw: selectedOption,
-        };
+  //       let data = {
+  //         id,
+  //         key,
+  //         name,
+  //         address,
+  //         phone,
+  //         typw: selectedOption,
+  //       };
 
-        window.electron.ipcRenderer.updateCustomer(data);
-        form.resetFields();
-      },
-      onCancel() {
-        form.resetFields();
-      },
-    });
-  };
+  //       window.electron.ipcRenderer.updateCustomer(data);
+  //       form.resetFields();
+  //     },
+  //     onCancel() {
+  //       form.resetFields();
+  //     },
+  //   });
+  // };
 
   const loadSelectedCustomers = () => {
     setSelectedCutomersToLoad([...selectedRowKeys]);
@@ -500,7 +538,27 @@ function Customers({ getCurrentStock }) {
         //   </>
         // )}
       >
-        <p>Create...</p>
+        {selectedOption === TYPE.customer ? (
+          <CustomerForm
+            form={form}
+            initialValues={{
+              name: '',
+              address: '',
+              phone: '',
+              type: selectedOption,
+            }}
+          />
+        ) : (
+          <VendorForm
+            form={form}
+            initialValues={{
+              name: '',
+              address: '',
+              phone: '',
+              type: selectedOption,
+            }}
+          />
+        )}
       </Modal>
       <Modal
         open={openEditModal}
@@ -515,7 +573,27 @@ function Customers({ getCurrentStock }) {
         //   </>
         // )}
       >
-        <p>Edit...</p>
+        {selectedOption === TYPE.customer ? (
+          <CustomerForm
+            form={form}
+            initialValues={{
+              name: selectedCutomer.name,
+              address: selectedCutomer.address,
+              phone: selectedCutomer.phone,
+              type: selectedOption,
+            }}
+          />
+        ) : (
+          <VendorForm
+            form={form}
+            initialValues={{
+              name: selectedCutomer.name,
+              address: selectedCutomer.address,
+              phone: selectedCutomer.phone,
+              type: selectedOption,
+            }}
+          />
+        )}
       </Modal>
     </div>
   );
