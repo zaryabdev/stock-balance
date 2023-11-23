@@ -15,7 +15,7 @@ class ProductRepository {
           customer_id TEXT,
           value TEXT,
           label INTEGER,
-          qty_ctn INTEGER,
+          qty_ctn INTEGER
         )`;
     return this.dao.run(sql);
   }

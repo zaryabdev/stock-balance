@@ -31,15 +31,14 @@ import {
   useState,
 } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+
 import context from '../../AppContext';
-import CustomerEditGrid from './CustomerEditGrid';
-
-const { confirm } = Modal;
-
 import { STATUS, TYPE } from '../../contants';
+import CustomerEditGrid from './CustomerEditGrid';
 import List from './List';
 import MultiCustomersTabs from './MultiCustomersTabs';
 
+const { confirm } = Modal;
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
 const options = [
@@ -478,7 +477,14 @@ function CustomerForm({ form, initialValues }) {
   }, [nameField]);
 
   return (
-    <Form form={form} layout="vertical" autoComplete="on">
+    <Form
+      form={form}
+      autoComplete="on"
+      labelCol={{ span: 4 }}
+      wrapperCol={{ span: 14 }}
+      layout="horizontal"
+      style={{ maxWidth: 800 }}
+    >
       <Form.Item name="name" label="Name">
         <Input type="text" ref={nameField} />
       </Form.Item>

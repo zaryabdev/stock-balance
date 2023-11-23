@@ -19,12 +19,14 @@ import { resolveHtmlPath } from './util';
 import AppDAO from './dao';
 import CustomerInvoicRepository from './repositories/customer-invoice-repo';
 import CustomerRepository from './repositories/customer-repo';
+import ProductRepository from './repositories/product-repo';
 import StockRepository from './repositories/stock-repo';
 
 const dao = new AppDAO('db.sqlite3');
 const customerRepo = new CustomerRepository(dao);
 const customerInvoiceRepo = new CustomerInvoicRepository(dao);
 const stockRepo = new StockRepository(dao);
+const productRepo = new ProductRepository(dao);
 
 const STATUS = {
   SUCCESS: 'SUCCESS',
@@ -33,6 +35,7 @@ const STATUS = {
 
 stockRepo.createTable();
 customerRepo.createTable();
+productRepo.createTable();
 customerInvoiceRepo.createTable();
 
 const store = new Store();
