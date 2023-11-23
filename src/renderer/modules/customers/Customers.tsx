@@ -14,11 +14,15 @@ import {
   FloatButton,
   Form,
   Input,
+  InputNumber,
   Modal,
+  Popconfirm,
   Radio,
   Row,
   Space,
+  Table,
   Tabs,
+  Typography,
 } from 'antd';
 import {
   default as React,
@@ -34,7 +38,6 @@ import { v4 as uuidv4 } from 'uuid';
 
 import context from '../../AppContext';
 import { STATUS, TYPE } from '../../contants';
-import CustomerEditGrid from './CustomerEditGrid';
 import List from './List';
 import MultiCustomersTabs from './MultiCustomersTabs';
 
@@ -69,11 +72,15 @@ function Customers({ getCurrentStock }) {
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
 
+  const [customerUUID, setCustomerUUID] = useState('NEW');
+
   const handleShowCreateModal = () => {
+    setCustomerUUID(uuidv4());
     setOpenCreateModal(true);
   };
+
   const handleCreateModalOk = () => {
-    let id = uuidv4();
+    let id = customerUUID;
     let name = form.getFieldValue('name');
     let address = form.getFieldValue('address');
     let phone = form.getFieldValue('phone');
@@ -527,7 +534,10 @@ function Customers({ getCurrentStock }) {
       </Row>
       <Modal
         open={openCreateModal}
-        title="Create"
+        title={`${
+          selectedOption === TYPE.customer ? 'Create Customer' : 'Create Vendor'
+        } - ${customerUUID}`}
+        width={selectedOption === TYPE.vendor ? 1000 : 500}
         onOk={handleCreateModalOk}
         onCancel={handleCreateModalCancel}
         // footer={(_, { OkBtn, CancelBtn }) => (
@@ -538,27 +548,51 @@ function Customers({ getCurrentStock }) {
         //   </>
         // )}
       >
-        {selectedOption === TYPE.customer ? (
-          <CustomerForm
-            form={form}
-            initialValues={{
-              name: '',
-              address: '',
-              phone: '',
-              type: selectedOption,
-            }}
-          />
-        ) : (
-          <VendorForm
-            form={form}
-            initialValues={{
-              name: '',
-              address: '',
-              phone: '',
-              type: selectedOption,
-            }}
-          />
-        )}
+        <div>
+          {selectedOption === TYPE.customer && (
+            <CustomerForm
+              form={form}
+              initialValues={{
+                name: '',
+                address: '',
+                phone: '',
+                type: selectedOption,
+              }}
+            />
+          )}
+          {selectedOption === TYPE.vendor && (
+            <div>
+              <Tabs
+                defaultActiveKey="DETAILS"
+                centered
+                items={[
+                  {
+                    label: 'Details',
+                    children: (
+                      <VendorForm
+                        form={form}
+                        initialValues={{
+                          name: '',
+                          address: '',
+                          phone: '',
+                          type: selectedOption,
+                        }}
+                      />
+                    ),
+                    key: 'DETAILS',
+                    closable: false,
+                  },
+                  {
+                    label: 'Products',
+                    children: <Products />,
+                    key: 'PRODUCTS',
+                    closable: false,
+                  },
+                ]}
+              />
+            </div>
+          )}
+        </div>
       </Modal>
       <Modal
         open={openEditModal}
@@ -658,6 +692,231 @@ function VendorForm({ form, initialValues }) {
       <Form.Item name="phone" label="Phone">
         <Input />
       </Form.Item>
+    </Form>
+  );
+}
+
+// Editable Table
+interface Item {
+  key: string;
+  name: string;
+  age: number;
+  address: string;
+}
+
+const originData: Item[] = [];
+
+for (let i = 0; i < 1; i++) {
+  originData.push({
+    key: i.toString(),
+    name: `Edward ${i}`,
+    age: 32,
+    address: `London Park no. ${i}`,
+  });
+}
+interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
+  editing: boolean;
+  dataIndex: string;
+  title: any;
+  inputType: 'number' | 'text';
+  record: Item;
+  index: number;
+  children: React.ReactNode;
+}
+
+const EditableCell: React.FC<EditableCellProps> = ({
+  editing,
+  dataIndex,
+  title,
+  inputType,
+  record,
+  index,
+  children,
+  ...restProps
+}) => {
+  const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
+
+  return (
+    <td {...restProps}>
+      {editing ? (
+        <Form.Item
+          name={dataIndex}
+          style={{ margin: 0 }}
+          rules={[
+            {
+              required: true,
+              message: `Please Input ${title}!`,
+            },
+          ]}
+        >
+          {inputNode}
+        </Form.Item>
+      ) : (
+        children
+      )}
+    </td>
+  );
+};
+
+function Products(params: type) {
+  const [form] = Form.useForm();
+  const [data, setData] = useState(originData);
+  const [editingKey, setEditingKey] = useState('');
+
+  const isEditing = (record: Item) => record.key === editingKey;
+
+  const edit = (record: Partial<Item> & { key: React.Key }) => {
+    form.setFieldsValue({ name: '', age: '', address: '', ...record });
+    setEditingKey(record.key);
+  };
+
+  const remove = (record: Partial<Item> & { key: React.Key }) => {
+    form.setFieldsValue({ name: '', age: '', address: '', ...record });
+
+    setEditingKey(record.key);
+  };
+
+  const cancel = () => {
+    setEditingKey('');
+  };
+
+  const save = async (key: React.Key) => {
+    try {
+      const row = (await form.validateFields()) as Item;
+
+      const newData = [...data];
+      const index = newData.findIndex((item) => key === item.key);
+      if (index > -1) {
+        const item = newData[index];
+        newData.splice(index, 1, {
+          ...item,
+          ...row,
+        });
+        setData(newData);
+        setEditingKey('');
+      } else {
+        newData.push(row);
+        setData(newData);
+        setEditingKey('');
+      }
+    } catch (errInfo) {
+      console.log('Validate Failed:', errInfo);
+    }
+  };
+
+  const columns = [
+    {
+      title: 'name',
+      dataIndex: 'name',
+      width: '25%',
+      editable: true,
+    },
+    {
+      title: 'age',
+      dataIndex: 'age',
+      width: '15%',
+      editable: true,
+    },
+    {
+      title: 'address',
+      dataIndex: 'address',
+      width: '40%',
+      editable: true,
+    },
+    {
+      title: 'operation',
+      dataIndex: 'operation',
+      render: (_: any, record: Item) => {
+        const editable = isEditing(record);
+        return editable ? (
+          <span>
+            <Typography.Link
+              onClick={() => save(record.key)}
+              style={{ marginRight: 8 }}
+            >
+              Save
+            </Typography.Link>
+            <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
+              <a>Cancel</a>
+            </Popconfirm>
+          </span>
+        ) : (
+          <>
+            <Typography.Link
+              disabled={editingKey !== ''}
+              onClick={() => edit(record)}
+            >
+              Edit
+            </Typography.Link>{' '}
+            <Typography.Link
+              disabled={editingKey !== ''}
+              onClick={() => remove(record)}
+            >
+              Delete
+            </Typography.Link>
+          </>
+        );
+      },
+    },
+  ];
+
+  const mergedColumns = columns.map((col) => {
+    if (!col.editable) {
+      return col;
+    }
+    return {
+      ...col,
+      onCell: (record: Item) => ({
+        record,
+        inputType: col.dataIndex === 'age' ? 'number' : 'text',
+        dataIndex: col.dataIndex,
+        title: col.title,
+        editing: isEditing(record),
+      }),
+    };
+  });
+
+  const addRow = () => {
+    const id = uuidv4();
+    let row = [
+      {
+        key: id,
+        name: `product ${id}`,
+        age: 32,
+        address: `London Park no. ${id}`,
+      },
+    ];
+
+    setData((prev) => {
+      return [...prev, ...row];
+    });
+  };
+
+  return (
+    <Form form={form} component={false}>
+      <Button
+        type="default"
+        size="middle"
+        style={{ margin: 2 }}
+        onClick={addRow}
+      >
+        Add Row
+      </Button>
+      <Table
+        components={{
+          body: {
+            cell: EditableCell,
+          },
+        }}
+        bordered
+        dataSource={data}
+        columns={mergedColumns}
+        rowClassName="editable-row"
+        pagination={{
+          onChange: cancel,
+          defaultPageSize: 5,
+        }}
+      />
     </Form>
   );
 }
