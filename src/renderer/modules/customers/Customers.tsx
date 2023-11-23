@@ -159,9 +159,9 @@ function Customers({ getCurrentStock }) {
             <CustomerForm
               form={form}
               initialValues={{
-                name: '',
-                address: '',
-                phone: '',
+                name: selectedCutomer.name,
+                address: selectedCutomer.address,
+                phone: selectedCutomer.phone,
                 type: selectedOption,
               }}
             />
@@ -169,9 +169,9 @@ function Customers({ getCurrentStock }) {
             <VendorForm
               form={form}
               initialValues={{
-                name: '',
-                address: '',
-                phone: '',
+                name: selectedCutomer.name,
+                address: selectedCutomer.address,
+                phone: selectedCutomer.phone,
                 type: selectedOption,
               }}
             />
