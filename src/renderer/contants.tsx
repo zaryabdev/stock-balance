@@ -19,3 +19,8 @@ export const TYPE = {
   customer: 'CUSTOMER',
   vendor: 'VENDOR',
 };
+
+export const MODE = {
+  create: 'CREATE',
+  update: 'UPDATE',
+};
