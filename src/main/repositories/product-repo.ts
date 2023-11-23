@@ -1,4 +1,5 @@
 import logger from '../logger';
+
 const { v4: uuidv4 } = require('uuid');
 
 class ProductRepository {
@@ -22,22 +23,41 @@ class ProductRepository {
 
   create(data, callbackFunction) {
     console.log('create called for ProductRepository');
-    const { id, customer_id, value, qty_ctn, label } = data;
+    console.log(data);
 
-    console.log({ id, customer_id, value, qty_ctn, label });
+    if (data.length === 0) {
+      const res = {
+        status: 'SUCCESS',
+        data: [...data],
+        message: 'No records were created',
+      };
+      callbackFunction(res);
+      return;
+    }
+
     console.log(callbackFunction);
-    this.dao.run(
-      'INSERT INTO product (id, customer_id, value, qty_ctn, label ) VALUES (?,?,?,?,?)',
-      [id, customer_id, value, qty_ctn, label],
-      data,
-      callbackFunction,
-    );
+
+    const valuesArr = data.map((el) => {
+      const _str = `('${el.id}','${el.customer_id}','${el.label}','${el.qty_ctn}','${el.value}')`;
+      return _str;
+    });
+
+    console.log(valuesArr);
+
+    const valuesStr = valuesArr.join(',');
+
+    console.log(valuesStr);
+
+    const query = `INSERT INTO product (id, customer_id, label, qty_ctn, value) VALUES ${valuesStr};`;
+
+    this.dao.run(query, [], data, callbackFunction);
   }
 
   getAll(data, callbackFunction) {
     logger.debug(`getAll called`);
     this.dao.all(`SELECT * FROM product;`, [], data, callbackFunction);
   }
+
   getAllById(data, callbackFunction) {
     logger.debug(`getAll called`);
 
@@ -83,10 +103,10 @@ class ProductRepository {
     //   callbackFunction,
     // );
 
-    let currentThis = this;
+    const currentThis = this;
 
     console.log('update called for ProductRepository');
-    console.log('Data length : ' + data.length);
+    console.log(`Data length : ${data.length}`);
 
     if (data.length === 0) {
       const res = {
@@ -119,12 +139,12 @@ class ProductRepository {
 
     // create records
     if (toCreate.length > 0) {
-      console.log('Length of toCreate' + toCreate.length);
+      console.log(`Length of toCreate${toCreate.length}`);
 
       // const { id, customer_id, value, label, qty_ctn } = data;
 
       const formatedSqlValuesArr = toCreate.map((el) => {
-        let id = uuidv4();
+        const id = uuidv4();
         return `('${id}','${el.customer_id}','${el.value}','${el.label}','${el.qty_ctn}')`;
       });
 
@@ -140,7 +160,7 @@ class ProductRepository {
 
       this.dao.run(insertQuery, [], data, toUpdateCbFunc);
     } else {
-      console.log('Length of toCreate' + toCreate.length);
+      console.log(`Length of toCreate${toCreate.length}`);
       console.log('Going to call updateRecords() because nothing to create...');
       updateRecords({ status: 'SUCCESS' });
     }
@@ -167,7 +187,7 @@ class ProductRepository {
         for (let index = 0; index < toUpdate.length; index++) {
           const record = toUpdate[index];
           // const { id, customer_id, value, label, qty_ctn } = data;
-          let query = `
+          const query = `
           UPDATE product SET customer_id='${record.customer_id}', value='${record.value}', label='${record.label}', qty_ctn='${record.qty_ctn}' WHERE id='${record.id}';
         `;
 
@@ -177,7 +197,7 @@ class ProductRepository {
               console.log(res);
             }
           });
-          updatedRecords = updatedRecords - 1;
+          updatedRecords -= 1;
         }
 
         console.log('All records updated');
@@ -194,7 +214,7 @@ class ProductRepository {
           }, 500);
         }
       } else {
-        console.log('Length of toUpdate' + toUpdate.length);
+        console.log(`Length of toUpdate${toUpdate.length}`);
         console.log(
           'Going to call callbackFunction() because nothing to update...',
         );

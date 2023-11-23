@@ -59,6 +59,70 @@ const initialCustomerState = {
   type: TYPE.customer,
 };
 
+// Editable Table
+interface Item {
+  key: string;
+  id: string;
+  customer_id: string;
+  value: string;
+  label: string;
+  qty_ctn: number;
+}
+
+const originData: Item[] = [];
+
+// for (let i = 0; i < 1; i++) {
+//   originData.push({
+//     key: i.toString(),
+//     name: `Edward ${i}`,
+//     age: 32,
+//     address: `London Park no. ${i}`,
+//   });
+// }
+interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
+  editing: boolean;
+  dataIndex: string;
+  title: any;
+  inputType: 'number' | 'text';
+  record: Item;
+  index: number;
+  children: React.ReactNode;
+}
+
+const EditableCell: React.FC<EditableCellProps> = ({
+  editing,
+  dataIndex,
+  title,
+  inputType,
+  record,
+  index,
+  children,
+  ...restProps
+}) => {
+  const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
+
+  return (
+    <td {...restProps}>
+      {editing ? (
+        <Form.Item
+          name={dataIndex}
+          style={{ margin: 0 }}
+          rules={[
+            {
+              required: true,
+              message: `Please Input ${title}!`,
+            },
+          ]}
+        >
+          {inputNode}
+        </Form.Item>
+      ) : (
+        children
+      )}
+    </td>
+  );
+};
+
 function Customers({ getCurrentStock }) {
   const appContext = useContext(context);
 
@@ -72,6 +136,12 @@ function Customers({ getCurrentStock }) {
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
 
+  const [productsForm] = Form.useForm();
+  const [products, setProducts] = useState(originData);
+  const [editingKey, setEditingKey] = useState('');
+
+  const isEditing = (record: Item) => record.key === editingKey;
+
   const [customerUUID, setCustomerUUID] = useState('NEW');
 
   const handleShowCreateModal = () => {
@@ -80,14 +150,14 @@ function Customers({ getCurrentStock }) {
   };
 
   const handleCreateModalOk = () => {
-    let id = customerUUID;
-    let name = form.getFieldValue('name');
-    let address = form.getFieldValue('address');
-    let phone = form.getFieldValue('phone');
+    const customerId = customerUUID;
+    const name = form.getFieldValue('name');
+    const address = form.getFieldValue('address');
+    const phone = form.getFieldValue('phone');
 
-    let data = {
-      id,
-      key: id,
+    const data = {
+      id: customerId,
+      key: customerId,
       name,
       address,
       phone,
@@ -95,6 +165,10 @@ function Customers({ getCurrentStock }) {
     };
 
     window.electron.ipcRenderer.createCustomer(data);
+    debugger;
+    window.electron.ipcRenderer.createProduct(products);
+
+    console.log(products);
 
     form.resetFields();
     setOpenCreateModal(false);
@@ -109,14 +183,14 @@ function Customers({ getCurrentStock }) {
     setOpenEditModal(true);
   };
   const handleEditModalOk = () => {
-    let id = selectedCutomer.id;
-    let key = selectedCutomer.key;
+    const { id } = selectedCutomer;
+    const { key } = selectedCutomer;
 
-    let name = form.getFieldValue('name');
-    let address = form.getFieldValue('address');
-    let phone = form.getFieldValue('phone');
+    const name = form.getFieldValue('name');
+    const address = form.getFieldValue('address');
+    const phone = form.getFieldValue('phone');
 
-    let data = {
+    const data = {
       id,
       key,
       name,
@@ -273,6 +347,144 @@ function Customers({ getCurrentStock }) {
   //   });
   // };
 
+  const edit = (record: Partial<Item> & { key: React.Key }) => {
+    productsForm.setFieldsValue({
+      customer_id: customerUUID,
+      ...record,
+    });
+    setEditingKey(record.key);
+  };
+
+  const remove = (record: Partial<Item> & { key: React.Key }) => {
+    productsForm.setFieldsValue({
+      label: '',
+      qty_ctn: '',
+      id: '',
+      key: '',
+      value: '',
+    });
+
+    setEditingKey('');
+
+    const updatedProducts = products.filter(
+      (product) => product.id !== record.id,
+    );
+    setProducts(updatedProducts);
+  };
+
+  const cancel = () => {
+    setEditingKey('');
+  };
+
+  const save = async (key: React.Key) => {
+    try {
+      const row = (await productsForm.validateFields()) as Item;
+      const newData = [...products];
+
+      const index = newData.findIndex((item) => key === item.key);
+
+      if (index > -1) {
+        const item = newData[index];
+        newData.splice(index, 1, {
+          ...item,
+          ...row,
+        });
+        setProducts(newData);
+        setEditingKey('');
+      } else {
+        newData.push(row);
+        setProducts(newData);
+        setEditingKey('');
+      }
+    } catch (errInfo) {
+      console.log('Validate Failed:', errInfo);
+    }
+  };
+
+  const columns = [
+    {
+      title: 'Name',
+      dataIndex: 'label',
+      width: '25%',
+      editable: true,
+    },
+    {
+      title: 'Quantity Per Carton',
+      dataIndex: 'qty_ctn',
+      width: '40%',
+      editable: true,
+    },
+    {
+      title: '',
+      dataIndex: 'operation',
+      render: (_: any, record: Item) => {
+        const editable = isEditing(record);
+        return editable ? (
+          <span>
+            <Typography.Link
+              onClick={() => save(record.key)}
+              style={{ marginRight: 8 }}
+            >
+              Save
+            </Typography.Link>
+            <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
+              <a>Cancel</a>
+            </Popconfirm>
+          </span>
+        ) : (
+          <>
+            <Typography.Link
+              disabled={editingKey !== ''}
+              onClick={() => edit(record)}
+            >
+              Edit
+            </Typography.Link>{' '}
+            <Typography.Link
+              disabled={editingKey !== ''}
+              onClick={() => remove(record)}
+            >
+              Delete
+            </Typography.Link>
+          </>
+        );
+      },
+    },
+  ];
+
+  const mergedColumns = columns.map((col) => {
+    if (!col.editable) {
+      return col;
+    }
+    return {
+      ...col,
+      onCell: (record: Item) => ({
+        record,
+        inputType: col.dataIndex === 'qty_ctn' ? 'number' : 'text',
+        dataIndex: col.dataIndex,
+        title: col.title,
+        editing: isEditing(record),
+      }),
+    };
+  });
+
+  const addRow = () => {
+    const id = uuidv4();
+    const row = [
+      {
+        key: id,
+        id,
+        customer_id: customerUUID,
+        label: '',
+        value: '',
+        qty_ctn: '',
+      },
+    ];
+
+    setProducts((prev) => {
+      return [...prev, ...row];
+    });
+  };
+
   const loadSelectedCustomers = () => {
     setSelectedCutomersToLoad([...selectedRowKeys]);
   };
@@ -292,7 +504,7 @@ function Customers({ getCurrentStock }) {
       okType: 'danger',
       cancelText: 'No',
       onOk() {
-        let data = [...selectedRowKeys];
+        const data = [...selectedRowKeys];
         window.electron.ipcRenderer.deleteCustomers(data);
       },
       onCancel() {
@@ -422,6 +634,32 @@ function Customers({ getCurrentStock }) {
         console.log(response);
         window.electron.ipcRenderer.getAllCustomers({});
       }
+
+      // const newActiveKey = uuidv4();
+      // const newPanes = [...tabs];
+      // newPanes.push({
+      //   label: 'New Tab',
+      //   children: <CustomerEditGrid label={`Tab ID =  ${newActiveKey}`} />,
+      //   key: newActiveKey,
+      // });
+      // setTabs(newPanes);
+      // setActiveTabKey(newActiveKey);
+    }
+  });
+
+  window.electron.ipcRenderer.on('create:product-response', (response) => {
+    console.log('create:product-response reponse came back');
+    console.log(response);
+
+    if (response.status === STATUS.FAILED) {
+      console.log(response.message);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('response of create:product-response ');
+      console.log(response);
+      // getAllCustomers({});
+      debugger;
 
       // const newActiveKey = uuidv4();
       // const newPanes = [...tabs];
@@ -572,9 +810,21 @@ function Customers({ getCurrentStock }) {
                       <VendorForm
                         form={form}
                         initialValues={{
-                          name: '',
-                          address: '',
-                          phone: '',
+                          name: `${
+                            form.getFieldValue('name')
+                              ? form.getFieldValue('name')
+                              : ''
+                          }`,
+                          address: `${
+                            form.getFieldValue('address')
+                              ? form.getFieldValue('address')
+                              : ''
+                          }`,
+                          phone: `${
+                            form.getFieldValue('phone')
+                              ? form.getFieldValue('phone')
+                              : ''
+                          }`,
                           type: selectedOption,
                         }}
                       />
@@ -584,7 +834,15 @@ function Customers({ getCurrentStock }) {
                   },
                   {
                     label: 'Products',
-                    children: <Products />,
+                    children: (
+                      <Products
+                        productsForm={productsForm}
+                        addRow={addRow}
+                        products={products}
+                        mergedColumns={mergedColumns}
+                        cancel={cancel}
+                      />
+                    ),
                     key: 'PRODUCTS',
                     closable: false,
                   },
@@ -696,211 +954,16 @@ function VendorForm({ form, initialValues }) {
   );
 }
 
-// Editable Table
-interface Item {
-  key: string;
-  name: string;
-  age: number;
-  address: string;
-}
-
-const originData: Item[] = [];
-
-for (let i = 0; i < 1; i++) {
-  originData.push({
-    key: i.toString(),
-    name: `Edward ${i}`,
-    age: 32,
-    address: `London Park no. ${i}`,
-  });
-}
-interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
-  editing: boolean;
-  dataIndex: string;
-  title: any;
-  inputType: 'number' | 'text';
-  record: Item;
-  index: number;
-  children: React.ReactNode;
-}
-
-const EditableCell: React.FC<EditableCellProps> = ({
-  editing,
-  dataIndex,
-  title,
-  inputType,
-  record,
-  index,
-  children,
-  ...restProps
-}) => {
-  const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
-
+function Products({ productsForm, addRow, products, mergedColumns, cancel }) {
   return (
-    <td {...restProps}>
-      {editing ? (
-        <Form.Item
-          name={dataIndex}
-          style={{ margin: 0 }}
-          rules={[
-            {
-              required: true,
-              message: `Please Input ${title}!`,
-            },
-          ]}
-        >
-          {inputNode}
-        </Form.Item>
-      ) : (
-        children
-      )}
-    </td>
-  );
-};
-
-function Products(params: type) {
-  const [form] = Form.useForm();
-  const [data, setData] = useState(originData);
-  const [editingKey, setEditingKey] = useState('');
-
-  const isEditing = (record: Item) => record.key === editingKey;
-
-  const edit = (record: Partial<Item> & { key: React.Key }) => {
-    form.setFieldsValue({ name: '', age: '', address: '', ...record });
-    setEditingKey(record.key);
-  };
-
-  const remove = (record: Partial<Item> & { key: React.Key }) => {
-    form.setFieldsValue({ name: '', age: '', address: '', ...record });
-
-    setEditingKey(record.key);
-  };
-
-  const cancel = () => {
-    setEditingKey('');
-  };
-
-  const save = async (key: React.Key) => {
-    try {
-      const row = (await form.validateFields()) as Item;
-
-      const newData = [...data];
-      const index = newData.findIndex((item) => key === item.key);
-      if (index > -1) {
-        const item = newData[index];
-        newData.splice(index, 1, {
-          ...item,
-          ...row,
-        });
-        setData(newData);
-        setEditingKey('');
-      } else {
-        newData.push(row);
-        setData(newData);
-        setEditingKey('');
-      }
-    } catch (errInfo) {
-      console.log('Validate Failed:', errInfo);
-    }
-  };
-
-  const columns = [
-    {
-      title: 'name',
-      dataIndex: 'name',
-      width: '25%',
-      editable: true,
-    },
-    {
-      title: 'age',
-      dataIndex: 'age',
-      width: '15%',
-      editable: true,
-    },
-    {
-      title: 'address',
-      dataIndex: 'address',
-      width: '40%',
-      editable: true,
-    },
-    {
-      title: 'operation',
-      dataIndex: 'operation',
-      render: (_: any, record: Item) => {
-        const editable = isEditing(record);
-        return editable ? (
-          <span>
-            <Typography.Link
-              onClick={() => save(record.key)}
-              style={{ marginRight: 8 }}
-            >
-              Save
-            </Typography.Link>
-            <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-              <a>Cancel</a>
-            </Popconfirm>
-          </span>
-        ) : (
-          <>
-            <Typography.Link
-              disabled={editingKey !== ''}
-              onClick={() => edit(record)}
-            >
-              Edit
-            </Typography.Link>{' '}
-            <Typography.Link
-              disabled={editingKey !== ''}
-              onClick={() => remove(record)}
-            >
-              Delete
-            </Typography.Link>
-          </>
-        );
-      },
-    },
-  ];
-
-  const mergedColumns = columns.map((col) => {
-    if (!col.editable) {
-      return col;
-    }
-    return {
-      ...col,
-      onCell: (record: Item) => ({
-        record,
-        inputType: col.dataIndex === 'age' ? 'number' : 'text',
-        dataIndex: col.dataIndex,
-        title: col.title,
-        editing: isEditing(record),
-      }),
-    };
-  });
-
-  const addRow = () => {
-    const id = uuidv4();
-    let row = [
-      {
-        key: id,
-        name: `product ${id}`,
-        age: 32,
-        address: `London Park no. ${id}`,
-      },
-    ];
-
-    setData((prev) => {
-      return [...prev, ...row];
-    });
-  };
-
-  return (
-    <Form form={form} component={false}>
+    <Form form={productsForm} component={false}>
       <Button
         type="default"
         size="middle"
         style={{ margin: 2 }}
         onClick={addRow}
       >
-        Add Row
+        Add New Product
       </Button>
       <Table
         components={{
@@ -909,12 +972,12 @@ function Products(params: type) {
           },
         }}
         bordered
-        dataSource={data}
+        dataSource={products}
         columns={mergedColumns}
         rowClassName="editable-row"
         pagination={{
           onChange: cancel,
-          defaultPageSize: 5,
+          defaultPageSize: 6,
         }}
       />
     </Form>

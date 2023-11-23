@@ -76,6 +76,27 @@ const electronHandler = {
       ipcRenderer.send('delete:stock', data);
     },
 
+    createProduct(data) {
+      console.log('Inside preload create:product');
+      console.log(data);
+      ipcRenderer.send('create:product', data);
+    },
+    updateProduct(data) {
+      console.log('Inside preload update:product');
+      console.log(data);
+      ipcRenderer.send('update:product', data);
+    },
+    getAllProduct(data) {
+      console.log('Inside preload get:all:product');
+      console.log(data);
+      ipcRenderer.send('get:all:product', data);
+    },
+    deleteProduct(data) {
+      console.log('Inside preload delete:product');
+      console.log(data);
+      ipcRenderer.send('delete:product', data);
+    },
+
     // on(channel, func) {
     //   const validChannels = ['create:customer-response'];
     //   console.log('Inside on Channel check');

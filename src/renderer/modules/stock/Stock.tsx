@@ -8,8 +8,8 @@ import Highlighter from 'react-highlight-words';
 import appContext from '../../AppContext';
 
 interface DataType {
-  key: string;
   id: string;
+  key: string;
   product: string;
   carton: number;
   qty_ctn: number;
@@ -17,15 +17,6 @@ interface DataType {
 }
 
 type DataIndex = keyof DataType;
-
-const data: DataType[] = [
-  {
-    key: '1',
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-  },
-];
 
 const Stock: React.FC = () => {
   const [searchText, setSearchText] = useState('');

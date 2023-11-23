@@ -482,6 +482,107 @@ ipcMain.on('delete:customer-invoice', (event, data) => {
   customerInvoiceRepo.deleteRecords(data, callbackFunction);
 });
 
+// IPC listener - product
+ipcMain.on('create:product', (event, data) => {
+  console.log('Inside Main create:product');
+  console.log(data);
+  const callbackFunction = (response, err) => {
+    // const webContents = event.sender;
+    // const win = BrowserWindow.fromWebContents(webContents);
+    console.log('callback function called!!');
+    if (err) {
+      console.log(err);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('respose was success');
+      // console.log(win);
+      event.reply('create:product', response);
+
+      // win.webContents.send('create:customer', response);
+    } else {
+      console.log(response.message);
+    }
+  };
+
+  productRepo.create(data, callbackFunction);
+});
+
+ipcMain.on('update:product', (event, data) => {
+  console.log('Inside Main update:product');
+  console.log(data);
+  const callbackFunction = (response, err) => {
+    // const webContents = event.sender;
+    // const win = BrowserWindow.fromWebContents(webContents);
+    console.log('callback function called!!');
+    if (err) {
+      console.log(err);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('respose was success');
+      // console.log(win);
+      event.reply('update:product-response', response);
+
+      // win.webContents.send('create:product', response);
+    } else {
+      console.log(response.message);
+    }
+  };
+
+  productRepo.update(data, callbackFunction);
+});
+
+ipcMain.on('get:all:product', (event, data) => {
+  console.log('Inside Main get:all:product');
+  console.log(data);
+  const callbackFunction = (response, err) => {
+    // const webContents = event.sender;
+    // const win = BrowserWindow.fromWebContents(webContents);
+    console.log('callback function called!!');
+    if (err) {
+      console.log(err);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('respose was success');
+      // console.log(win);
+      event.reply('get:all:product-response', response);
+
+      // win.webContents.send('create:customer', response);
+    } else {
+      console.log(response.message);
+    }
+  };
+
+  productRepo.getAll(data, callbackFunction);
+});
+
+ipcMain.on('delete:product', (event, data) => {
+  console.log('Inside Main delete:product');
+  console.log(data);
+  const callbackFunction = (response, err) => {
+    // const webContents = event.sender;
+    // const win = BrowserWindow.fromWebContents(webContents);
+    console.log('callback function called!! for delete');
+    if (err) {
+      console.log(err);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('respose was success');
+      // console.log(win);
+      event.reply('delete:product-response', response);
+
+      // win.webContents.send('create:customer', response);
+    } else {
+      console.log(response.message);
+    }
+  };
+
+  productRepo.deleteRecords(data, callbackFunction);
+});
+
 // App listerns
 app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even
