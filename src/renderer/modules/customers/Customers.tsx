@@ -66,6 +66,31 @@ function Customers({ getCurrentStock }) {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [selectedOption, setSelectedOption] = useState(TYPE.customer);
 
+  const [openCreateModal, setOpenCreateModal] = useState(false);
+  const [openEditModal, setOpenEditModal] = useState(false);
+
+  const handleShowCreateModal = () => {
+    setOpenCreateModal(true);
+  };
+  const handleCreateModalOk = () => {
+    setOpenCreateModal(false);
+  };
+
+  const handleCreateModalCancel = () => {
+    setOpenCreateModal(false);
+  };
+
+  const handleShowEditModal = () => {
+    setOpenEditModal(true);
+  };
+  const handleEditModalOk = () => {
+    setOpenEditModal(false);
+  };
+
+  const handleEditModalCancel = () => {
+    setOpenEditModal(false);
+  };
+
   const [form] = Form.useForm<{
     name: string;
     address: string;
@@ -366,100 +391,133 @@ function Customers({ getCurrentStock }) {
   });
 
   return (
-    <Row gutter={[8, 8]}>
-      <Col
-        className={`${
-          appContext.toggleSideBar ? 'display-block' : 'visually-hidden'
-        }`}
-        span={6}
-      >
-        <div style={{ margin: 4 }}>
-          <Radio.Group
-            options={options}
-            onChange={handleSelectionChange}
-            value={selectedOption}
-            optionType="button"
-            buttonStyle="solid"
-          />
-        </div>
-
-        <>
+    <div>
+      <Row gutter={[8, 8]}>
+        <Col
+          className={`${
+            appContext.toggleSideBar ? 'display-block' : 'visually-hidden'
+          }`}
+          span={6}
+        >
           <div style={{ margin: 4 }}>
-            <Button
-              type="default"
-              size="middle"
-              style={{ margin: 2 }}
-              onClick={createNewCustomer}
-              // loading={loading}
-              disabled={
-                selectedRowKeys.length > 0 || selectedOption === TYPE.both
-              }
-            >
-              Add
-            </Button>
-            <Button
-              type="default"
-              size="middle"
-              style={{ margin: 2 }}
-              onClick={editSelectedCustomer}
-              // loading={loading}
-              disabled={
-                selectedRowKeys.length === 0 || selectedRowKeys.length > 1
-              }
-            >
-              Edit
-            </Button>
-            <Button
-              type="default"
-              size="middle"
-              style={{ margin: 2 }}
-              onClick={loadSelectedCustomers}
-              // loading={loading}
-              disabled={
-                selectedRowKeys.length < 1 || selectedOption === 'STOCK'
-              }
-            >
-              Load
-            </Button>
-            <Button
-              type="default"
-              size="middle"
-              style={{ margin: 2 }}
-              onClick={showDeleteConfirm}
-              // loading={loading}
-              disabled={
-                selectedRowKeys.length < 1 || selectedOption === TYPE.both
-              }
-            >
-              Delete
-            </Button>
-            <Button
-              type="default"
-              size="middle"
-              style={{ margin: 2 }}
-              onClick={() => appContext.setToggleSideBar((prev) => !prev)}
-              // loading={loading}
-              // disabled={}
-            >
-              Hide
-            </Button>
+            <Radio.Group
+              options={options}
+              onChange={handleSelectionChange}
+              value={selectedOption}
+              optionType="button"
+              buttonStyle="solid"
+            />
           </div>
-          <List
-            data={filteredCustomersList}
-            option={selectedOption}
-            selectedRowKeys={selectedRowKeys}
-            handleSelectedRowKeys={handleSelectedRowKeys}
+          <>
+            <div style={{ margin: 4 }}>
+              <Button
+                type="default"
+                size="middle"
+                style={{ margin: 2 }}
+                // onClick={createNewCustomer}
+                onClick={handleShowCreateModal}
+                // loading={loading}
+                disabled={
+                  selectedRowKeys.length > 0 || selectedOption === TYPE.both
+                }
+              >
+                Add
+              </Button>
+              <Button
+                type="default"
+                size="middle"
+                style={{ margin: 2 }}
+                // onClick={editSelectedCustomer}
+                onClick={handleShowEditModal}
+                // loading={loading}
+                disabled={
+                  selectedRowKeys.length === 0 || selectedRowKeys.length > 1
+                }
+              >
+                Edit
+              </Button>
+              <Button
+                type="default"
+                size="middle"
+                style={{ margin: 2 }}
+                onClick={loadSelectedCustomers}
+                // loading={loading}
+                disabled={
+                  selectedRowKeys.length < 1 || selectedOption === 'STOCK'
+                }
+              >
+                Load
+              </Button>
+              <Button
+                type="default"
+                size="middle"
+                style={{ margin: 2 }}
+                onClick={showDeleteConfirm}
+                // loading={loading}
+                disabled={
+                  selectedRowKeys.length < 1 || selectedOption === TYPE.both
+                }
+              >
+                Delete
+              </Button>
+              <Button
+                type="default"
+                size="middle"
+                style={{ margin: 2 }}
+                onClick={() => appContext.setToggleSideBar((prev) => !prev)}
+                // loading={loading}
+                // disabled={}
+              >
+                Hide
+              </Button>
+            </div>
+            <List
+              data={filteredCustomersList}
+              option={selectedOption}
+              selectedRowKeys={selectedRowKeys}
+              handleSelectedRowKeys={handleSelectedRowKeys}
+            />
+          </>
+        </Col>
+        <Col span={appContext.toggleSideBar ? 18 : 24}>
+          <MultiCustomersTabs
+            customersList={customersList}
+            getCurrentStock={getCurrentStock}
+            selectedCutomersToLoad={selectedCutomersToLoad}
           />
-        </>
-      </Col>
-      <Col span={appContext.toggleSideBar ? 18 : 24}>
-        <MultiCustomersTabs
-          customersList={customersList}
-          getCurrentStock={getCurrentStock}
-          selectedCutomersToLoad={selectedCutomersToLoad}
-        />
-      </Col>
-    </Row>
+        </Col>
+      </Row>
+      <Modal
+        open={openCreateModal}
+        title="Create"
+        onOk={handleCreateModalOk}
+        onCancel={handleCreateModalCancel}
+        // footer={(_, { OkBtn, CancelBtn }) => (
+        //   <>
+        //     <Button>Custom Button</Button>
+        //     <CancelBtn />
+        //     <OkBtn />
+        //   </>
+        // )}
+      >
+        <p>Create...</p>
+      </Modal>
+      <Modal
+        open={openEditModal}
+        title="Edit"
+        onOk={handleEditModalOk}
+        onCancel={handleEditModalCancel}
+        // footer={(_, { OkBtn, CancelBtn }) => (
+        //   <>
+        //     <Button>Custom Button</Button>
+        //     <CancelBtn />
+        //     <OkBtn />
+        //   </>
+        // )}
+      >
+        <p>Edit...</p>
+      </Modal>
+    </div>
   );
 }
 
