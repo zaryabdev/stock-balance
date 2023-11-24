@@ -374,95 +374,190 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
     setData(withState);
     setPrevData(withState);
     debugger;
-    let newStock = {};
 
-    withState.map((record) => {
+    if (type === TYPE.customer) {
+      let newStock = {};
+      debugger;
+      withState.map((record) => {
+        debugger;
+
+        if (newStock[record.product]) {
+          let currentStock = newStock[record.product];
+
+          if (record.state === STATE.deleted) {
+            debugger;
+            // let carton = record.carton ? record.carton : 0;
+            // currentStock.carton = currentStock.carton - carton;
+
+            // let qty_ctn = record.qty_ctn ? record.qty_ctn : 0;
+            // currentStock.qty_ctn = currentStock.qty_ctn - qty_ctn;
+          } else {
+            currentStock.carton = currentStock.carton - record.carton;
+            currentStock.total_qty = currentStock.total_qty - record.total_qty;
+          }
+          newStock[record.product] = currentStock;
+        } else {
+          if (record.state === STATE.deleted) {
+            // let carton = record.carton ? record.carton : 0;
+            // let qty_ctn = record.qty_ctn ? record.qty_ctn : 0;
+            // let total_qty = record.total_qty ? record.total_qty : 0;
+
+            let currentStock = {
+              id: 'NEW',
+              product: record.product,
+              carton: 0,
+              qty_ctn: 0,
+              total_qty: 0,
+            };
+
+            newStock[record.product] = currentStock;
+          } else {
+            let currentStock = {
+              id: 'NEW',
+              product: record.product,
+              carton: record.carton,
+              qty_ctn: record.qty_ctn,
+              total_qty: record.total_qty,
+            };
+
+            newStock[record.product] = currentStock;
+          }
+        }
+      });
+
+      let currentCotextStock = {};
+
+      if (context && context.currentStock) {
+        context.currentStock.map((item) => {
+          let { product } = item;
+          currentCotextStock[product] = item;
+        });
+      }
+
+      console.log(currentCotextStock);
+      console.log(newStock);
       debugger;
 
-      if (newStock[record.product]) {
-        let currentStock = newStock[record.product];
-
-        if (record.state === STATE.deleted) {
-          debugger;
-          // let carton = record.carton ? record.carton : 0;
-          // currentStock.carton = currentStock.carton - carton;
-
-          // let qty_ctn = record.qty_ctn ? record.qty_ctn : 0;
-          // currentStock.qty_ctn = currentStock.qty_ctn - qty_ctn;
-        } else {
-          currentStock.carton = currentStock.carton + record.carton;
-          currentStock.total_qty = currentStock.total_qty + record.total_qty;
+      Object.keys(currentCotextStock).forEach(function (key, index) {
+        if (newStock[key]) {
+          newStock[key].id = currentCotextStock[key].id;
         }
-        newStock[record.product] = currentStock;
-      } else {
-        if (record.state === STATE.deleted) {
-          // let carton = record.carton ? record.carton : 0;
-          // let qty_ctn = record.qty_ctn ? record.qty_ctn : 0;
-          // let total_qty = record.total_qty ? record.total_qty : 0;
-
-          let currentStock = {
-            id: 'NEW',
-            product: record.product,
-            carton: 0,
-            qty_ctn: 0,
-            total_qty: 0,
-          };
-
-          newStock[record.product] = currentStock;
-        } else {
-          let currentStock = {
-            id: 'NEW',
-            product: record.product,
-            carton: record.carton,
-            qty_ctn: record.qty_ctn,
-            total_qty: record.total_qty,
-          };
-
-          newStock[record.product] = currentStock;
-        }
-      }
-    });
-
-    let currentCotextStock = {};
-
-    if (context && context.currentStock) {
-      context.currentStock.map((item) => {
-        let { product } = item;
-        currentCotextStock[product] = item;
       });
+
+      console.log(currentCotextStock);
+      console.log(newStock);
+      debugger;
+      let updatedStock = [];
+
+      Object.keys(newStock).forEach(function (key, index) {
+        updatedStock.push(newStock[key]);
+      });
+
+      console.log(withState);
+      console.log(newStock);
+
+      console.log(updatedStock);
+
+      debugger;
+      window.electron.ipcRenderer.updateCustomerInvoice(withState);
+      window.electron.ipcRenderer.updateStock(updatedStock);
+
+      createdRowIds.clear();
+      deletedRowIds.clear();
+      updatedRowIds.clear();
     }
 
-    console.log(currentCotextStock);
-    console.log(newStock);
-    debugger;
+    if (type === TYPE.vendor) {
+      let newStock = {};
 
-    Object.keys(currentCotextStock).forEach(function (key, index) {
-      if (newStock[key]) {
-        newStock[key].id = currentCotextStock[key].id;
+      withState.map((record) => {
+        debugger;
+
+        if (newStock[record.product]) {
+          let currentStock = newStock[record.product];
+
+          if (record.state === STATE.deleted) {
+            debugger;
+            // let carton = record.carton ? record.carton : 0;
+            // currentStock.carton = currentStock.carton - carton;
+
+            // let qty_ctn = record.qty_ctn ? record.qty_ctn : 0;
+            // currentStock.qty_ctn = currentStock.qty_ctn - qty_ctn;
+          } else {
+            currentStock.carton = currentStock.carton + record.carton;
+            currentStock.total_qty = currentStock.total_qty + record.total_qty;
+          }
+          newStock[record.product] = currentStock;
+        } else {
+          if (record.state === STATE.deleted) {
+            // let carton = record.carton ? record.carton : 0;
+            // let qty_ctn = record.qty_ctn ? record.qty_ctn : 0;
+            // let total_qty = record.total_qty ? record.total_qty : 0;
+
+            let currentStock = {
+              id: 'NEW',
+              product: record.product,
+              carton: 0,
+              qty_ctn: 0,
+              total_qty: 0,
+            };
+
+            newStock[record.product] = currentStock;
+          } else {
+            let currentStock = {
+              id: 'NEW',
+              product: record.product,
+              carton: record.carton,
+              qty_ctn: record.qty_ctn,
+              total_qty: record.total_qty,
+            };
+
+            newStock[record.product] = currentStock;
+          }
+        }
+      });
+
+      let currentCotextStock = {};
+
+      if (context && context.currentStock) {
+        context.currentStock.map((item) => {
+          let { product } = item;
+          currentCotextStock[product] = item;
+        });
       }
-    });
 
-    console.log(currentCotextStock);
-    console.log(newStock);
-    debugger;
-    let updatedStock = [];
+      console.log(currentCotextStock);
+      console.log(newStock);
+      debugger;
 
-    Object.keys(newStock).forEach(function (key, index) {
-      updatedStock.push(newStock[key]);
-    });
+      Object.keys(currentCotextStock).forEach(function (key, index) {
+        if (newStock[key]) {
+          newStock[key].id = currentCotextStock[key].id;
+        }
+      });
 
-    console.log(withState);
-    console.log(newStock);
+      console.log(currentCotextStock);
+      console.log(newStock);
+      debugger;
+      let updatedStock = [];
 
-    console.log(updatedStock);
+      Object.keys(newStock).forEach(function (key, index) {
+        updatedStock.push(newStock[key]);
+      });
 
-    debugger;
-    window.electron.ipcRenderer.updateCustomerInvoice(withState);
-    window.electron.ipcRenderer.updateStock(updatedStock);
+      console.log(withState);
+      console.log(newStock);
 
-    createdRowIds.clear();
-    deletedRowIds.clear();
-    updatedRowIds.clear();
+      console.log(updatedStock);
+
+      debugger;
+      window.electron.ipcRenderer.updateCustomerInvoice(withState);
+      window.electron.ipcRenderer.updateStock(updatedStock);
+
+      createdRowIds.clear();
+      deletedRowIds.clear();
+      updatedRowIds.clear();
+    }
 
     //  const isInCurrentStock = currentStock.filter(stock=> stock.product === record.product);
     //  const isInNewStock = newStock.filter(stock=> stock.product === record.product);
