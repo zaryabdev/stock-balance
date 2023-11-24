@@ -123,7 +123,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
   );
 };
 
-function Customers({ getCurrentStock }) {
+function Customers({ getCurrentStock, getCurrentProducts }) {
   const appContext = useContext(context);
 
   const [customersList, setCustomersList] = useState([]);
@@ -388,11 +388,14 @@ function Customers({ getCurrentStock }) {
         newData.splice(index, 1, {
           ...item,
           ...row,
+          value: row.label,
         });
+        debugger;
         setProducts(newData);
         setEditingKey('');
       } else {
-        newData.push(row);
+        debugger;
+        newData.push({ ...row, value: row.label });
         setProducts(newData);
         setEditingKey('');
       }
@@ -658,7 +661,7 @@ function Customers({ getCurrentStock }) {
     if (response.status === STATUS.SUCCESS) {
       console.log('response of create:product-response ');
       console.log(response);
-      // getAllCustomers({});
+      getCurrentProducts({});
       debugger;
 
       // const newActiveKey = uuidv4();

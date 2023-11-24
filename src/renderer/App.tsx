@@ -88,7 +88,10 @@ export default function App() {
           algorithm: [theme.compactAlgorithm],
         }}
       >
-        <Customers getCurrentStock={getCurrentStock} />
+        <Customers
+          getCurrentStock={getCurrentStock}
+          getCurrentProducts={getCurrentProducts}
+        />
         <FloatButton
           tooltip={`${toggleSideBar ? 'Hide sidebar' : 'Show sidebar'}`}
           style={{ right: 75, bottom: 15 }}
