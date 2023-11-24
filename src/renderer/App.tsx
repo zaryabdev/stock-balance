@@ -21,9 +21,10 @@ import Customers from './modules/customers/Customers';
 export default function App() {
   const [toggleSideBar, setToggleSideBar] = useState(true);
   const [currentStock, setCurrentStock] = useState([]);
-
+  const [currentProducts, setCurrentProducts] = useState([]);
   useEffect(() => {
     getCurrentStock();
+    getCurrentProducts();
   }, []);
 
   const {
@@ -36,6 +37,9 @@ export default function App() {
 
   function getCurrentStock(params: type) {
     window.electron.ipcRenderer.getAllStock({});
+  }
+  function getCurrentProducts(params: type) {
+    window.electron.ipcRenderer.getAllProduct({});
   }
 
   window.electron.ipcRenderer.on('get:all:stock-response', (response) => {
@@ -54,11 +58,28 @@ export default function App() {
     }
   });
 
+  window.electron.ipcRenderer.on('get:all:product-response', (response) => {
+    console.log('get:all:product-response reponse came back');
+    console.log(response);
+    if (response.status === STATUS.FAILED) {
+      console.log(response.message);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('response of get:all:product-response ');
+      console.log(response);
+      const list = response.data;
+
+      setCurrentProducts(list);
+    }
+  });
+
   return (
     <Context.Provider
       value={{
         toggleSideBar,
         currentStock,
+        currentProducts,
         setToggleSideBar,
       }}
     >

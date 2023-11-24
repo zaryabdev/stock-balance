@@ -474,9 +474,9 @@ function Customers({ getCurrentStock }) {
         key: id,
         id,
         customer_id: customerUUID,
-        label: '',
-        value: '',
-        qty_ctn: '',
+        label: 'Sample product',
+        value: 'Sample product',
+        qty_ctn: 0,
       },
     ];
 

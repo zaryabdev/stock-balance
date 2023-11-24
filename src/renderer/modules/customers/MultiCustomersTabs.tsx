@@ -98,7 +98,6 @@ function MultiCustomerTabs({
                 <CustomerEditGrid
                   customerId={el.id}
                   type={el.type}
-                  _choices={_choices}
                   getCurrentStock={getCurrentStock}
                 />
               ),
@@ -121,7 +120,6 @@ function MultiCustomerTabs({
                   <CustomerEditGrid
                     customerId={el.id}
                     type={el.type}
-                    _choices={_choices}
                     getCurrentStock={getCurrentStock}
                   />
                 ),

@@ -34,7 +34,7 @@ import Select, { GroupBase, SelectInstance } from 'react-select';
 
 import { v4 as uuidv4 } from 'uuid';
 import appContext from '../../AppContext';
-import { SOURCE, STATE, STATUS } from '../../contants';
+import { SOURCE, STATE, STATUS, TYPE } from '../../contants';
 
 type Choice = {
   label: string;
@@ -146,8 +146,9 @@ const selectColumn = (
     options.choices.find((choice) => choice.label === value)?.value ?? null,
 });
 
-function CustomerEditGrid({ customerId, type, _choices, getCurrentStock }) {
+function CustomerEditGrid({ customerId, type, getCurrentStock }) {
   const context = useContext(appContext);
+
   const initialState = {
     id: '',
     customer_id: '',
@@ -165,6 +166,20 @@ function CustomerEditGrid({ customerId, type, _choices, getCurrentStock }) {
     balance: 0,
   };
 
+  if (!context.currentProducts) {
+    return null;
+  }
+
+  let productsToShow = [];
+
+  if (type === TYPE.customer) {
+    productsToShow = [...context.currentProducts];
+  } else if (type === TYPE.vendor) {
+    productsToShow = context.currentProducts.filter(
+      (product) => product.customer_id === customerId,
+    );
+  }
+
   const columns: Column<Row>[] = [
     {
       ...keyColumn('date', isoDateColumn),
@@ -176,12 +191,11 @@ function CustomerEditGrid({ customerId, type, _choices, getCurrentStock }) {
       title: 'Payment',
       width: 200,
     },
-
     {
       ...keyColumn(
         'product',
         selectColumn({
-          choices: _choices,
+          choices: productsToShow,
         }),
       ),
       title: 'Product',
