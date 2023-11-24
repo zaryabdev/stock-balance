@@ -69,7 +69,7 @@ interface Item {
   qty_ctn: number;
 }
 
-const originData: Item[] = [];
+const initialProducts: Item[] = [];
 
 // for (let i = 0; i < 1; i++) {
 //   originData.push({
@@ -137,7 +137,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
   const [openEditModal, setOpenEditModal] = useState(false);
 
   const [productsForm] = Form.useForm();
-  const [products, setProducts] = useState(originData);
+  const [products, setProducts] = useState(initialProducts);
   const [editingKey, setEditingKey] = useState('');
 
   const isEditing = (record: Item) => record.key === editingKey;
@@ -164,13 +164,14 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
       type: selectedOption,
     };
 
-    window.electron.ipcRenderer.createCustomer(data);
     debugger;
+    window.electron.ipcRenderer.createCustomer(data);
     window.electron.ipcRenderer.createProduct(products);
 
     console.log(products);
 
     form.resetFields();
+    setProducts(initialProducts);
     setOpenCreateModal(false);
   };
 

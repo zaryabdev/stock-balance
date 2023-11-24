@@ -497,7 +497,7 @@ ipcMain.on('create:product', (event, data) => {
     if (response.status === STATUS.SUCCESS) {
       console.log('respose was success');
       // console.log(win);
-      event.reply('create:product', response);
+      event.reply('create:product-response', response);
 
       // win.webContents.send('create:customer', response);
     } else {
