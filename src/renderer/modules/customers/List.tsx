@@ -1,11 +1,12 @@
 import { SearchOutlined } from '@ant-design/icons';
 import type { InputRef } from 'antd';
-import { Button, Input, Select, Space, Table } from 'antd';
+import { Badge, Button, Input, Select, Space, Table } from 'antd';
 import type { ColumnType, ColumnsType } from 'antd/es/table';
 import type { FilterConfirmProps } from 'antd/es/table/interface';
 import React, { useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
 import { STATUS, TYPE } from '../../contants';
+
 interface DataType {
   id: string;
   name: string;
@@ -122,7 +123,7 @@ const List: React.FC = ({
           textToHighlight={text ? text.toString() : ''}
         />
       ) : (
-        text
+        <Badge color="rgb(45, 183, 245)" text={text} />
       ),
   });
 
@@ -148,11 +149,11 @@ const List: React.FC = ({
   const handleRowSelection = (record, rowIndex, event) => {
     // console.log(record, rowIndex, event);
 
-    let { key } = record;
-    let currentSelection = [...selectedRowKeys];
+    const { key } = record;
+    const currentSelection = [...selectedRowKeys];
 
     if (currentSelection.includes(key)) {
-      let filteredSelection = currentSelection.filter((el) => el !== key);
+      const filteredSelection = currentSelection.filter((el) => el !== key);
 
       handleSelectedRowKeys(filteredSelection);
     } else {

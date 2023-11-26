@@ -164,7 +164,6 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
       type: selectedOption,
     };
 
-    debugger;
     window.electron.ipcRenderer.createCustomer(data);
     window.electron.ipcRenderer.createProduct(products);
 
@@ -176,13 +175,15 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
   };
 
   const handleCreateModalCancel = () => {
-    setOpenCreateModal(false);
     form.resetFields();
+    setProducts(initialProducts);
+    setOpenCreateModal(false);
   };
 
   const handleShowEditModal = () => {
     setOpenEditModal(true);
   };
+
   const handleEditModalOk = () => {
     const { id } = selectedCutomer;
     const { key } = selectedCutomer;
@@ -391,11 +392,9 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
           ...row,
           value: row.label,
         });
-        debugger;
         setProducts(newData);
         setEditingKey('');
       } else {
-        debugger;
         newData.push({ ...row, value: row.label });
         setProducts(newData);
         setEditingKey('');
@@ -663,7 +662,6 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
       console.log('response of create:product-response ');
       console.log(response);
       getCurrentProducts({});
-      debugger;
 
       // const newActiveKey = uuidv4();
       // const newPanes = [...tabs];
@@ -961,14 +959,16 @@ function VendorForm({ form, initialValues }) {
 function Products({ productsForm, addRow, products, mergedColumns, cancel }) {
   return (
     <Form form={productsForm} component={false}>
-      <Button
-        type="default"
-        size="middle"
-        style={{ margin: 2 }}
-        onClick={addRow}
-      >
-        Add New Product
-      </Button>
+      <div style={{ padding: 5, display: 'flex', justifyContent: 'end' }}>
+        <Button
+          type="default"
+          size="middle"
+          style={{ marginBottom: 10 }}
+          onClick={addRow}
+        >
+          Add New Product
+        </Button>
+      </div>
       <Table
         components={{
           body: {
