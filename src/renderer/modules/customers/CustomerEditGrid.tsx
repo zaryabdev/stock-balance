@@ -301,7 +301,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
             }
             for (let index = 0; index < newValue.length; index++) {
               if (newValue[index].id === id) {
-                let element = newValue[index];
+                const element = newValue[index];
                 element.total_qty = element.carton * element.qty_ctn;
                 element.state = STATE.updated;
                 newValue[index] = element;
@@ -314,7 +314,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
           let keptRows = 0;
 
           // Make sure to use `data` and not `newValue`
-          let slicedData = data.slice(
+          const slicedData = data.slice(
             operation.fromRowIndex,
             operation.toRowIndex,
           );
@@ -332,7 +332,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
               // Add the row to the deleted Set
               deletedRowIds.add(id);
               // Insert it back into newValue to display it in red to the user
-              let ele = data[operation.fromRowIndex + i];
+              const ele = data[operation.fromRowIndex + i];
               ele.state = STATE.deleted;
               console.log(ele);
               newValue.splice(operation.fromRowIndex + keptRows++, 0, ele);
@@ -376,13 +376,11 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
     debugger;
 
     if (type === TYPE.customer) {
-      let newStock = {};
+      const newStock = {};
       debugger;
       withState.map((record) => {
-        debugger;
-
         if (newStock[record.product]) {
-          let currentStock = newStock[record.product];
+          const currentStock = newStock[record.product];
 
           if (record.state === STATE.deleted) {
             debugger;
@@ -392,44 +390,42 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
             // let qty_ctn = record.qty_ctn ? record.qty_ctn : 0;
             // currentStock.qty_ctn = currentStock.qty_ctn - qty_ctn;
           } else {
-            currentStock.carton = currentStock.carton - record.carton;
-            currentStock.total_qty = currentStock.total_qty - record.total_qty;
+            currentStock.carton += record.carton;
+            currentStock.total_qty += record.total_qty;
           }
           newStock[record.product] = currentStock;
+        } else if (record.state === STATE.deleted) {
+          // let carton = record.carton ? record.carton : 0;
+          // let qty_ctn = record.qty_ctn ? record.qty_ctn : 0;
+          // let total_qty = record.total_qty ? record.total_qty : 0;
+
+          const currentStock = {
+            id: 'NEW',
+            product: record.product,
+            carton: 0,
+            qty_ctn: 0,
+            total_qty: 0,
+          };
+
+          newStock[record.product] = currentStock;
         } else {
-          if (record.state === STATE.deleted) {
-            // let carton = record.carton ? record.carton : 0;
-            // let qty_ctn = record.qty_ctn ? record.qty_ctn : 0;
-            // let total_qty = record.total_qty ? record.total_qty : 0;
+          const currentStock = {
+            id: 'NEW',
+            product: record.product,
+            carton: record.carton,
+            qty_ctn: record.qty_ctn,
+            total_qty: record.total_qty,
+          };
 
-            let currentStock = {
-              id: 'NEW',
-              product: record.product,
-              carton: 0,
-              qty_ctn: 0,
-              total_qty: 0,
-            };
-
-            newStock[record.product] = currentStock;
-          } else {
-            let currentStock = {
-              id: 'NEW',
-              product: record.product,
-              carton: record.carton,
-              qty_ctn: record.qty_ctn,
-              total_qty: record.total_qty,
-            };
-
-            newStock[record.product] = currentStock;
-          }
+          newStock[record.product] = currentStock;
         }
       });
 
-      let currentCotextStock = {};
+      const currentCotextStock = {};
 
       if (context && context.currentStock) {
         context.currentStock.map((item) => {
-          let { product } = item;
+          const { product } = item;
           currentCotextStock[product] = item;
         });
       }
@@ -438,16 +434,31 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       console.log(newStock);
       debugger;
 
-      Object.keys(currentCotextStock).forEach(function (key, index) {
-        if (newStock[key]) {
-          newStock[key].id = currentCotextStock[key].id;
-        }
-      });
+      try {
+        Object.keys(currentCotextStock).forEach(function (key, index) {
+          debugger;
+          if (newStock[key]) {
+            const itemInCurrentStock = { ...currentCotextStock[key] };
+            const itemInNewStock = { ...newStock[key] };
+            debugger;
+            const newCarton = itemInCurrentStock.carton - itemInNewStock.carton;
+            const newTotalQty =
+              itemInCurrentStock.total_qty - itemInNewStock.total_qty;
+            itemInNewStock.carton = newCarton;
+            itemInNewStock.total_qty = newTotalQty;
+            itemInNewStock.id = itemInCurrentStock.id;
+
+            newStock[key] = itemInNewStock;
+          }
+        });
+      } catch (error) {
+        console.error(error);
+      }
 
       console.log(currentCotextStock);
       console.log(newStock);
       debugger;
-      let updatedStock = [];
+      const updatedStock = [];
 
       Object.keys(newStock).forEach(function (key, index) {
         updatedStock.push(newStock[key]);
@@ -468,60 +479,56 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
     }
 
     if (type === TYPE.vendor) {
-      let newStock = {};
+      const newStock = {};
 
       withState.map((record) => {
         debugger;
 
         if (newStock[record.product]) {
-          let currentStock = newStock[record.product];
+          const currentStock = { ...newStock[record.product] };
 
           if (record.state === STATE.deleted) {
-            debugger;
             // let carton = record.carton ? record.carton : 0;
             // currentStock.carton = currentStock.carton - carton;
-
             // let qty_ctn = record.qty_ctn ? record.qty_ctn : 0;
             // currentStock.qty_ctn = currentStock.qty_ctn - qty_ctn;
           } else {
-            currentStock.carton = currentStock.carton + record.carton;
-            currentStock.total_qty = currentStock.total_qty + record.total_qty;
+            currentStock.carton += record.carton;
+            currentStock.total_qty += record.total_qty;
           }
           newStock[record.product] = currentStock;
+        } else if (record.state === STATE.deleted) {
+          // let carton = record.carton ? record.carton : 0;
+          // let qty_ctn = record.qty_ctn ? record.qty_ctn : 0;
+          // let total_qty = record.total_qty ? record.total_qty : 0;
+
+          const currentStock = {
+            id: 'NEW',
+            product: record.product,
+            carton: 0,
+            qty_ctn: 0,
+            total_qty: 0,
+          };
+
+          newStock[record.product] = currentStock;
         } else {
-          if (record.state === STATE.deleted) {
-            // let carton = record.carton ? record.carton : 0;
-            // let qty_ctn = record.qty_ctn ? record.qty_ctn : 0;
-            // let total_qty = record.total_qty ? record.total_qty : 0;
+          const currentStock = {
+            id: 'NEW',
+            product: record.product,
+            carton: record.carton,
+            qty_ctn: record.qty_ctn,
+            total_qty: record.total_qty,
+          };
 
-            let currentStock = {
-              id: 'NEW',
-              product: record.product,
-              carton: 0,
-              qty_ctn: 0,
-              total_qty: 0,
-            };
-
-            newStock[record.product] = currentStock;
-          } else {
-            let currentStock = {
-              id: 'NEW',
-              product: record.product,
-              carton: record.carton,
-              qty_ctn: record.qty_ctn,
-              total_qty: record.total_qty,
-            };
-
-            newStock[record.product] = currentStock;
-          }
+          newStock[record.product] = currentStock;
         }
       });
 
-      let currentCotextStock = {};
+      const currentCotextStock = {};
 
       if (context && context.currentStock) {
         context.currentStock.map((item) => {
-          let { product } = item;
+          const { product } = item;
           currentCotextStock[product] = item;
         });
       }
@@ -539,7 +546,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       console.log(currentCotextStock);
       console.log(newStock);
       debugger;
-      let updatedStock = [];
+      const updatedStock = [];
 
       Object.keys(newStock).forEach(function (key, index) {
         updatedStock.push(newStock[key]);
