@@ -587,8 +587,8 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
     }
   });
 
-  window.electron.ipcRenderer.on('get:all:customers-response', (response) => {
-    console.log('get:all:customers-response reponse came back');
+  window.electron.ipcRenderer.on('get:all:customer-response', (response) => {
+    console.log('get:all:customer-response reponse came back');
     console.log(response);
 
     if (response.status === STATUS.FAILED) {
@@ -596,7 +596,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
     }
 
     if (response.status === STATUS.SUCCESS) {
-      console.log('response of get:all:customers-response ');
+      console.log('response of get:all:customer-response ');
       console.log(response);
 
       const list = response.data;
@@ -617,8 +617,8 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
     }
   });
 
-  window.electron.ipcRenderer.on('delete:customers-response', (response) => {
-    console.log('delete:customers-response reponse came back');
+  window.electron.ipcRenderer.on('delete:customer-response', (response) => {
+    console.log('delete:customer-response reponse came back');
     console.log(response);
 
     if (response.status === STATUS.FAILED) {
@@ -627,14 +627,14 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
 
     if (response.status === STATUS.SUCCESS) {
       setSelectedRowKeys([]);
-      console.log('response of delete:customers-response ');
+      console.log('response of delete:customer-response ');
       console.log(response);
       if (response.status === STATUS.FAILED) {
         console.log(response.message);
       }
 
       if (response.status === STATUS.SUCCESS) {
-        console.log('response of delete:customers-response  ');
+        console.log('response of delete:customer-response  ');
         console.log(response);
         window.electron.ipcRenderer.getAllCustomers({});
       }

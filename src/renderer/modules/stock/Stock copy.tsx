@@ -6,7 +6,6 @@ import type { FilterConfirmProps } from 'antd/es/table/interface';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
 import appContext from '../../AppContext';
-import { STATUS, TYPE } from '../../contants';
 
 interface DataType {
   id: string;
@@ -19,94 +18,19 @@ interface DataType {
 
 type DataIndex = keyof DataType;
 
-const Stock: React.FC = ({ activeTab }) => {
+const Stock: React.FC = () => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
-  const [data, setData] = useState<DataType[]>([]);
-  const [allInvoices, setAllInvoices] = useState([]);
+  const [stock, setStock] = useState<DataType[]>([]);
   const searchInput = useRef<InputRef>(null);
 
   const context = useContext(appContext);
 
   useEffect(() => {
-    const id = setInterval(() => {
-      console.log(`getAllRecords()`);
-
-      getAllRecords();
-    }, 5000);
-
-    return () => {
-      clearInterval(id);
-    };
-  }, []);
-
-  useEffect(() => {
-    const vendorStock = {};
-    const customerStock = {};
-
-    allInvoices.map((item) => {
-      const { type, product } = item;
-      if (type === TYPE.vendor) {
-        if (vendorStock[product]) {
-          const currentStockItem = vendorStock[product];
-          const newStockItem = { ...item };
-          const newCarton = currentStockItem.carton + newStockItem.carton;
-          const newTotalQty =
-            currentStockItem.total_qty + newStockItem.total_qty;
-          newStockItem.total_qty = newTotalQty;
-          newStockItem.carton = newCarton;
-        } else {
-          vendorStock[product] = { ...item };
-        }
-      }
-
-      if (type === TYPE.customer) {
-        if (customerStock[product]) {
-          const currentStockItem = customerStock[product];
-          const newStockItem = { ...item };
-          const newCarton = currentStockItem.carton + newStockItem.carton;
-          const newTotalQty =
-            currentStockItem.total_qty + newStockItem.total_qty;
-          newStockItem.total_qty = newTotalQty;
-          newStockItem.carton = newCarton;
-        } else {
-          customerStock[product] = { ...item };
-        }
-      }
-    });
-
-    console.log(vendorStock);
-    console.log(customerStock);
-
-    const newStock = [];
-
-    try {
-      Object.keys(vendorStock).forEach(function (key, index) {
-        if (customerStock[key]) {
-          const itemInCurrentStock = vendorStock[key];
-          const itemInNewStock = customerStock[key];
-
-          const newCarton = itemInCurrentStock.carton - itemInNewStock.carton;
-          const newTotalQty =
-            itemInCurrentStock.total_qty - itemInNewStock.total_qty;
-          itemInNewStock.carton = newCarton;
-          itemInNewStock.total_qty = newTotalQty;
-
-          newStock.push(itemInNewStock);
-        } else {
-          newStock.push(vendorStock[key]);
-        }
-      });
-    } catch (error) {
-      console.error(error);
+    if (context.currentStock) {
+      setStock(context.currentStock);
     }
-
-    setData(newStock);
-  }, [allInvoices]);
-
-  function getAllRecords() {
-    window.electron.ipcRenderer.getAllCustomersInvoice({});
-  }
+  }, [context.currentStock]);
 
   const handleSearch = (
     selectedKeys: string[],
@@ -245,30 +169,7 @@ const Stock: React.FC = ({ activeTab }) => {
     },
   ];
 
-  window.electron.ipcRenderer.on(
-    'get:all:customer-invoices-response',
-    (response) => {
-      console.log('get:all:customer-invoices-response reponse came back');
-      console.log(response);
-
-      if (response.status === STATUS.FAILED) {
-        console.log(response.message);
-      }
-
-      if (response.status === STATUS.SUCCESS) {
-        console.log('response of get:all:customer-invoices-response ');
-        console.log(response);
-        setAllInvoices(response.data);
-      }
-    },
-  );
-
-  return (
-    <div>
-      <button onClick={getAllRecords}> Refresh </button>
-      <Table columns={columns} dataSource={data} />;
-    </div>
-  );
+  return <Table columns={columns} dataSource={stock} />;
 };
 
 export default Stock;

@@ -63,7 +63,7 @@ function MultiCustomerTabs({
   const [tabs, setTabs] = useState([
     {
       label: 'Stock',
-      children: <Stock />,
+      children: <Stock activeTab={activeTabKey} />,
       key: 'STOCK',
       closable: false,
     },

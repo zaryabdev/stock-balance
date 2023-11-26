@@ -12,10 +12,10 @@ class CustomerInvoicRepository {
   }
 
   update(data = [], callbackFunction) {
-    let currentThis = this;
+    const currentThis = this;
     // const timestamp = Date.now();
     console.log('update called for CustomerInvoicRepository');
-    console.log('Data length : ' + data.length);
+    console.log(`Data length : ${data.length}`);
 
     if (data.length === 0) {
       const res = {
@@ -91,7 +91,7 @@ class CustomerInvoicRepository {
 
     // create records
     if (toCreate.length > 0) {
-      console.log('Length of toCreate' + toCreate.length);
+      console.log(`Length of toCreate${toCreate.length}`);
 
       const formatedSqlValuesArr = toCreate.map((el) => {
         return `('${el.id}','${el.customer_id}','${el.source}','${el.state}','${el.date}','${el.product}','${el.carton}','${el.qty_ctn}','${el.total_qty}','${el.rate_each}','${el.debit}','${el.credit}','${el.balance}')`;
@@ -108,7 +108,7 @@ class CustomerInvoicRepository {
 
       this.dao.run(insertQuery, [], data, toUpdateCbFunc);
     } else {
-      console.log('Length of toCreate' + toCreate.length);
+      console.log(`Length of toCreate${toCreate.length}`);
       console.log('Going to call updateRecords() because nothing to create...');
       updateRecords({ status: 'SUCCESS' });
     }
@@ -134,7 +134,7 @@ class CustomerInvoicRepository {
 
         for (let index = 0; index < toUpdate.length; index++) {
           const record = toUpdate[index];
-          let query = `
+          const query = `
           UPDATE customer_invoice SET state='${record.state}', date='${record.date}', product='${record.product}', carton='${record.carton}', qty_ctn='${record.qty_ctn}', total_qty='${record.total_qty}', rate_each='${record.rate_each}', debit='${record.debit}', credit='${record.credit}', balance='${record.balance}' WHERE id='${record.id}';
         `;
 
@@ -144,7 +144,7 @@ class CustomerInvoicRepository {
               console.log(res);
             }
           });
-          updatedRecords = updatedRecords - 1;
+          updatedRecords -= 1;
         }
 
         console.log('All records updated');
@@ -161,7 +161,7 @@ class CustomerInvoicRepository {
           }, 500);
         }
       } else {
-        console.log('Length of toUpdate' + toUpdate.length);
+        console.log(`Length of toUpdate${toUpdate.length}`);
         console.log(
           'Going to call callbackFunction() because nothing to update...',
         );
@@ -233,15 +233,29 @@ class CustomerInvoicRepository {
 
   getAll(data, callbackFunction) {
     logger.debug(`getAll called`);
-    this.dao.all(`SELECT * FROM customer_invoice`, [], data, callbackFunction);
+    this.dao.all(
+      `
+        SELECT
+        ci.*,
+        c.type
+        FROM
+        customer_invoice ci
+        INNER JOIN customer c ON
+        ci.customer_id = c.id
+        WHERE ci.state != 'DELETED';
+  `,
+      [],
+      data,
+      callbackFunction,
+    );
   }
 
   getById(data, callbackFunction) {
     logger.debug(`getById called`);
 
-    let id = data.id;
+    const { id } = data;
 
-    let getQuery = `SELECT * FROM customer_invoice WHERE customer_id = '${id}' AND STATE != 'DELETED';`;
+    const getQuery = `SELECT * FROM customer_invoice WHERE customer_id = '${id}' AND STATE != 'DELETED';`;
 
     console.log('Run this in DBeaver');
     console.log(getQuery);

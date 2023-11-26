@@ -373,20 +373,15 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
     setData(withState);
     setPrevData(withState);
-    debugger;
-
     if (type === TYPE.customer) {
       const newStock = {};
-      debugger;
       withState.map((record) => {
         if (newStock[record.product]) {
           const currentStock = newStock[record.product];
 
           if (record.state === STATE.deleted) {
-            debugger;
             // let carton = record.carton ? record.carton : 0;
             // currentStock.carton = currentStock.carton - carton;
-
             // let qty_ctn = record.qty_ctn ? record.qty_ctn : 0;
             // currentStock.qty_ctn = currentStock.qty_ctn - qty_ctn;
           } else {
@@ -432,15 +427,11 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
       console.log(currentCotextStock);
       console.log(newStock);
-      debugger;
-
       try {
         Object.keys(currentCotextStock).forEach(function (key, index) {
-          debugger;
           if (newStock[key]) {
             const itemInCurrentStock = { ...currentCotextStock[key] };
             const itemInNewStock = { ...newStock[key] };
-            debugger;
             const newCarton = itemInCurrentStock.carton - itemInNewStock.carton;
             const newTotalQty =
               itemInCurrentStock.total_qty - itemInNewStock.total_qty;
@@ -457,7 +448,6 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
       console.log(currentCotextStock);
       console.log(newStock);
-      debugger;
       const updatedStock = [];
 
       Object.keys(newStock).forEach(function (key, index) {
@@ -469,7 +459,6 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
       console.log(updatedStock);
 
-      debugger;
       window.electron.ipcRenderer.updateCustomerInvoice(withState);
       window.electron.ipcRenderer.updateStock(updatedStock);
 
@@ -482,8 +471,6 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       const newStock = {};
 
       withState.map((record) => {
-        debugger;
-
         if (newStock[record.product]) {
           const currentStock = { ...newStock[record.product] };
 
@@ -535,8 +522,6 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
       console.log(currentCotextStock);
       console.log(newStock);
-      debugger;
-
       Object.keys(currentCotextStock).forEach(function (key, index) {
         if (newStock[key]) {
           newStock[key].id = currentCotextStock[key].id;
@@ -545,7 +530,6 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
       console.log(currentCotextStock);
       console.log(newStock);
-      debugger;
       const updatedStock = [];
 
       Object.keys(newStock).forEach(function (key, index) {
@@ -557,7 +541,6 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
       console.log(updatedStock);
 
-      debugger;
       window.electron.ipcRenderer.updateCustomerInvoice(withState);
       window.electron.ipcRenderer.updateStock(updatedStock);
 

@@ -20,14 +20,14 @@ const electronHandler = {
       ipcRenderer.send('update:customer', data);
     },
     getAllCustomers(data) {
-      console.log('Inside preload get:all:customers');
+      console.log('Inside preload get:all:customer');
       console.log(data);
-      ipcRenderer.send('get:all:customers', data);
+      ipcRenderer.send('get:all:customer', data);
     },
     deleteCustomers(data) {
-      console.log('Inside preload delete:customers');
+      console.log('Inside preload delete:customer');
       console.log(data);
-      ipcRenderer.send('delete:customers', data);
+      ipcRenderer.send('delete:customer', data);
     },
     createCustomerInvoice(data) {
       console.log('Inside preload create:customer-invoice');
@@ -40,9 +40,9 @@ const electronHandler = {
       ipcRenderer.send('update:customer-invoice', data);
     },
     getAllCustomersInvoice(data) {
-      console.log('Inside preload get:all:customers-invoice');
+      console.log('Inside preload get:all:customer-invoices');
       console.log(data);
-      ipcRenderer.send('get:all:customers-invoice', data);
+      ipcRenderer.send('get:all:customer-invoices', data);
     },
     getAllCustomerInvoicesById(data) {
       console.log('Inside preload get:all:customer-invoices:id');
@@ -50,9 +50,9 @@ const electronHandler = {
       ipcRenderer.send('get:all:customer-invoices:id', data);
     },
     deleteCustomersInvoice(data) {
-      console.log('Inside preload delete:customers-invoice');
+      console.log('Inside preload delete:customer-invoice');
       console.log(data);
-      ipcRenderer.send('delete:customers-invoice', data);
+      ipcRenderer.send('delete:customer-invoice', data);
     },
 
     createStock(data) {

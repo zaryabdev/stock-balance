@@ -204,8 +204,8 @@ ipcMain.on('update:customer', (event, data) => {
   customerRepo.update(data, callbackFunction);
 });
 
-ipcMain.on('get:all:customers', (event, data) => {
-  console.log('Inside Main get:all:customers');
+ipcMain.on('get:all:customer', (event, data) => {
+  console.log('Inside Main get:all:customer');
   console.log(data);
   const callbackFunction = (response, err) => {
     // const webContents = event.sender;
@@ -218,7 +218,7 @@ ipcMain.on('get:all:customers', (event, data) => {
     if (response.status === STATUS.SUCCESS) {
       console.log('respose was success');
       // console.log(win);
-      event.reply('get:all:customers-response', response);
+      event.reply('get:all:customer-response', response);
 
       // win.webContents.send('create:customer', response);
     } else {
@@ -229,8 +229,8 @@ ipcMain.on('get:all:customers', (event, data) => {
   customerRepo.getAll(data, callbackFunction);
 });
 
-ipcMain.on('delete:customers', (event, data) => {
-  console.log('Inside Main delete:customers');
+ipcMain.on('delete:customer', (event, data) => {
+  console.log('Inside Main delete:customer');
   console.log(data);
   const callbackFunction = (response, err) => {
     // const webContents = event.sender;
@@ -243,7 +243,7 @@ ipcMain.on('delete:customers', (event, data) => {
     if (response.status === STATUS.SUCCESS) {
       console.log('respose was success');
       // console.log(win);
-      event.reply('delete:customers-response', response);
+      event.reply('delete:customer-response', response);
 
       // win.webContents.send('create:customer', response);
     } else {
@@ -406,8 +406,8 @@ ipcMain.on('update:customer-invoice', (event, data) => {
   customerInvoiceRepo.update(data, callbackFunction);
 });
 
-ipcMain.on('get:all:customer-invoice', (event, data) => {
-  console.log('Inside Main get:all:customer-invoice');
+ipcMain.on('get:all:customer-invoices', (event, data) => {
+  console.log('Inside Main get:all:customer-invoices');
   // console.log(data);
   const callbackFunction = (response, err) => {
     // const webContents = event.sender;
@@ -420,7 +420,7 @@ ipcMain.on('get:all:customer-invoice', (event, data) => {
     if (response.status === STATUS.SUCCESS) {
       console.log('respose was success');
       // console.log(win);
-      event.reply('get:all:customer-invoice-response', response);
+      event.reply('get:all:customer-invoices-response', response);
 
       // win.webContents.send('create:customer', response);
     } else {
