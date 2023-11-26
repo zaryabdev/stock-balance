@@ -23,6 +23,7 @@ import {
   Table,
   Tabs,
   Typography,
+  message,
 } from 'antd';
 import {
   default as React,
@@ -125,7 +126,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
 
 function Customers({ getCurrentStock, getCurrentProducts }) {
   const appContext = useContext(context);
-
+  const [messageApi, contextHolder] = message.useMessage();
   const [customersList, setCustomersList] = useState([]);
   const [filteredCustomersList, setFilteredCustomersList] = useState([]);
   const [selectedCutomer, setSelectedCutomer] = useState(initialCustomerState);
@@ -138,11 +139,37 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
 
   const [productsForm] = Form.useForm();
   const [products, setProducts] = useState(initialProducts);
+  const [listProducts, setListProducts] = useState(initialProducts);
   const [editingKey, setEditingKey] = useState('');
 
   const isEditing = (record: Item) => record.key === editingKey;
 
   const [customerUUID, setCustomerUUID] = useState('NEW');
+
+  useEffect(() => {
+    getAllProductList();
+  }, []);
+
+  const success = (content) => {
+    messageApi.open({
+      type: 'success',
+      content: `${content}`,
+    });
+  };
+
+  const error = (content) => {
+    messageApi.open({
+      type: 'error',
+      content: `${content}`,
+    });
+  };
+
+  const warning = (content) => {
+    messageApi.open({
+      type: 'warning',
+      content: `${content}`,
+    });
+  };
 
   const handleShowCreateModal = () => {
     setCustomerUUID(uuidv4());
@@ -155,7 +182,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
     const address = form.getFieldValue('address');
     const phone = form.getFieldValue('phone');
 
-    const data = {
+    const customerData = {
       id: customerId,
       key: customerId,
       name,
@@ -164,7 +191,31 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
       type: selectedOption,
     };
 
-    window.electron.ipcRenderer.createCustomer(data);
+    debugger;
+
+    if (customerData.name === '') {
+      warning('Name cannot be empty!');
+      return;
+    }
+
+    if (selectedOption === TYPE.vendor && products.length > 0) {
+      let isValid = true;
+
+      products.map((item) => {
+        if (item.label === 'Sample product') {
+          isValid = false;
+        }
+      });
+
+      if (!isValid) {
+        warning('Cannot have Sample product.');
+        return false;
+      }
+    }
+
+    success('Saved Successfully.');
+
+    window.electron.ipcRenderer.createCustomer(customerData);
     window.electron.ipcRenderer.createProduct(products);
 
     console.log(products);
@@ -183,6 +234,10 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
   const handleShowEditModal = () => {
     setOpenEditModal(true);
   };
+
+  function getAllProductList() {
+    window.electron.ipcRenderer.getAllProduct({});
+  }
 
   const handleEditModalOk = () => {
     const { id } = selectedCutomer;
@@ -380,6 +435,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
 
   const save = async (key: React.Key) => {
     try {
+      debugger;
       const row = (await productsForm.validateFields()) as Item;
       const newData = [...products];
 
@@ -675,8 +731,24 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
     }
   });
 
+  window.electron.ipcRenderer.on('get:all:product-response', (response) => {
+    console.log('get:all:product-response reponse came back');
+    console.log(response);
+
+    if (response.status === STATUS.FAILED) {
+      console.log(response.message);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('response of get:all:product-response ');
+      console.log(response);
+      setListProducts(response.data);
+    }
+  });
+
   return (
     <div>
+      {contextHolder}
       <Row gutter={[8, 8]}>
         <Col
           className={`${
