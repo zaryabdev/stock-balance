@@ -437,23 +437,50 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
     try {
       debugger;
       const row = (await productsForm.validateFields()) as Item;
-      const newData = [...products];
 
-      const index = newData.findIndex((item) => key === item.key);
+      let isUnique = true;
 
-      if (index > -1) {
-        const item = newData[index];
-        newData.splice(index, 1, {
-          ...item,
-          ...row,
-          value: row.label,
+      if (products.length > 0) {
+        products.map((product) => {
+          if (row.label === product.label) {
+            isUnique = false;
+          }
         });
-        setProducts(newData);
-        setEditingKey('');
+      }
+
+      if (
+        isUnique &&
+        context.currentProducts &&
+        context.currentProducts.length > 0
+      ) {
+        context.currentProducts.map((product) => {
+          if (row.label === product.label) {
+            isUnique = false;
+          }
+        });
+      }
+
+      if (isUnique) {
+        const newData = [...products];
+
+        const index = newData.findIndex((item) => key === item.key);
+
+        if (index > -1) {
+          const item = newData[index];
+          newData.splice(index, 1, {
+            ...item,
+            ...row,
+            value: row.label,
+          });
+          setProducts(newData);
+          setEditingKey('');
+        } else {
+          newData.push({ ...row, value: row.label });
+          setProducts(newData);
+          setEditingKey('');
+        }
       } else {
-        newData.push({ ...row, value: row.label });
-        setProducts(newData);
-        setEditingKey('');
+        warning(`${row.label} already exixts. Cannot have duplicate products.`);
       }
     } catch (errInfo) {
       console.log('Validate Failed:', errInfo);
