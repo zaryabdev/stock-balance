@@ -208,7 +208,9 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
       });
 
       if (!isValid) {
-        warning('Cannot have Sample product.');
+        warning(
+          'Cannot have Sample product. Please edit it and give it a unique name.',
+        );
         return false;
       }
     }
@@ -232,6 +234,17 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
   };
 
   const handleShowEditModal = () => {
+    setCustomerUUID(selectedCutomer.id);
+    const _products = [];
+    if (appContext.currentProducts) {
+      appContext.currentProducts.map((product) => {
+        if (product.customer_id === selectedCutomer.id) {
+          _products.push(product);
+        }
+      });
+    }
+
+    setProducts(_products);
     setOpenEditModal(true);
   };
 
@@ -607,7 +620,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
       setSelectedCutomer(initialCustomerState);
     } else if (keys.length === 1) {
       const foundItem = customersList.find((c) => c.key === keys[0]);
-
+      debugger;
       setSelectedCutomer(foundItem);
     } else {
       setSelectedCutomer(initialCustomerState);
@@ -955,7 +968,10 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
       </Modal>
       <Modal
         open={openEditModal}
-        title="Edit"
+        title={`${
+          selectedOption === TYPE.customer ? 'Edit Customer' : 'Edit Vendor'
+        } - ${customerUUID}`}
+        width={selectedOption === TYPE.vendor ? 1000 : 500}
         onOk={handleEditModalOk}
         onCancel={handleEditModalCancel}
         // footer={(_, { OkBtn, CancelBtn }) => (
@@ -966,7 +982,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
         //   </>
         // )}
       >
-        {selectedOption === TYPE.customer ? (
+        {selectedOption === TYPE.customer && (
           <CustomerForm
             form={form}
             initialValues={{
@@ -976,7 +992,8 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
               type: selectedOption,
             }}
           />
-        ) : (
+        )}
+        {/* : (
           <VendorForm
             form={form}
             initialValues={{
@@ -986,6 +1003,47 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
               type: selectedOption,
             }}
           />
+        )} */}
+
+        {selectedOption === TYPE.vendor && (
+          <div>
+            <Tabs
+              defaultActiveKey="DETAILS"
+              centered
+              items={[
+                {
+                  label: 'Details',
+                  children: (
+                    <VendorForm
+                      form={form}
+                      initialValues={{
+                        name: selectedCutomer.name,
+                        address: selectedCutomer.address,
+                        phone: selectedCutomer.phone,
+                        type: selectedOption,
+                      }}
+                    />
+                  ),
+                  key: 'DETAILS',
+                  closable: false,
+                },
+                {
+                  label: 'Products',
+                  children: (
+                    <Products
+                      productsForm={productsForm}
+                      addRow={addRow}
+                      products={products}
+                      mergedColumns={mergedColumns}
+                      cancel={cancel}
+                    />
+                  ),
+                  key: 'PRODUCTS',
+                  closable: false,
+                },
+              ]}
+            />
+          </div>
         )}
       </Modal>
     </div>
