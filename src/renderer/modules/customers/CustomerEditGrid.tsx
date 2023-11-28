@@ -542,7 +542,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       console.log(updatedStock);
 
       window.electron.ipcRenderer.updateCustomerInvoice(withState);
-      window.electron.ipcRenderer.updateStock(updatedStock);
+      // window.electron.ipcRenderer.updateStock(updatedStock);
 
       createdRowIds.clear();
       deletedRowIds.clear();

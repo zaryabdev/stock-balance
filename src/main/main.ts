@@ -20,12 +20,12 @@ import AppDAO from './dao';
 import CustomerInvoicRepository from './repositories/customer-invoice-repo';
 import CustomerRepository from './repositories/customer-repo';
 import ProductRepository from './repositories/product-repo';
-import StockRepository from './repositories/stock-repo';
+// import StockRepository from './repositories/stock-repo';
 
 const dao = new AppDAO('db.sqlite3');
 const customerRepo = new CustomerRepository(dao);
 const customerInvoiceRepo = new CustomerInvoicRepository(dao);
-const stockRepo = new StockRepository(dao);
+// const stockRepo = new StockRepository(dao);
 const productRepo = new ProductRepository(dao);
 
 const STATUS = {
@@ -33,7 +33,7 @@ const STATUS = {
   FAILED: 'FAILED',
 };
 
-stockRepo.createTable();
+// stockRepo.createTable();
 customerRepo.createTable();
 productRepo.createTable();
 customerInvoiceRepo.createTable();
@@ -255,105 +255,105 @@ ipcMain.on('delete:customer', (event, data) => {
 });
 
 // IPC listener - stock
-ipcMain.on('create:stock', (event, data) => {
-  console.log('Inside Main create:stock');
-  console.log(data);
-  const callbackFunction = (response, err) => {
-    // const webContents = event.sender;
-    // const win = BrowserWindow.fromWebContents(webContents);
-    console.log('callback function called!!');
-    if (err) {
-      console.log(err);
-    }
+// ipcMain.on('create:stock', (event, data) => {
+//   console.log('Inside Main create:stock');
+//   console.log(data);
+//   const callbackFunction = (response, err) => {
+//     // const webContents = event.sender;
+//     // const win = BrowserWindow.fromWebContents(webContents);
+//     console.log('callback function called!!');
+//     if (err) {
+//       console.log(err);
+//     }
 
-    if (response.status === STATUS.SUCCESS) {
-      console.log('respose was success');
-      // console.log(win);
-      event.reply('create:stock', response);
+//     if (response.status === STATUS.SUCCESS) {
+//       console.log('respose was success');
+//       // console.log(win);
+//       event.reply('create:stock', response);
 
-      // win.webContents.send('create:customer', response);
-    } else {
-      console.log(response.message);
-    }
-  };
+//       // win.webContents.send('create:customer', response);
+//     } else {
+//       console.log(response.message);
+//     }
+//   };
 
-  stockRepo.create(data, callbackFunction);
-});
+//   stockRepo.create(data, callbackFunction);
+// });
 
-ipcMain.on('update:stock', (event, data) => {
-  console.log('Inside Main update:stock');
-  console.log(data);
-  const callbackFunction = (response, err) => {
-    // const webContents = event.sender;
-    // const win = BrowserWindow.fromWebContents(webContents);
-    console.log('callback function called!!');
-    if (err) {
-      console.log(err);
-    }
+// ipcMain.on('update:stock', (event, data) => {
+//   console.log('Inside Main update:stock');
+//   console.log(data);
+//   const callbackFunction = (response, err) => {
+//     // const webContents = event.sender;
+//     // const win = BrowserWindow.fromWebContents(webContents);
+//     console.log('callback function called!!');
+//     if (err) {
+//       console.log(err);
+//     }
 
-    if (response.status === STATUS.SUCCESS) {
-      console.log('respose was success');
-      // console.log(win);
-      event.reply('update:stock-response', response);
+//     if (response.status === STATUS.SUCCESS) {
+//       console.log('respose was success');
+//       // console.log(win);
+//       event.reply('update:stock-response', response);
 
-      // win.webContents.send('create:stock', response);
-    } else {
-      console.log(response.message);
-    }
-  };
+//       // win.webContents.send('create:stock', response);
+//     } else {
+//       console.log(response.message);
+//     }
+//   };
 
-  stockRepo.update(data, callbackFunction);
-});
+//   stockRepo.update(data, callbackFunction);
+// });
 
-ipcMain.on('get:all:stock', (event, data) => {
-  console.log('Inside Main get:all:stock');
-  console.log(data);
-  const callbackFunction = (response, err) => {
-    // const webContents = event.sender;
-    // const win = BrowserWindow.fromWebContents(webContents);
-    console.log('callback function called!!');
-    if (err) {
-      console.log(err);
-    }
+// ipcMain.on('get:all:stock', (event, data) => {
+//   console.log('Inside Main get:all:stock');
+//   console.log(data);
+//   const callbackFunction = (response, err) => {
+//     // const webContents = event.sender;
+//     // const win = BrowserWindow.fromWebContents(webContents);
+//     console.log('callback function called!!');
+//     if (err) {
+//       console.log(err);
+//     }
 
-    if (response.status === STATUS.SUCCESS) {
-      console.log('respose was success');
-      // console.log(win);
-      event.reply('get:all:stock-response', response);
+//     if (response.status === STATUS.SUCCESS) {
+//       console.log('respose was success');
+//       // console.log(win);
+//       event.reply('get:all:stock-response', response);
 
-      // win.webContents.send('create:customer', response);
-    } else {
-      console.log(response.message);
-    }
-  };
+//       // win.webContents.send('create:customer', response);
+//     } else {
+//       console.log(response.message);
+//     }
+//   };
 
-  stockRepo.getAll(data, callbackFunction);
-});
+//   stockRepo.getAll(data, callbackFunction);
+// });
 
-ipcMain.on('delete:stock', (event, data) => {
-  console.log('Inside Main delete:stock');
-  console.log(data);
-  const callbackFunction = (response, err) => {
-    // const webContents = event.sender;
-    // const win = BrowserWindow.fromWebContents(webContents);
-    console.log('callback function called!! for delete');
-    if (err) {
-      console.log(err);
-    }
+// ipcMain.on('delete:stock', (event, data) => {
+//   console.log('Inside Main delete:stock');
+//   console.log(data);
+//   const callbackFunction = (response, err) => {
+//     // const webContents = event.sender;
+//     // const win = BrowserWindow.fromWebContents(webContents);
+//     console.log('callback function called!! for delete');
+//     if (err) {
+//       console.log(err);
+//     }
 
-    if (response.status === STATUS.SUCCESS) {
-      console.log('respose was success');
-      // console.log(win);
-      event.reply('delete:stock-response', response);
+//     if (response.status === STATUS.SUCCESS) {
+//       console.log('respose was success');
+//       // console.log(win);
+//       event.reply('delete:stock-response', response);
 
-      // win.webContents.send('create:customer', response);
-    } else {
-      console.log(response.message);
-    }
-  };
+//       // win.webContents.send('create:customer', response);
+//     } else {
+//       console.log(response.message);
+//     }
+//   };
 
-  stockRepo.deleteRecords(data, callbackFunction);
-});
+//   stockRepo.deleteRecords(data, callbackFunction);
+// });
 
 // IPC listener - customer-invoice
 ipcMain.on('create:customer-invoice', (event, data) => {

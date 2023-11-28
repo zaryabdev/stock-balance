@@ -16,7 +16,8 @@ class ProductRepository {
           customer_id TEXT,
           value TEXT,
           label INTEGER,
-          qty_ctn INTEGER
+          qty_ctn INTEGER,
+          status TEXT
         )`;
     return this.dao.run(sql);
   }
@@ -38,7 +39,7 @@ class ProductRepository {
     console.log(callbackFunction);
 
     const valuesArr = data.map((el) => {
-      const _str = `('${el.id}','${el.customer_id}','${el.label}','${el.qty_ctn}','${el.value}')`;
+      const _str = `('${el.id}','${el.customer_id}','${el.label}','${el.qty_ctn}','${el.value}','${el.status}')`;
       return _str;
     });
 
@@ -48,14 +49,19 @@ class ProductRepository {
 
     console.log(valuesStr);
 
-    const query = `INSERT INTO product (id, customer_id, label, qty_ctn, value) VALUES ${valuesStr};`;
+    const query = `INSERT INTO product (id, customer_id, label, qty_ctn, value, status) VALUES ${valuesStr};`;
 
     this.dao.run(query, [], data, callbackFunction);
   }
 
   getAll(data, callbackFunction) {
     logger.debug(`getAll called`);
-    this.dao.all(`SELECT * FROM product;`, [], data, callbackFunction);
+    this.dao.all(
+      `SELECT * FROM product WHERE status != 'DELETED';`,
+      [],
+      data,
+      callbackFunction,
+    );
   }
 
   getAllById(data, callbackFunction) {
@@ -64,7 +70,7 @@ class ProductRepository {
     const { customer_id } = data;
 
     this.dao.all(
-      `SELECT * FROM product WHERE customer_id = '${customer_id}';`,
+      `SELECT * FROM product WHERE customer_id = '${customer_id}' AND status != 'DELETED';`,
       [],
       data,
       callbackFunction,
@@ -145,7 +151,7 @@ class ProductRepository {
 
       const formatedSqlValuesArr = toCreate.map((el) => {
         const id = uuidv4();
-        return `('${id}','${el.customer_id}','${el.value}','${el.label}','${el.qty_ctn}')`;
+        return `('${id}','${el.customer_id}','${el.value}','${el.label}','${el.qty_ctn}','${el.status}')`;
       });
 
       console.log(formatedSqlValuesArr);
@@ -153,7 +159,7 @@ class ProductRepository {
       const formatedSqlValuesStr = formatedSqlValuesArr.join(',');
       // console.log(valuesStr);
 
-      const insertQuery = `INSERT INTO product (id, customer_id, value, label, qty_ctn) VALUES ${formatedSqlValuesStr};`;
+      const insertQuery = `INSERT INTO product (id, customer_id, value, label, qty_ctn, status) VALUES ${formatedSqlValuesStr};`;
 
       // console.log('Test in DBeaver');
       // console.log(insertQuery);
@@ -188,7 +194,7 @@ class ProductRepository {
           const record = toUpdate[index];
           // const { id, customer_id, value, label, qty_ctn } = data;
           const query = `
-          UPDATE product SET customer_id='${record.customer_id}', value='${record.value}', label='${record.label}', qty_ctn='${record.qty_ctn}' WHERE id='${record.id}';
+          UPDATE product SET customer_id='${record.customer_id}', value='${record.value}', label='${record.label}', qty_ctn='${record.qty_ctn}', status='${record.status}' WHERE id='${record.id}';
         `;
 
           currentThis.dao.run(query, [], data, (res) => {

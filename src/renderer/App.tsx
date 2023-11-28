@@ -37,7 +37,7 @@ export default function App() {
 
   function getCurrentStock(params: type) {
     console.log('getCurrentStock()');
-    window.electron.ipcRenderer.getAllStock({});
+    // window.electron.ipcRenderer.getAllStock({});
   }
   function getCurrentProducts(params: type) {
     console.log('getCurrentProducts()');

@@ -38,7 +38,7 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 
 import context from '../../AppContext';
-import { STATUS, TYPE } from '../../contants';
+import { STATE, STATUS, TYPE } from '../../contants';
 import List from './List';
 import MultiCustomersTabs from './MultiCustomersTabs';
 
@@ -202,14 +202,14 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
       let isValid = true;
 
       products.map((item) => {
-        if (item.label === 'Sample product') {
+        if (item.label === 'Sample product' || item.id === 'NEW') {
           isValid = false;
         }
       });
 
       if (!isValid) {
         warning(
-          'Cannot have Sample product. Please edit it and give it a unique name.',
+          `Please edit product name. Cannot have 'Sample Product' as name.`,
         );
         return false;
       }
@@ -260,7 +260,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
     const address = form.getFieldValue('address');
     const phone = form.getFieldValue('phone');
 
-    const data = {
+    const customerData = {
       id,
       key,
       name,
@@ -269,10 +269,36 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
       typw: selectedOption,
     };
 
-    window.electron.ipcRenderer.updateCustomer(data);
+    if (customerData.name === '') {
+      warning('Name cannot be empty!');
+      return;
+    }
+
+    if (selectedOption === TYPE.vendor && products.length > 0) {
+      let isValid = true;
+
+      products.map((item) => {
+        if (item.label === 'Sample product' || item.id === 'NEW') {
+          isValid = false;
+        }
+      });
+
+      if (!isValid) {
+        warning(
+          `Please edit product name. Cannot have 'Sample Product' as name.`,
+        );
+        return false;
+      }
+    }
+
+    success('Saved Successfully.');
+
+    window.electron.ipcRenderer.updateCustomer(customerData);
+    window.electron.ipcRenderer.updateProduct(products);
 
     form.resetFields();
-    setOpenEditModal(false);
+    setProducts(initialProducts);
+    setOpenCreateModal(false);
   };
 
   const handleEditModalCancel = () => {
@@ -425,21 +451,26 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
     setEditingKey(record.key);
   };
 
-  const remove = (record: Partial<Item> & { key: React.Key }) => {
+  const deleteProduct = (record: Partial<Item> & { key: React.Key }) => {
+    // const updatedProducts = products.filter(
+    //   (product) => product.key !== record.key,
+    // );
+
+    const updatedProducts = products.map(
+      (product) => (product.status = STATE.deleted),
+    );
+
+    setProducts(updatedProducts);
+    setEditingKey('');
+
     productsForm.setFieldsValue({
       label: '',
       qty_ctn: '',
       id: '',
       key: '',
       value: '',
+      status: STATE.created,
     });
-
-    setEditingKey('');
-
-    const updatedProducts = products.filter(
-      (product) => product.id !== record.id,
-    );
-    setProducts(updatedProducts);
   };
 
   const cancel = () => {
@@ -540,7 +571,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
             </Typography.Link>{' '}
             <Typography.Link
               disabled={editingKey !== ''}
-              onClick={() => remove(record)}
+              onClick={() => deleteProduct(record)}
             >
               Delete
             </Typography.Link>
@@ -566,7 +597,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
     };
   });
 
-  const addRow = () => {
+  const addNewProduct = () => {
     const id = uuidv4();
     const row = [
       {
@@ -576,6 +607,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
         label: 'Sample product',
         value: 'Sample product',
         qty_ctn: 0,
+        status: STATE.created,
       },
     ];
 
@@ -951,7 +983,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
                     children: (
                       <Products
                         productsForm={productsForm}
-                        addRow={addRow}
+                        addNewProduct={addNewProduct}
                         products={products}
                         mergedColumns={mergedColumns}
                         cancel={cancel}
@@ -1032,7 +1064,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
                   children: (
                     <Products
                       productsForm={productsForm}
-                      addRow={addRow}
+                      addRow={addNewProduct}
                       products={products}
                       mergedColumns={mergedColumns}
                       cancel={cancel}
@@ -1113,7 +1145,13 @@ function VendorForm({ form, initialValues }) {
   );
 }
 
-function Products({ productsForm, addRow, products, mergedColumns, cancel }) {
+function Products({
+  productsForm,
+  addNewProduct,
+  products,
+  mergedColumns,
+  cancel,
+}) {
   return (
     <Form form={productsForm} component={false}>
       <div style={{ padding: 5, display: 'flex', justifyContent: 'end' }}>
@@ -1121,7 +1159,7 @@ function Products({ productsForm, addRow, products, mergedColumns, cancel }) {
           type="default"
           size="middle"
           style={{ marginBottom: 10 }}
-          onClick={addRow}
+          onClick={addNewProduct}
         >
           Add New Product
         </Button>
