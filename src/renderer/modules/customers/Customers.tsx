@@ -191,8 +191,6 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
       type: selectedOption,
     };
 
-    debugger;
-
     if (customerData.name === '') {
       warning('Name cannot be empty!');
       return;
@@ -455,10 +453,10 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
     // const updatedProducts = products.filter(
     //   (product) => product.key !== record.key,
     // );
-
-    const updatedProducts = products.map(
-      (product) => (product.status = STATE.deleted),
-    );
+    const updatedProducts = products.map((product) => {
+      product.status = STATE.deleted;
+      return product;
+    });
 
     setProducts(updatedProducts);
     setEditingKey('');
@@ -479,7 +477,6 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
 
   const save = async (key: React.Key) => {
     try {
-      debugger;
       const row = (await productsForm.validateFields()) as Item;
 
       let isUnique = true;
@@ -652,7 +649,6 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
       setSelectedCutomer(initialCustomerState);
     } else if (keys.length === 1) {
       const foundItem = customersList.find((c) => c.key === keys[0]);
-      debugger;
       setSelectedCutomer(foundItem);
     } else {
       setSelectedCutomer(initialCustomerState);
