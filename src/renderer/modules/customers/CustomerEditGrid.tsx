@@ -117,6 +117,7 @@ const SelectComponent = React.memo(
         value={
           columnData.choices.find(({ value }) => value === rowData) ?? null
         }
+        menuPlacement="top"
         menuPortalTarget={document.body}
         menuIsOpen={focus}
         onChange={(choice) => {
