@@ -94,14 +94,14 @@ class CustomerInvoicRepository {
       console.log(`Length of toCreate${toCreate.length}`);
 
       const formatedSqlValuesArr = toCreate.map((el) => {
-        return `('${el.id}','${el.customer_id}','${el.source}','${el.state}','${el.date}','${el.product}','${el.carton}','${el.qty_ctn}','${el.total_qty}','${el.rate_each}','${el.debit}','${el.credit}','${el.balance}')`;
+        return `('${el.id}','${el.customer_id}','${el.source}','${el.state}','${el.date}','${el.product}','${el.payment}','${el.carton}','${el.qty_ctn}','${el.total_qty}','${el.rate_each}','${el.debit}','${el.credit}','${el.balance}','${el.current_balance}')`;
       });
 
       // console.log(valuesArr);
       const formatedSqlValuesStr = formatedSqlValuesArr.join(',');
       // console.log(valuesStr);
 
-      const insertQuery = `INSERT INTO customer_invoice (id, customer_id, source, state, date, product, carton, qty_ctn, total_qty, rate_each, debit, credit, balance) VALUES ${formatedSqlValuesStr};`;
+      const insertQuery = `INSERT INTO customer_invoice (id, customer_id, source, state, date, product, payment, carton, qty_ctn, total_qty, rate_each, debit, credit, balance, current_balance) VALUES ${formatedSqlValuesStr};`;
 
       // console.log('Test in DBeaver');
       // console.log(insertQuery);
@@ -135,7 +135,7 @@ class CustomerInvoicRepository {
         for (let index = 0; index < toUpdate.length; index++) {
           const record = toUpdate[index];
           const query = `
-          UPDATE customer_invoice SET state='${record.state}', date='${record.date}', product='${record.product}', carton='${record.carton}', qty_ctn='${record.qty_ctn}', total_qty='${record.total_qty}', rate_each='${record.rate_each}', debit='${record.debit}', credit='${record.credit}', balance='${record.balance}' WHERE id='${record.id}';
+          UPDATE customer_invoice SET state='${record.state}', date='${record.date}', product='${record.product}', payment='${record.payment}', carton='${record.carton}', qty_ctn='${record.qty_ctn}', total_qty='${record.total_qty}', rate_each='${record.rate_each}', debit='${record.debit}', credit='${record.credit}', balance='${record.balance}', current_balance='${record.current_balance}' WHERE id='${record.id}';
         `;
 
           currentThis.dao.run(query, [], data, (res) => {
@@ -193,7 +193,8 @@ class CustomerInvoicRepository {
         rate_each REAL,
         debit REAL,
         credit REAL,
-        balance REAL
+        balance REAL,
+        current_balance REAL
         )`;
 
     return this.dao.run(sql);
@@ -216,7 +217,7 @@ class CustomerInvoicRepository {
     console.log(callbackFunction);
 
     const valuesArr = data.map((el) => {
-      const _str = `('${el.id}','${el.customer_id}','${el.source}','${STATE.none}','${el.date}','${el.products}','${el.carton}','${el.qty_ctn}','${el.total_qty}','${el.rate_each}','${el.debit}','${el.credit}','${el.balance}')`;
+      const _str = `('${el.id}','${el.customer_id}','${el.source}','${STATE.none}','${el.date}','${el.products}','${el.payment}','${el.carton}','${el.qty_ctn}','${el.total_qty}','${el.rate_each}','${el.debit}','${el.credit}','${el.balance}','${el.current_balance}')`;
       return _str;
     });
 
@@ -226,7 +227,7 @@ class CustomerInvoicRepository {
 
     console.log(valuesStr);
 
-    const query = `INSERT INTO customer_invoice (id, customer_id, source, state, date, products, carton, qty_ctn, total_qty, rate_each, debit, credit, balance) VALUES ${valuesStr};`;
+    const query = `INSERT INTO customer_invoice (id, customer_id, source, state, date, products, payment, carton, qty_ctn, total_qty, rate_each, debit, credit, balance, current_balance) VALUES ${valuesStr};`;
 
     this.dao.run(query, [], data, callbackFunction);
   }

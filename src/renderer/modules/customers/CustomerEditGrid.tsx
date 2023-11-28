@@ -56,6 +56,7 @@ type Row = {
   debit: number | null;
   credit: number | null;
   balance: number | null;
+  current_balance: number | null;
 };
 
 type SelectOptions = {
@@ -148,7 +149,7 @@ const selectColumn = (
 
 function CustomerEditGrid({ customerId, type, getCurrentStock }) {
   const context = useContext(appContext);
-
+  const [currentBalance, setCurrentBalance] = useState(0);
   const initialState = {
     id: '',
     customer_id: '',
@@ -164,6 +165,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
     debit: 0,
     credit: 0,
     balance: 0,
+    current_balance: 0,
   };
 
   if (!context.currentProducts) {
@@ -273,6 +275,10 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       ...keyColumn('balance', floatColumn),
       title: 'Balance',
     },
+    {
+      ...keyColumn('current_balance', floatColumn),
+      title: 'Current Balance',
+    },
 
     // {
     //   ...keyColumn('source', textColumn),
@@ -317,7 +323,6 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
   function handleChange(newValue: any, operations: any) {
     {
       console.log(newValue);
-      debugger;
       for (const operation of operations) {
         if (operation.type === 'CREATE') {
           const newArray = newValue.slice(
@@ -344,11 +349,11 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
             if (!createdRowIds.has(id) && !deletedRowIds.has(id)) {
               updatedRowIds.add(id);
             }
+
             for (let index = 0; index < newValue.length; index++) {
               if (newValue[index].id === id) {
                 const currentRecord = newValue[index];
                 const { product } = currentRecord;
-
                 console.log(currentVendorProducts);
                 if (currentVendorProducts) {
                   const currentProduct = currentVendorProducts[product];
@@ -359,22 +364,27 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
                     currentRecord.carton = 0;
                     currentRecord.total_qty = 0;
                     currentRecord.rate_each = 0;
+                    currentRecord.credit = 0;
+                    currentRecord.balance = currentRecord.debit;
                     currentRecord.state = STATE.updated;
                   } else if (product === RECORD_TYPE.none) {
-                    currentRecord.payment = RECORD_TYPE.none;
+                    // currentRecord.payment = RECORD_TYPE;
                     currentRecord.qty_ctn = 0;
                     currentRecord.carton = 0;
                     currentRecord.total_qty = 0;
                     currentRecord.rate_each = 0;
+                    currentRecord.debit = 0;
+                    currentRecord.balance = currentRecord.credit;
                     currentRecord.state = STATE.updated;
                   } else {
+                    currentRecord.payment = RECORD_TYPE.none;
                     currentRecord.qty_ctn = currentProduct.qty_ctn;
                     currentRecord.total_qty =
                       currentRecord.carton * currentProduct.qty_ctn;
                     currentRecord.debit =
                       currentRecord.rate_each * currentRecord.total_qty;
                     // debugger;
-                    // element.balance =
+                    currentRecord.balance = currentRecord.debit;
                     //   element.balance + element.debit - element.credit;
 
                     currentRecord.state = STATE.updated;
@@ -418,8 +428,24 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
         }
       }
 
+      debugger;
+
+      const balance = getBalance(newValue);
+
       setData(newValue);
     }
+  }
+
+  function getBalance(data) {
+    const val = 0;
+
+    // data.map((item, index) => {
+
+    //   if(item.product === RECORD_TYPE.)
+
+    // });
+
+    return val;
   }
 
   const commit = () => {
@@ -819,11 +845,12 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
           ...initialState,
           id: uuidv4(),
           customer_id: customerId,
+          current_balance: currentBalance,
         })}
-        duplicateRow={({ rowData }) => ({
-          ...rowData,
-          id: uuidv4(),
-        })}
+        // duplicateRow={({ rowData }) => ({
+        //   ...rowData,
+        //   id: uuidv4(),
+        // })}
         onChange={(newValue, operations) => handleChange(newValue, operations)}
         rowClassName={({ rowData }) => {
           if (deletedRowIds.has(rowData.id)) {
