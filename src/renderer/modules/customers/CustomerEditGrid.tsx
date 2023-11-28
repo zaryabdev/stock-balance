@@ -42,21 +42,21 @@ type Choice = {
 };
 
 type Row = {
-  id: string | null;
-  customer_id: string | null;
-  source: string | null;
-  state: string | null;
-  date: string | null;
-  product: string | null;
-  payment: string | null;
-  carton: number | null;
-  qty_ctn: number | null;
-  total_qty: number | null;
-  rate_each: number | null;
-  debit: number | null;
-  credit: number | null;
-  balance: number | null;
-  current_balance: number | null;
+  id: string;
+  customer_id: string;
+  source: string;
+  state: string;
+  date: string;
+  product: string;
+  payment: string;
+  carton: number;
+  qty_ctn: number;
+  total_qty: number;
+  rate_each: number;
+  debit: number;
+  credit: number;
+  balance: number;
+  current_balance: number;
 };
 
 type SelectOptions = {
@@ -375,6 +375,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
                     currentRecord.rate_each = 0;
                     currentRecord.debit = 0;
                     currentRecord.balance = currentRecord.credit;
+                    debugger;
                     currentRecord.state = STATE.updated;
                   } else {
                     currentRecord.payment = RECORD_TYPE.none;
@@ -428,24 +429,33 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
         }
       }
 
-      debugger;
+      let _balance = 0;
 
-      const balance = getBalance(newValue);
+      const withBalance = newValue.map((item, index) => {
+        debugger;
+        if (item.product === RECORD_TYPE.previous_balance) {
+          item.balance = item.debit;
+          _balance += item.balance;
+        } else if (item.product === RECORD_TYPE.none) {
+          item.balance = _balance - item.credit;
+          _balance -= item.credit;
+        } else {
+          item.balance = _balance + item.debit;
+          _balance += item.debit;
+        }
 
-      setData(newValue);
+        return item;
+      });
+
+      const withFinalBalance = withBalance.map((item, index) => {
+        debugger;
+        item.current_balance = _balance;
+
+        return item;
+      });
+      setCurrentBalance(_balance);
+      setData(withFinalBalance);
     }
-  }
-
-  function getBalance(data) {
-    const val = 0;
-
-    // data.map((item, index) => {
-
-    //   if(item.product === RECORD_TYPE.)
-
-    // });
-
-    return val;
   }
 
   const commit = () => {
@@ -836,6 +846,9 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
   return (
     <div className="">
+      <center>
+        <code>{currentBalance}</code>
+      </center>
       <DataSheetGrid
         className=""
         style={{ height: '400px' }}
@@ -864,9 +877,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
           }
         }}
       />
-      <center>
-        Customer ID : {customerId} | Type : {type}
-      </center>
+
       <FloatButton.Group
         trigger="hover"
         type="primary"
