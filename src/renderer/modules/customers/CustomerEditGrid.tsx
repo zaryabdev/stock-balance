@@ -171,13 +171,29 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
   }
 
   let productsToShow = [];
+  let currentVendorProducts = {};
 
   if (type === TYPE.customer) {
     productsToShow = [...context.currentProducts];
+    if (productsToShow.length > 0) {
+      productsToShow.map((product) => {
+        let name = product.label;
+
+        currentVendorProducts[name] = product;
+      });
+    }
   } else if (type === TYPE.vendor) {
     productsToShow = context.currentProducts.filter(
       (product) => product.customer_id === customerId,
     );
+
+    if (productsToShow.length > 0) {
+      productsToShow.map((product) => {
+        let name = product.label;
+
+        currentVendorProducts[name] = product;
+      });
+    }
   }
 
   const columns: Column<Row>[] = [
@@ -273,6 +289,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
   function handleChange(newValue: any, operations: any) {
     {
       console.log(newValue);
+
       for (const operation of operations) {
         if (operation.type === 'CREATE') {
           const newArray = newValue.slice(
@@ -302,9 +319,21 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
             for (let index = 0; index < newValue.length; index++) {
               if (newValue[index].id === id) {
                 const element = newValue[index];
-                element.total_qty = element.carton * element.qty_ctn;
-                element.state = STATE.updated;
-                newValue[index] = element;
+                const { product } = element;
+                console.log(currentVendorProducts);
+                if (currentVendorProducts) {
+                  const currentProduct = currentVendorProducts[product];
+
+                  element.qty_ctn = currentProduct.qty_ctn;
+                  element.total_qty = element.carton * currentProduct.qty_ctn;
+                  element.debit = element.rate_each * element.total_qty;
+                  // debugger;
+                  // element.balance =
+                  //   element.balance + element.debit - element.credit;
+
+                  element.state = STATE.updated;
+                  newValue[index] = element;
+                }
               }
             }
           });
