@@ -56,12 +56,7 @@ class ProductRepository {
 
   getAll(data, callbackFunction) {
     logger.debug(`getAll called`);
-    this.dao.all(
-      `SELECT * FROM product WHERE status != 'DELETED';`,
-      [],
-      data,
-      callbackFunction,
-    );
+    this.dao.all(`SELECT * FROM product;`, [], data, callbackFunction);
   }
 
   getAllById(data, callbackFunction) {
@@ -70,7 +65,7 @@ class ProductRepository {
     const { customer_id } = data;
 
     this.dao.all(
-      `SELECT * FROM product WHERE customer_id = '${customer_id}' AND status != 'DELETED';`,
+      `SELECT * FROM product WHERE customer_id = '${customer_id}';`,
       [],
       data,
       callbackFunction,

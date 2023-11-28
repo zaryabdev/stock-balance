@@ -34,7 +34,7 @@ import Select, { GroupBase, SelectInstance } from 'react-select';
 
 import { v4 as uuidv4 } from 'uuid';
 import appContext from '../../AppContext';
-import { SOURCE, STATE, STATUS, TYPE } from '../../contants';
+import { RECORD_TYPE, SOURCE, STATE, STATUS, TYPE } from '../../contants';
 
 type Choice = {
   label: string;
@@ -170,28 +170,56 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
     return null;
   }
 
-  let productsToShow = [];
-  let currentVendorProducts = {};
+  let productsToShow = [
+    {
+      customer_id: '',
+      id: '',
+      label: 'Other',
+      qty_ctn: 0,
+      status: 'NONE',
+      value: RECORD_TYPE.none,
+    },
+    {
+      customer_id: '',
+      id: '',
+      label: 'Previous Balance',
+      qty_ctn: 0,
+      status: 'NONE',
+      value: RECORD_TYPE.previous_balance,
+    },
+  ];
+  const currentVendorProducts = {};
 
   if (type === TYPE.customer) {
-    productsToShow = [...context.currentProducts];
+    productsToShow = [...productsToShow, ...context.currentProducts];
     if (productsToShow.length > 0) {
       productsToShow.map((product) => {
-        let name = product.label;
-
-        currentVendorProducts[name] = product;
+        const { value } = product;
+        if (
+          value !== RECORD_TYPE.previous_balance &&
+          value !== RECORD_TYPE.none
+        ) {
+          currentVendorProducts[value] = product;
+        }
       });
     }
   } else if (type === TYPE.vendor) {
-    productsToShow = context.currentProducts.filter(
+    const _productsToShow = context.currentProducts.filter(
       (product) => product.customer_id === customerId,
     );
 
+    productsToShow = [...productsToShow, ..._productsToShow];
+
     if (productsToShow.length > 0) {
       productsToShow.map((product) => {
-        let name = product.label;
+        const { value } = product;
 
-        currentVendorProducts[name] = product;
+        if (
+          value !== RECORD_TYPE.previous_balance &&
+          value !== RECORD_TYPE.none
+        ) {
+          currentVendorProducts[value] = product;
+        }
       });
     }
   }
@@ -289,7 +317,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
   function handleChange(newValue: any, operations: any) {
     {
       console.log(newValue);
-
+      debugger;
       for (const operation of operations) {
         if (operation.type === 'CREATE') {
           const newArray = newValue.slice(
@@ -318,21 +346,41 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
             }
             for (let index = 0; index < newValue.length; index++) {
               if (newValue[index].id === id) {
-                const element = newValue[index];
-                const { product } = element;
+                const currentRecord = newValue[index];
+                const { product } = currentRecord;
+
                 console.log(currentVendorProducts);
                 if (currentVendorProducts) {
                   const currentProduct = currentVendorProducts[product];
 
-                  element.qty_ctn = currentProduct.qty_ctn;
-                  element.total_qty = element.carton * currentProduct.qty_ctn;
-                  element.debit = element.rate_each * element.total_qty;
-                  // debugger;
-                  // element.balance =
-                  //   element.balance + element.debit - element.credit;
+                  if (product === RECORD_TYPE.previous_balance) {
+                    currentRecord.payment = RECORD_TYPE.previous_balance;
+                    currentRecord.qty_ctn = 0;
+                    currentRecord.carton = 0;
+                    currentRecord.total_qty = 0;
+                    currentRecord.rate_each = 0;
+                    currentRecord.state = STATE.updated;
+                  } else if (product === RECORD_TYPE.none) {
+                    currentRecord.payment = RECORD_TYPE.none;
+                    currentRecord.qty_ctn = 0;
+                    currentRecord.carton = 0;
+                    currentRecord.total_qty = 0;
+                    currentRecord.rate_each = 0;
+                    currentRecord.state = STATE.updated;
+                  } else {
+                    currentRecord.qty_ctn = currentProduct.qty_ctn;
+                    currentRecord.total_qty =
+                      currentRecord.carton * currentProduct.qty_ctn;
+                    currentRecord.debit =
+                      currentRecord.rate_each * currentRecord.total_qty;
+                    // debugger;
+                    // element.balance =
+                    //   element.balance + element.debit - element.credit;
 
-                  element.state = STATE.updated;
-                  newValue[index] = element;
+                    currentRecord.state = STATE.updated;
+                  }
+
+                  newValue[index] = currentRecord;
                 }
               }
             }

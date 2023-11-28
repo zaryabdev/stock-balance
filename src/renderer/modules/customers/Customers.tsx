@@ -856,7 +856,9 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
                 onClick={handleShowEditModal}
                 // loading={loading}
                 disabled={
-                  selectedRowKeys.length === 0 || selectedRowKeys.length > 1
+                  selectedRowKeys.length === 0 ||
+                  selectedRowKeys.length > 1 ||
+                  selectedOption === TYPE.both
                 }
               >
                 Edit
@@ -867,9 +869,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
                 style={{ margin: 2 }}
                 onClick={loadSelectedCustomers}
                 // loading={loading}
-                disabled={
-                  selectedRowKeys.length < 1 || selectedOption === 'STOCK'
-                }
+                disabled={selectedRowKeys.length < 1}
               >
                 Load
               </Button>

@@ -25,3 +25,8 @@ export const MODE = {
   create: 'CREATE',
   update: 'UPDATE',
 };
+
+export const RECORD_TYPE = {
+  none: '',
+  previous_balance: 'Previous Balance',
+};
