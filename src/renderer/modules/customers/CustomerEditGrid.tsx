@@ -936,7 +936,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
         style={{ right: 30, bottom: 15 }}
         icon={<EditOutlined />}
       >
-        <FloatButton tooltip="Undo" onClick={cancel} icon={<UndoOutlined />} />
+        {/* <FloatButton tooltip="Undo" onClick={cancel} icon={<UndoOutlined />} /> */}
         <FloatButton
           tooltip="Print"
           onClick={showModal}
