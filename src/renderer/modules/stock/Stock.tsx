@@ -6,7 +6,7 @@ import type { FilterConfirmProps } from 'antd/es/table/interface';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
 import appContext from '../../AppContext';
-import { STATUS, TYPE } from '../../contants';
+import { RECORD_TYPE, STATUS, TYPE } from '../../contants';
 
 interface DataType {
   id: string;
@@ -25,8 +25,7 @@ const Stock: React.FC = ({ activeTab }) => {
   const [data, setData] = useState<DataType[]>([]);
   const [allInvoices, setAllInvoices] = useState([]);
   const searchInput = useRef<InputRef>(null);
-
-  // const context = useContext(appContext);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -47,37 +46,47 @@ const Stock: React.FC = ({ activeTab }) => {
     allInvoices.map((item) => {
       const { type, product } = item;
       if (type === TYPE.vendor) {
-        if (vendorStock[product]) {
-          const currentStockItem = vendorStock[product];
-          const newStockItem = { ...item };
-          const newCarton = currentStockItem.carton + newStockItem.carton;
-          const newTotalQty =
-            currentStockItem.total_qty + newStockItem.total_qty;
-          newStockItem.total_qty = newTotalQty;
-          newStockItem.carton = newCarton;
-        } else {
-          vendorStock[product] = { ...item };
+        if (
+          product !== RECORD_TYPE.previous_balance &&
+          product !== RECORD_TYPE.none
+        ) {
+          if (vendorStock[product]) {
+            const currentStockItem = vendorStock[product];
+            const newStockItem = { ...item };
+            const newCarton = currentStockItem.carton + newStockItem.carton;
+            const newTotalQty =
+              currentStockItem.total_qty + newStockItem.total_qty;
+            newStockItem.total_qty = newTotalQty;
+            newStockItem.carton = newCarton;
+            vendorStock[product] = { ...newStockItem };
+          } else {
+            vendorStock[product] = { ...item };
+          }
         }
       }
 
       if (type === TYPE.customer) {
-        if (customerStock[product]) {
-          const currentStockItem = customerStock[product];
-          const newStockItem = { ...item };
-          const newCarton = currentStockItem.carton + newStockItem.carton;
-          const newTotalQty =
-            currentStockItem.total_qty + newStockItem.total_qty;
-          newStockItem.total_qty = newTotalQty;
-          newStockItem.carton = newCarton;
-        } else {
-          customerStock[product] = { ...item };
+        if (
+          product !== RECORD_TYPE.previous_balance &&
+          product !== RECORD_TYPE.none
+        ) {
+          if (customerStock[product]) {
+            const currentStockItem = customerStock[product];
+            const newStockItem = { ...item };
+            const newCarton = currentStockItem.carton + newStockItem.carton;
+            const newTotalQty =
+              currentStockItem.total_qty + newStockItem.total_qty;
+            newStockItem.total_qty = newTotalQty;
+            newStockItem.carton = newCarton;
+            customerStock[product] = { ...newStockItem };
+          } else {
+            customerStock[product] = { ...item };
+          }
         }
       }
     });
-
     console.log(vendorStock);
     console.log(customerStock);
-
     const newStock = [];
 
     try {
@@ -100,9 +109,16 @@ const Stock: React.FC = ({ activeTab }) => {
     } catch (error) {
       console.error(error);
     }
-
     setData(newStock);
   }, [allInvoices]);
+
+  const start = () => {
+    getAllRecords();
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  };
 
   function getAllRecords() {
     window.electron.ipcRenderer.getAllCustomersInvoice({});
@@ -264,8 +280,14 @@ const Stock: React.FC = ({ activeTab }) => {
   );
 
   return (
-    <div>
-      <button onClick={getAllRecords}> Refresh </button>
+    <div
+      style={{
+        margin: 10,
+      }}
+    >
+      <Button type="primary" onClick={start} loading={loading}>
+        Refresh Stock
+      </Button>
       <Table columns={columns} dataSource={data} />;
     </div>
   );

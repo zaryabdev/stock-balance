@@ -161,7 +161,7 @@ const selectColumn = (
 
 function CustomerEditGrid({ customerId, type, getCurrentStock }) {
   const context = useContext(appContext);
-  let formatedDate = format(new Date(), 'yyyy-MM-dd');
+  const formatedDate = format(new Date(), 'yyyy-MM-dd');
   const currentDate = dayjs(formatedDate, 'YYYY-MM-DD');
   const [currentBalance, setCurrentBalance] = useState(0);
 
@@ -212,7 +212,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
     {
       customer_id: '',
       id: '',
-      label: 'Other',
+      label: 'Payment',
       qty_ctn: 0,
       status: 'NONE',
       value: RECORD_TYPE.none,
@@ -311,11 +311,10 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       ...keyColumn('balance', floatColumn),
       title: 'Balance',
     },
-    {
-      ...keyColumn('current_balance', floatColumn),
-      title: 'Current Balance',
-    },
-
+    // {
+    //   ...keyColumn('current_balance', floatColumn),
+    //   title: 'Current Balance',
+    // },
     // {
     //   ...keyColumn('source', textColumn),
     //   title: 'Source',
@@ -757,9 +756,9 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
     const tableRows = [];
 
     // for each ticket pass all its data into an array
-    let _date = dayjs(printDate).format('YYYY-MM-DD');
+    const _date = dayjs(printDate).format('YYYY-MM-DD');
 
-    let filteredData = data.filter((item) => {
+    const filteredData = data.filter((item) => {
       if (item.date === _date) {
         return true;
       }
