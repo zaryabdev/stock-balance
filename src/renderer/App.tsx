@@ -44,21 +44,21 @@ export default function App() {
     window.electron.ipcRenderer.getAllProduct({});
   }
 
-  window.electron.ipcRenderer.on('get:all:stock-response', (response) => {
-    console.log('get:all:stock-response reponse came back');
-    console.log(response);
-    if (response.status === STATUS.FAILED) {
-      console.log(response.message);
-    }
+  // window.electron.ipcRenderer.on('get:all:stock-response', (response) => {
+  //   console.log('get:all:stock-response reponse came back');
+  //   console.log(response);
+  //   if (response.status === STATUS.FAILED) {
+  //     console.log(response.message);
+  //   }
 
-    if (response.status === STATUS.SUCCESS) {
-      console.log('response of get:all:stock-response ');
-      console.log(response);
-      const list = response.data;
+  //   if (response.status === STATUS.SUCCESS) {
+  //     console.log('response of get:all:stock-response ');
+  //     console.log(response);
+  //     const list = response.data;
 
-      setCurrentStock(list);
-    }
-  });
+  //     setCurrentStock(list);
+  //   }
+  // });
 
   window.electron.ipcRenderer.on('get:all:product-response', (response) => {
     console.log('get:all:product-response reponse came back');

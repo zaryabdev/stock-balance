@@ -25,16 +25,6 @@ const SampleComponent: FC = ({ id, label }) => {
   );
 };
 
-const tempId = uuidv4();
-
-const initialTabsState = [
-  {
-    label: 'Tab 1',
-    children: <CustomerEditGrid customerId={tempId} />,
-    key: tempId,
-  },
-];
-
 const _choices = [
   { value: '900ML BOX', label: '900ML BOX', qty_ctn: 100 },
   { value: '100ML BOX', label: '100ML BOX', qty_ctn: 100 },
@@ -95,11 +85,12 @@ function MultiCustomerTabs({
             arr.push({
               label: el.name,
               children: (
-                <CustomerEditGrid
-                  customerId={el.id}
-                  type={el.type}
-                  getCurrentStock={getCurrentStock}
-                />
+                // <CustomerEditGrid
+                //   customerId={el.id}
+                //   type={el.type}
+                //   getCurrentStock={getCurrentStock}
+                // />
+                <div>CustomerEditGrid</div>
               ),
               key,
             });
@@ -117,11 +108,12 @@ function MultiCustomerTabs({
               arr.push({
                 label: el.name,
                 children: (
-                  <CustomerEditGrid
-                    customerId={el.id}
-                    type={el.type}
-                    getCurrentStock={getCurrentStock}
-                  />
+                  // <CustomerEditGrid
+                  //   customerId={el.id}
+                  //   type={el.type}
+                  //   getCurrentStock={getCurrentStock}
+                  // />
+                  <div>CustomerEditGrid</div>
                 ),
                 key,
               });

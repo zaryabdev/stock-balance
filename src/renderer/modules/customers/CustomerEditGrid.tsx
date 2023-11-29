@@ -448,14 +448,8 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
         return item;
       });
 
-      const withFinalBalance = withBalance.map((item, index) => {
-        debugger;
-        item.current_balance = _balance;
-
-        return item;
-      });
       setCurrentBalance(_balance);
-      setData(withFinalBalance);
+      setData(withBalance);
     }
   }
 
@@ -573,7 +567,13 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
       console.log(updatedStock);
 
-      window.electron.ipcRenderer.updateCustomerInvoice(withState);
+      const withFinalBalance = withState.map((item, index) => {
+        item.current_balance = currentBalance;
+
+        return item;
+      });
+      debugger;
+      window.electron.ipcRenderer.updateCustomerInvoice(withFinalBalance);
       // window.electron.ipcRenderer.updateStock(updatedStock);
 
       createdRowIds.clear();
@@ -655,7 +655,14 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
       console.log(updatedStock);
 
-      window.electron.ipcRenderer.updateCustomerInvoice(withState);
+      const withFinalBalance = withState.map((item, index) => {
+        item.current_balance = currentBalance;
+
+        return item;
+      });
+      debugger;
+
+      window.electron.ipcRenderer.updateCustomerInvoice(withFinalBalance);
       // window.electron.ipcRenderer.updateStock(updatedStock);
 
       createdRowIds.clear();
