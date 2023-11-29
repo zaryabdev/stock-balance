@@ -26,14 +26,14 @@ const Stock: React.FC = ({ activeTab }) => {
   const [allInvoices, setAllInvoices] = useState([]);
   const searchInput = useRef<InputRef>(null);
 
-  const context = useContext(appContext);
+  // const context = useContext(appContext);
 
   useEffect(() => {
     const id = setInterval(() => {
       console.log(`getAllRecords()`);
 
       getAllRecords();
-    }, 5000);
+    }, 10000);
 
     return () => {
       clearInterval(id);
@@ -249,7 +249,7 @@ const Stock: React.FC = ({ activeTab }) => {
     'get:all:customer-invoices-response',
     (response) => {
       console.log('get:all:customer-invoices-response reponse came back');
-      console.log(response);
+      // console.log(response);
 
       if (response.status === STATUS.FAILED) {
         console.log(response.message);
@@ -257,7 +257,7 @@ const Stock: React.FC = ({ activeTab }) => {
 
       if (response.status === STATUS.SUCCESS) {
         console.log('response of get:all:customer-invoices-response ');
-        console.log(response);
+        // console.log(response);
         setAllInvoices(response.data);
       }
     },

@@ -84,9 +84,9 @@ class CustomerInvoicRepository {
     }
     console.log('--------------DATA-------------------');
     console.log('toCreate');
-    console.log(toCreate);
+    console.log(toCreate.length);
     console.log('toUpdate');
-    console.log(toUpdate);
+    console.log(toUpdate.length);
     console.log('--------------DATA-------------------');
 
     // create records
@@ -202,7 +202,7 @@ class CustomerInvoicRepository {
 
   create(data = [], callbackFunction) {
     console.log('create called for CustomerInvoicRepository');
-    console.log(data);
+    // console.log(data);
 
     if (data.length === 0) {
       const res = {

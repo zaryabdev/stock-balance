@@ -85,12 +85,11 @@ function MultiCustomerTabs({
             arr.push({
               label: el.name,
               children: (
-                // <CustomerEditGrid
-                //   customerId={el.id}
-                //   type={el.type}
-                //   getCurrentStock={getCurrentStock}
-                // />
-                <div>CustomerEditGrid</div>
+                <CustomerEditGrid
+                  customerId={el.id}
+                  type={el.type}
+                  getCurrentStock={getCurrentStock}
+                />
               ),
               key,
             });
@@ -108,12 +107,11 @@ function MultiCustomerTabs({
               arr.push({
                 label: el.name,
                 children: (
-                  // <CustomerEditGrid
-                  //   customerId={el.id}
-                  //   type={el.type}
-                  //   getCurrentStock={getCurrentStock}
-                  // />
-                  <div>CustomerEditGrid</div>
+                  <CustomerEditGrid
+                    customerId={el.id}
+                    type={el.type}
+                    getCurrentStock={getCurrentStock}
+                  />
                 ),
                 key,
               });

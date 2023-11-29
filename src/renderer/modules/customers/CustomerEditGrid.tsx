@@ -755,7 +755,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
     'create:customer-invoice-response',
     (response) => {
       console.log('create:customer-invoice-response reponse came back');
-      console.log(response);
+      // console.log(response);
 
       if (response.status === STATUS.FAILED) {
         console.log(response.message);
@@ -763,7 +763,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
       if (response.status === STATUS.SUCCESS) {
         console.log('response of create:customer-invoice-response ');
-        console.log(response);
+        // console.log(response);
         // getAllCustomers({});
       }
     },
@@ -771,7 +771,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
   window.electron.ipcRenderer.on('update:customer-invoice', (response) => {
     console.log('update:customer-invoice reponse came back');
-    console.log(response);
+    // console.log(response);
 
     if (response.status === STATUS.FAILED) {
       console.log(response.message);
@@ -779,7 +779,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
     if (response.status === STATUS.SUCCESS) {
       console.log('response of update:customer-invoice ');
-      console.log(response);
+      // console.log(response);
 
       getAllRecordsById(customerId);
     }
@@ -789,7 +789,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
     'get:all:customer-invoices:id-response',
     (response) => {
       console.log('get:all:customer-invoices:id-response reponse came back');
-      console.log(response);
+      // console.log(response);
 
       if (response.status === STATUS.FAILED) {
         console.log(response.message);
@@ -797,7 +797,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
       if (response.status === STATUS.SUCCESS) {
         console.log('response of get:all:customer-invoices:id-response ');
-        console.log(response);
+        // console.log(response);
         // ;
         if (response.meta.id === customerId) {
           setData(response.data);
@@ -810,7 +810,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
     'delete:customer-invoice-response',
     (response) => {
       console.log('delete:customer-invoice-response reponse came back');
-      console.log(response);
+      // console.log(response);
 
       if (response.status === STATUS.FAILED) {
         console.log(response.message);
@@ -819,7 +819,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       if (response.status === STATUS.SUCCESS) {
         // setSelectedRowKeys([]);
         console.log('response of delete:customer-invoice-response ');
-        console.log(response);
+        // console.log(response);
 
         if (response.status === STATUS.FAILED) {
           console.log(response.message);
@@ -827,7 +827,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
         if (response.status === STATUS.SUCCESS) {
           console.log('response of delete:customer-invoice-response  ');
-          console.log(response);
+          // console.log(response);
           // window.electron.ipcRenderer.getAllCustomers({});
         }
       }
@@ -837,7 +837,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
   // IPC Main listeners Stock
   window.electron.ipcRenderer.on('update:stock-response', (response) => {
     console.log('update:stock-response reponse came back');
-    console.log(response);
+    // console.log(response);
 
     if (response.status === STATUS.FAILED) {
       console.log(response.message);
@@ -845,7 +845,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
     if (response.status === STATUS.SUCCESS) {
       console.log('response of update:stock-response ');
-      console.log(response);
+      // console.log(response);
       getCurrentStock();
       // setTimeout(() =>
       // , 500);

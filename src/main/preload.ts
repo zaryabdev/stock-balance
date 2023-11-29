@@ -76,6 +76,27 @@ const electronHandler = {
     //   ipcRenderer.send('delete:stock', data);
     // },
 
+    createBalance(data) {
+      console.log('Inside preload create:balance');
+      console.log(data);
+      ipcRenderer.send('create:balance', data);
+    },
+    updateBalance(data) {
+      console.log('Inside preload update:balance');
+      console.log(data);
+      ipcRenderer.send('update:balance', data);
+    },
+    getAllBalance(data) {
+      console.log('Inside preload get:all:balance');
+      console.log(data);
+      ipcRenderer.send('get:all:balance', data);
+    },
+    deleteBalance(data) {
+      console.log('Inside preload delete:balance');
+      console.log(data);
+      ipcRenderer.send('delete:balance', data);
+    },
+
     createProduct(data) {
       console.log('Inside preload create:product');
       console.log(data);
