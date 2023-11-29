@@ -4,7 +4,18 @@ import {
   SaveOutlined,
   UndoOutlined,
 } from '@ant-design/icons';
-import { Avatar, Col, Descriptions, FloatButton, Row } from 'antd';
+import dayjs from 'dayjs';
+
+import type { DatePickerProps } from 'antd';
+import {
+  Avatar,
+  Col,
+  DatePicker,
+  Descriptions,
+  FloatButton,
+  Modal,
+  Row,
+} from 'antd';
 import { format } from 'date-fns';
 import Fuse from 'fuse.js';
 import jsPDF from 'jspdf';
@@ -150,13 +161,19 @@ const selectColumn = (
 
 function CustomerEditGrid({ customerId, type, getCurrentStock }) {
   const context = useContext(appContext);
+  let formatedDate = format(new Date(), 'yyyy-MM-dd');
+  const currentDate = dayjs(formatedDate, 'YYYY-MM-DD');
   const [currentBalance, setCurrentBalance] = useState(0);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [printDate, setPrintDate] = useState(currentDate);
+
   const initialState = {
     id: '',
     customer_id: '',
     source: SOURCE.memory,
     state: STATE.created,
-    date: format(new Date(), 'yyyy-MM-dd'),
+    date: formatedDate,
     product: '',
     payment: '',
     carton: 0,
@@ -172,6 +189,24 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
   if (!context.currentProducts) {
     return null;
   }
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    print();
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  const onDateChange: DatePickerProps['onChange'] = (date, dateString) => {
+    console.log(date, dateString);
+    setPrintDate(date);
+  };
 
   let productsToShow = [
     {
@@ -376,7 +411,6 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
                     currentRecord.rate_each = 0;
                     currentRecord.debit = 0;
                     currentRecord.balance = currentRecord.credit;
-                    debugger;
                     currentRecord.state = STATE.updated;
                   } else {
                     currentRecord.payment = RECORD_TYPE.none;
@@ -385,7 +419,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
                       currentRecord.carton * currentProduct.qty_ctn;
                     currentRecord.debit =
                       currentRecord.rate_each * currentRecord.total_qty;
-                    // debugger;
+                    // ;
                     currentRecord.balance = currentRecord.debit;
                     //   element.balance + element.debit - element.credit;
 
@@ -433,7 +467,6 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       let _balance = 0;
 
       const withBalance = newValue.map((item, index) => {
-        debugger;
         if (item.product === RECORD_TYPE.previous_balance) {
           item.balance = item.debit;
           _balance += item.balance;
@@ -572,9 +605,13 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
         return item;
       });
-      debugger;
       window.electron.ipcRenderer.updateCustomerInvoice(withFinalBalance);
       // window.electron.ipcRenderer.updateStock(updatedStock);
+      // window.electron.ipcRenderer.createBalance({
+      //   id : uuidv4(),
+      //   customer_id : customerId,
+      //   balance : currentBalance
+      // });
 
       createdRowIds.clear();
       deletedRowIds.clear();
@@ -660,8 +697,6 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
         return item;
       });
-      debugger;
-
       window.electron.ipcRenderer.updateCustomerInvoice(withFinalBalance);
       // window.electron.ipcRenderer.updateStock(updatedStock);
 
@@ -722,7 +757,15 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
     const tableRows = [];
 
     // for each ticket pass all its data into an array
-    data.forEach((record) => {
+    let _date = dayjs(printDate).format('YYYY-MM-DD');
+
+    let filteredData = data.filter((item) => {
+      if (item.date === _date) {
+        return true;
+      }
+    });
+    // let filteredData = data;
+    filteredData.forEach((record) => {
       const inArr = [
         record.date,
         record.payment,
@@ -896,7 +939,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
         <FloatButton tooltip="Undo" onClick={cancel} icon={<UndoOutlined />} />
         <FloatButton
           tooltip="Print"
-          onClick={print}
+          onClick={showModal}
           icon={<FilePdfOutlined />}
         />
         <FloatButton
@@ -905,6 +948,14 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
           icon={<SaveOutlined />}
         />
       </FloatButton.Group>
+      <Modal
+        title="Basic Modal"
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <DatePicker defaultValue={printDate} onChange={onDateChange} />
+      </Modal>
     </div>
   );
 }
