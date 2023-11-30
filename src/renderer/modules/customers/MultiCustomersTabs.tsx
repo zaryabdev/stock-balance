@@ -10,6 +10,7 @@ import {
 } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import Balance from '../balance/Balance';
 import Stock from '../stock/Stock';
 import CustomerEditGrid from './CustomerEditGrid';
 
@@ -59,7 +60,7 @@ function MultiCustomerTabs({
     },
     {
       label: 'Balance',
-      children: <h1>Work In Progress...</h1>,
+      children: <Balance activeTab={activeTabKey} />,
       key: 'BALANCE',
       closable: false,
     },
