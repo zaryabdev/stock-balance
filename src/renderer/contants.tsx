@@ -19,6 +19,7 @@ export const TYPE = {
   customer: 'CUSTOMER',
   vendor: 'VENDOR',
   both: 'BOTH',
+  deleted: 'DELETED',
 };
 
 export const MODE = {

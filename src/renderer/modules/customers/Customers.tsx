@@ -1,5 +1,6 @@
 import {
   CustomerServiceOutlined,
+  DeleteOutlined,
   DoubleLeftOutlined,
   DoubleRightOutlined,
   ExclamationCircleFilled,
@@ -49,6 +50,7 @@ const options = [
   { label: 'Customers', value: TYPE.customer },
   { label: 'Venders', value: TYPE.vendor },
   { label: 'Customers & Vendors', value: TYPE.both },
+  { label: <DeleteOutlined />, value: TYPE.deleted },
 ];
 
 const initialCustomerState = {
@@ -80,6 +82,7 @@ const initialProducts: Item[] = [];
 //     address: `London Park no. ${i}`,
 //   });
 // }
+
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
   editing: boolean;
   dataIndex: string;
@@ -942,7 +945,33 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
           )}
           {selectedOption === TYPE.vendor && (
             <div>
-              <Tabs
+              <VendorForm
+                form={form}
+                initialValues={{
+                  name: `${
+                    form.getFieldValue('name') ? form.getFieldValue('name') : ''
+                  }`,
+                  address: `${
+                    form.getFieldValue('address')
+                      ? form.getFieldValue('address')
+                      : ''
+                  }`,
+                  phone: `${
+                    form.getFieldValue('phone')
+                      ? form.getFieldValue('phone')
+                      : ''
+                  }`,
+                  type: selectedOption,
+                }}
+              />
+              <Products
+                productsForm={productsForm}
+                addNewProduct={addNewProduct}
+                products={products}
+                mergedColumns={mergedColumns}
+                cancel={cancel}
+              />
+              {/* <Tabs
                 defaultActiveKey="DETAILS"
                 centered
                 items={[
@@ -989,7 +1018,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
                     closable: false,
                   },
                 ]}
-              />
+              /> */}
             </div>
           )}
         </div>
@@ -1035,7 +1064,23 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
 
         {selectedOption === TYPE.vendor && (
           <div>
-            <Tabs
+            <VendorForm
+              form={form}
+              initialValues={{
+                name: selectedCutomer.name,
+                address: selectedCutomer.address,
+                phone: selectedCutomer.phone,
+                type: selectedOption,
+              }}
+            />
+            <Products
+              productsForm={productsForm}
+              addRow={addNewProduct}
+              products={products}
+              mergedColumns={mergedColumns}
+              cancel={cancel}
+            />
+            {/* <Tabs
               defaultActiveKey="DETAILS"
               centered
               items={[
@@ -1070,7 +1115,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
                   closable: false,
                 },
               ]}
-            />
+            /> */}
           </div>
         )}
       </Modal>

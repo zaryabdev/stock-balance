@@ -136,7 +136,7 @@ const List: React.FC = ({
           ? 'Customers'
           : option === TYPE.vendor
           ? 'Vendors'
-          : 'Stock & Balance '
+          : 'Deleted Customers | Vendors '
       }`,
       dataIndex: 'name',
       key: 'name',
