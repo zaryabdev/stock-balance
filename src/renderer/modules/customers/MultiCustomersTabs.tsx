@@ -158,7 +158,7 @@ function MultiCustomerTabs({
       confirm({
         title: 'Are you sure close this tab?',
         icon: <ExclamationCircleFilled />,
-        content: 'Save changes before closing edited tab.',
+        content: 'All unsaved changes will be discarded.',
         okText: 'Yes',
         okType: 'danger',
         cancelText: 'No',

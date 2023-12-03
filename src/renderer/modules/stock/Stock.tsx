@@ -28,16 +28,20 @@ const Stock: React.FC = ({ activeTab }) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const id = setInterval(() => {
-      console.log(`getAllRecords()`);
-
-      getAllRecords();
-    }, 10000);
-
-    return () => {
-      clearInterval(id);
-    };
+    getAllRecords();
   }, []);
+
+  // useEffect(() => {
+  //   const id = setInterval(() => {
+  //     console.log(`getAllRecords()`);
+
+  //     getAllRecords();
+  //   }, 10000);
+
+  //   return () => {
+  //     clearInterval(id);
+  //   };
+  // }, []);
 
   useEffect(() => {
     const vendorStock = {};
@@ -288,7 +292,7 @@ const Stock: React.FC = ({ activeTab }) => {
       <Button type="primary" onClick={start} loading={loading}>
         Refresh Stock
       </Button>
-      <Table columns={columns} dataSource={data} />;
+      <Table columns={columns} dataSource={data} />
     </div>
   );
 };

@@ -31,15 +31,18 @@ const Balance: React.FC = ({ activeTab }) => {
   const searchVendorInput = useRef<InputRef>(null);
 
   useEffect(() => {
-    const id = setInterval(() => {
-      console.log(`getAllRecords()`);
-      getAllRecords();
-    }, 10000);
-
-    return () => {
-      clearInterval(id);
-    };
+    getAllRecords();
   }, []);
+  // useEffect(() => {
+  //   const id = setInterval(() => {
+  //     console.log(`getAllRecords()`);
+  //     getAllRecords();
+  //   }, 10000);
+
+  //   return () => {
+  //     clearInterval(id);
+  //   };
+  // }, []);
 
   useEffect(() => {
     // const vendorStock = {};
@@ -112,11 +115,11 @@ const Balance: React.FC = ({ activeTab }) => {
     //   console.error(error);
     // }
     // setCustomerData(newStock);
-    let customerBalanceMap = {};
-    let vendorBalanceMap = {};
+    const customerBalanceMap = {};
+    const vendorBalanceMap = {};
 
     allInvoices.map((item, index) => {
-      let customerId = item.customer_id;
+      const customerId = item.customer_id;
 
       if (item.type === TYPE.customer) {
         if (customerBalanceMap[customerId]) {
@@ -141,11 +144,11 @@ const Balance: React.FC = ({ activeTab }) => {
     console.log(customerBalanceMap);
     console.log(vendorBalanceMap);
 
-    let customerBalanceArr = [];
+    const customerBalanceArr = [];
 
     try {
       Object.keys(customerBalanceMap).forEach(function (key, index) {
-        let _data = customerBalanceMap[key];
+        const _data = customerBalanceMap[key];
         let _balance = 0;
 
         _data.map((item, index) => {
@@ -173,11 +176,11 @@ const Balance: React.FC = ({ activeTab }) => {
       console.error(error);
     }
 
-    let vendorBalanceArr = [];
+    const vendorBalanceArr = [];
 
     try {
       Object.keys(vendorBalanceMap).forEach(function (key, index) {
-        let _data = vendorBalanceMap[key];
+        const _data = vendorBalanceMap[key];
         let _balance = 0;
 
         _data.map((item, index) => {
@@ -372,10 +375,10 @@ const Balance: React.FC = ({ activeTab }) => {
       </Button>
       <Row>
         <Col span={12}>
-          <Table columns={columns} dataSource={customerData} />;
+          <Table columns={columns} dataSource={customerData} />
         </Col>
         <Col span={12}>
-          <Table columns={columns} dataSource={vendorData} />;
+          <Table columns={columns} dataSource={vendorData} />
         </Col>
       </Row>
     </div>

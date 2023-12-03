@@ -24,6 +24,7 @@ export default function App() {
   const [toggleSideBar, setToggleSideBar] = useState(true);
   const [currentStock, setCurrentStock] = useState([]);
   const [currentProducts, setCurrentProducts] = useState([]);
+
   useEffect(() => {
     getCurrentStock();
     getCurrentProducts();

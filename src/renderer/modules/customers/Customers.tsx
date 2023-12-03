@@ -460,6 +460,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
 
   const save = async (key: React.Key) => {
     try {
+      debugger;
       const row = (await productsForm.validateFields()) as Item;
 
       let isUnique = true;
