@@ -376,7 +376,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
           const updatedArray = newValue.slice(
             operation.fromRowIndex,
-            operation.toRowIndex,
+            newValue.length,
           );
 
           updatedArray.forEach(({ id }) => {
@@ -392,46 +392,47 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
                 console.log(currentVendorProducts);
                 if (currentVendorProducts) {
                   const currentProduct = currentVendorProducts[product];
+                  if (currentProduct) {
+                    if (product === RECORD_TYPE.previous_balance) {
+                      currentRecord.payment = RECORD_TYPE.previous_balance;
+                      currentRecord.qty_ctn = 0;
+                      currentRecord.carton = 0;
+                      currentRecord.total_qty = 0;
+                      currentRecord.rate_each = 0;
+                      currentRecord.credit = 0;
+                      currentRecord.balance = currentRecord.debit;
+                      currentRecord.state = STATE.updated;
+                    } else if (product === RECORD_TYPE.none) {
+                      // currentRecord.payment = RECORD_TYPE;
+                      currentRecord.qty_ctn = 0;
+                      currentRecord.carton = 0;
+                      currentRecord.total_qty = 0;
+                      currentRecord.rate_each = 0;
+                      currentRecord.debit = 0;
+                      currentRecord.balance = currentRecord.credit;
+                      currentRecord.state = STATE.updated;
+                    } else {
+                      currentRecord.payment = RECORD_TYPE.none;
+                      currentRecord.qty_ctn = currentProduct.qty_ctn;
+                      currentRecord.total_qty =
+                        currentRecord.carton * currentProduct.qty_ctn;
+                      currentRecord.debit =
+                        currentRecord.rate_each * currentRecord.total_qty;
+                      // ;
+                      currentRecord.balance = currentRecord.debit;
+                      //   element.balance + element.debit - element.credit;
 
-                  if (product === RECORD_TYPE.previous_balance) {
-                    currentRecord.payment = RECORD_TYPE.previous_balance;
-                    currentRecord.qty_ctn = 0;
-                    currentRecord.carton = 0;
-                    currentRecord.total_qty = 0;
-                    currentRecord.rate_each = 0;
-                    currentRecord.credit = 0;
-                    currentRecord.balance = currentRecord.debit;
-                    currentRecord.state = STATE.updated;
-                  } else if (product === RECORD_TYPE.none) {
-                    // currentRecord.payment = RECORD_TYPE;
-                    currentRecord.qty_ctn = 0;
-                    currentRecord.carton = 0;
-                    currentRecord.total_qty = 0;
-                    currentRecord.rate_each = 0;
-                    currentRecord.debit = 0;
-                    currentRecord.balance = currentRecord.credit;
-                    currentRecord.state = STATE.updated;
+                      currentRecord.state = STATE.updated;
+                    }
+                    newValue[index] = currentRecord;
                   } else {
-                    currentRecord.payment = RECORD_TYPE.none;
-                    currentRecord.qty_ctn = currentProduct.qty_ctn;
-                    currentRecord.total_qty =
-                      currentRecord.carton * currentProduct.qty_ctn;
-                    currentRecord.debit =
-                      currentRecord.rate_each * currentRecord.total_qty;
-                    // ;
-                    currentRecord.balance = currentRecord.debit;
-                    //   element.balance + element.debit - element.credit;
-
-                    currentRecord.state = STATE.updated;
+                    // test use cases for deleted records
                   }
-
-                  newValue[index] = currentRecord;
                 }
               }
             }
           });
         }
-
         if (operation.type === 'DELETE') {
           let keptRows = 0;
 

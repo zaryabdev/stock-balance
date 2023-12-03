@@ -4,10 +4,14 @@ import {
   Input,
   InputNumber,
   Modal,
+  Modal,
   Space,
   Tabs,
   Typography,
 } from 'antd';
+
+import { ExclamationCircleFilled } from '@ant-design/icons';
+
 import React, { useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import Balance from '../balance/Balance';
@@ -25,7 +29,7 @@ const SampleComponent: FC = ({ id, label }) => {
     </div>
   );
 };
-
+const { confirm } = Modal;
 const _choices = [
   { value: '900ML BOX', label: '900ML BOX', qty_ctn: 100 },
   { value: '100ML BOX', label: '100ML BOX', qty_ctn: 100 },
@@ -151,7 +155,20 @@ function MultiCustomerTabs({
     action: 'add' | 'remove',
   ) => {
     if (action === 'remove') {
-      removeTab(targetKey);
+      confirm({
+        title: 'Are you sure close this tab?',
+        icon: <ExclamationCircleFilled />,
+        content: 'Save changes before closing edited tab.',
+        okText: 'Yes',
+        okType: 'danger',
+        cancelText: 'No',
+        onOk() {
+          removeTab(targetKey);
+        },
+        onCancel() {
+          console.log('Cancel');
+        },
+      });
     }
   };
 
