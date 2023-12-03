@@ -9,7 +9,7 @@ import {
   StockOutlined,
   UserAddOutlined,
 } from '@ant-design/icons';
-import { ConfigProvider, FloatButton, theme } from 'antd';
+import { ConfigProvider, FloatButton, message, theme } from 'antd';
 
 import React, { useEffect, useState } from 'react';
 import './App.css';
@@ -19,6 +19,8 @@ import { STATUS } from './contants';
 import Customers from './modules/customers/Customers';
 
 export default function App() {
+  const [messageApi, contextHolder] = message.useMessage();
+
   const [toggleSideBar, setToggleSideBar] = useState(true);
   const [currentStock, setCurrentStock] = useState([]);
   const [currentProducts, setCurrentProducts] = useState([]);
@@ -30,6 +32,27 @@ export default function App() {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+
+  const success = (content) => {
+    messageApi.open({
+      type: 'success',
+      content: `${content}`,
+    });
+  };
+
+  const error = (content) => {
+    messageApi.open({
+      type: 'error',
+      content: `${content}`,
+    });
+  };
+
+  const warning = (content) => {
+    messageApi.open({
+      type: 'warning',
+      content: `${content}`,
+    });
+  };
 
   const hideSideBar = () => {
     setToggleSideBar((prev) => !prev);
@@ -83,8 +106,12 @@ export default function App() {
         currentStock,
         currentProducts,
         setToggleSideBar,
+        success,
+        error,
+        warning,
       }}
     >
+      {contextHolder}
       <ConfigProvider
         theme={{
           algorithm: [theme.compactAlgorithm],

@@ -20,6 +20,7 @@ export const TYPE = {
   vendor: 'VENDOR',
   both: 'BOTH',
   deleted: 'DELETED',
+  archived: 'ARCHIVED',
 };
 
 export const MODE = {

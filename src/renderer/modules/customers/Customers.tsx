@@ -4,6 +4,7 @@ import {
   DoubleLeftOutlined,
   DoubleRightOutlined,
   ExclamationCircleFilled,
+  InboxOutlined,
   UserAddOutlined,
 } from '@ant-design/icons';
 import type { RadioChangeEvent } from 'antd';
@@ -24,7 +25,6 @@ import {
   Table,
   Tabs,
   Typography,
-  message,
 } from 'antd';
 import {
   default as React,
@@ -51,6 +51,7 @@ const options = [
   { label: 'Venders', value: TYPE.vendor },
   { label: 'Customers & Vendors', value: TYPE.both },
   { label: <DeleteOutlined />, value: TYPE.deleted },
+  { label: <InboxOutlined />, value: TYPE.archived },
 ];
 
 const initialCustomerState = {
@@ -129,7 +130,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
 
 function Customers({ getCurrentStock, getCurrentProducts }) {
   const appContext = useContext(context);
-  const [messageApi, contextHolder] = message.useMessage();
+
   const [customersList, setCustomersList] = useState([]);
   const [filteredCustomersList, setFilteredCustomersList] = useState([]);
   const [selectedCutomer, setSelectedCutomer] = useState(initialCustomerState);
@@ -153,27 +154,6 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
     getAllProductList();
   }, []);
 
-  const success = (content) => {
-    messageApi.open({
-      type: 'success',
-      content: `${content}`,
-    });
-  };
-
-  const error = (content) => {
-    messageApi.open({
-      type: 'error',
-      content: `${content}`,
-    });
-  };
-
-  const warning = (content) => {
-    messageApi.open({
-      type: 'warning',
-      content: `${content}`,
-    });
-  };
-
   const handleShowCreateModal = () => {
     setCustomerUUID(uuidv4());
     setOpenCreateModal(true);
@@ -195,7 +175,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
     };
 
     if (customerData.name === '') {
-      warning('Name cannot be empty!');
+      appContext.warning('Name cannot be empty!');
       return;
     }
 
@@ -209,14 +189,14 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
       });
 
       if (!isValid) {
-        warning(
+        appContext.warning(
           `Please edit product name. Cannot have 'Sample Product' as name.`,
         );
         return false;
       }
     }
 
-    success('Saved Successfully.');
+    appContext.success('Saved Successfully.');
 
     window.electron.ipcRenderer.createCustomer(customerData);
     window.electron.ipcRenderer.createProduct(products);
@@ -271,7 +251,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
     };
 
     if (customerData.name === '') {
-      warning('Name cannot be empty!');
+      appContext.warning('Name cannot be empty!');
       return;
     }
 
@@ -285,14 +265,14 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
       });
 
       if (!isValid) {
-        warning(
+        appContext.warning(
           `Please edit product name. Cannot have 'Sample Product' as name.`,
         );
         return false;
       }
     }
 
-    success('Saved Successfully.');
+    appContext.success('Saved Successfully.');
 
     window.electron.ipcRenderer.updateCustomer(customerData);
     window.electron.ipcRenderer.updateProduct(products);
@@ -524,7 +504,9 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
           setEditingKey('');
         }
       } else {
-        warning(`${row.label} already exixts. Cannot have duplicate products.`);
+        appContext.warning(
+          `${row.label} already exixts. Cannot have duplicate products.`,
+        );
       }
     } catch (errInfo) {
       console.log('Validate Failed:', errInfo);
@@ -819,7 +801,6 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
 
   return (
     <div>
-      {contextHolder}
       <Row gutter={[8, 8]}>
         <Col
           className={`${
@@ -834,6 +815,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
               value={selectedOption}
               optionType="button"
               buttonStyle="solid"
+              size="small"
             />
           </div>
           <>

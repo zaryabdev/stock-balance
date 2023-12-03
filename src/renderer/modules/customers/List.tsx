@@ -127,17 +127,27 @@ const List: React.FC = ({
       ),
   });
 
+  const getTitle = (option) => {
+    switch (option) {
+      case TYPE.customer:
+        return 'Customers';
+      case TYPE.both:
+        return 'Customers | Vendors';
+      case TYPE.vendor:
+        return 'Vendors';
+      case TYPE.deleted:
+        return 'Deleted Customers | Vendors ';
+      case TYPE.archived:
+        return 'Archived';
+
+      default:
+        break;
+    }
+  };
+
   const columns: ColumnsType<DataType> = [
     {
-      title: `${
-        option === 'BOTH'
-          ? 'Customers | Vendors'
-          : option === TYPE.customer
-          ? 'Customers'
-          : option === TYPE.vendor
-          ? 'Vendors'
-          : 'Deleted Customers | Vendors '
-      }`,
+      title: `${getTitle(option)}`,
       dataIndex: 'name',
       key: 'name',
       ellipsis: true,
