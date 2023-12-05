@@ -186,6 +186,10 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
     current_balance: 0,
   };
 
+  useEffect(() => {
+    getAllRecordsById(customerId);
+  }, [customerId]);
+
   if (!context.currentProducts) {
     return null;
   }
@@ -337,10 +341,6 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
   const createdRowIds = useMemo(() => new Set(), []);
   const deletedRowIds = useMemo(() => new Set(), []);
   const updatedRowIds = useMemo(() => new Set(), []);
-
-  useEffect(() => {
-    getAllRecordsById(customerId);
-  }, [customerId]);
 
   function getAllRecordsById(customerId) {
     window.electron.ipcRenderer.getAllCustomerInvoicesById({
@@ -703,6 +703,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       createdRowIds.clear();
       deletedRowIds.clear();
       updatedRowIds.clear();
+      context.success('Invoice Saved Successfully.');
     }
 
     //  const isInCurrentStock = currentStock.filter(stock=> stock.product === record.product);

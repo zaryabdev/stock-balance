@@ -5,7 +5,7 @@ import type { ColumnType, ColumnsType } from 'antd/es/table';
 import type { FilterConfirmProps } from 'antd/es/table/interface';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
-import appContext from '../../AppContext';
+import context from '../../AppContext';
 import { RECORD_TYPE, STATUS, TYPE } from '../../contants';
 
 interface DataType {
@@ -17,6 +17,8 @@ interface DataType {
 type DataIndex = keyof DataType;
 
 const Balance: React.FC = ({ activeTab }) => {
+  const appContext = useContext(context);
+
   const [allInvoices, setAllInvoices] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -208,6 +210,7 @@ const Balance: React.FC = ({ activeTab }) => {
     }
     setCustomerData(customerBalanceArr);
     setVendorData(vendorBalanceArr);
+    // appContext.success(`Balance sheet updated.`);
   }, [allInvoices]);
 
   const start = () => {
