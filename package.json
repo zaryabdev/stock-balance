@@ -1,5 +1,5 @@
 {
-  "description": "Imventoty Managment",
+  "description": "Stock Balance",
   "keywords": [
     "electron",
     "boilerplate",
@@ -9,7 +9,12 @@
     "sass",
     "webpack",
     "hot",
-    "reload"
+    "reload",
+    "stock",
+    "balance",
+    "invoice",
+    "excel",
+    "sqlite"
   ],
   "homepage": "https://github.com/zaryabdev/inventory-management#readme",
   "bugs": {
@@ -185,8 +190,8 @@
     "webpack-merge": "^5.9.0"
   },
   "build": {
-    "productName": "Inventory Management",
-    "appId": "org.zaryab.InventoryManagement",
+    "productName": "Stock Balance",
+    "appId": "org.xaryab.StockBalance",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
     "files": [

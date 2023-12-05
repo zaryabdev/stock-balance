@@ -1,6 +1,6 @@
 <!-- <img src=".erb/img/erb-banner.svg" width="100%" /> -->
 
-# Inventory Management
+# Stock Balance
 
 <div align="center"></div>
 
