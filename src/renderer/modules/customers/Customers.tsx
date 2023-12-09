@@ -215,11 +215,13 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
   };
 
   const handleShowEditModal = () => {
+    debugger;
     setCustomerUUID(selectedCutomer.id);
     const _products = [];
     if (appContext.currentProducts) {
       appContext.currentProducts.map((product) => {
         if (product.customer_id === selectedCutomer.id) {
+          product.key = product.id;
           _products.push(product);
         }
       });
@@ -248,7 +250,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
       name,
       address,
       phone,
-      typw: selectedOption,
+      type: selectedOption,
     };
 
     if (customerData.name === '') {
@@ -428,6 +430,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
   // };
 
   const edit = (record: Partial<Item> & { key: React.Key }) => {
+    debugger;
     productsForm.setFieldsValue({
       customer_id: customerUUID,
       ...record,
@@ -436,6 +439,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
   };
 
   const deleteProduct = (record: Partial<Item> & { key: React.Key }) => {
+    debugger;
     // const updatedProducts = products.filter(
     //   (product) => product.key !== record.key,
     // );
@@ -458,6 +462,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
   };
 
   const cancel = () => {
+    debugger;
     setEditingKey('');
   };
 
@@ -466,29 +471,42 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
       debugger;
       const row = (await productsForm.validateFields()) as Item;
 
-      let isUnique = true;
+      let isProductNameUnique = true;
+      let isProductNameSame = true;
 
       if (products.length > 0) {
         products.map((product) => {
-          if (row.label === product.label) {
-            isUnique = false;
+          if (key === product.key) {
+            if (row.label === product.label) {
+              isProductNameSame = true;
+            } else {
+              isProductNameSame = false;
+            }
+          } else if (row.label === product.label) {
+            isProductNameUnique = false;
           }
         });
       }
-
+      debugger;
       if (
-        isUnique &&
+        isProductNameUnique &&
         appContext.currentProducts &&
         appContext.currentProducts.length > 0
       ) {
         appContext.currentProducts.map((product) => {
-          if (row.label === product.label) {
-            isUnique = false;
+          if (key === product.id) {
+            if (row.label === product.label) {
+              isProductNameSame = true;
+            } else {
+              isProductNameSame = false;
+            }
+          } else if (row.label === product.label) {
+            isProductNameUnique = false;
           }
         });
       }
 
-      if (isUnique) {
+      if (isProductNameUnique && isProductNameSame) {
         const newData = [...products];
 
         const index = newData.findIndex((item) => key === item.key);
@@ -508,9 +526,14 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
           setEditingKey('');
         }
       } else {
-        appContext.warning(
-          `${row.label} already exists. Cannot have duplicate products.`,
-        );
+        if (!isProductNameUnique) {
+          appContext.warning(
+            `${row.label} already exists. Cannot have duplicate products.`,
+          );
+        }
+        if (!isProductNameSame) {
+          appContext.warning(`Product name cannot be changed.`);
+        }
       }
     } catch (errInfo) {
       console.log('Validate Failed:', errInfo);
@@ -555,12 +578,12 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
             >
               Edit
             </Typography.Link>{' '}
-            <Typography.Link
+            {/* <Typography.Link
               disabled={editingKey !== ''}
               onClick={() => deleteProduct(record)}
             >
               Delete
-            </Typography.Link>
+            </Typography.Link> */}
           </>
         );
       },
@@ -792,6 +815,31 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
     }
   });
 
+  window.electron.ipcRenderer.on('update:product-response', (response) => {
+    console.log('update:product-response reponse came back');
+    console.log(response);
+
+    if (response.status === STATUS.FAILED) {
+      console.log(response.message);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('response of update:product-response ');
+      console.log(response);
+      getCurrentProducts({});
+
+      // const newActiveKey = uuidv4();
+      // const newPanes = [...tabs];
+      // newPanes.push({
+      //   label: 'New Tab',
+      //   children: <CustomerEditGrid label={`Tab ID =  ${newActiveKey}`} />,
+      //   key: newActiveKey,
+      // });
+      // setTabs(newPanes);
+      // setActiveTabKey(newActiveKey);
+    }
+  });
+
   window.electron.ipcRenderer.on('get:all:product-response', (response) => {
     console.log('get:all:product-response reponse came back');
     console.log(response);
@@ -872,9 +920,10 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
                 style={{ margin: 2 }}
                 onClick={showDeleteConfirm}
                 // loading={loading}
-                disabled={
-                  selectedRowKeys.length < 1 || selectedOption === TYPE.both
-                }
+                // disabled={
+                //   selectedRowKeys.length < 1 || selectedOption === TYPE.both
+                // }
+                disabled
               >
                 Delete
               </Button>
