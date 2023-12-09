@@ -204,12 +204,14 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
     form.resetFields();
     setProducts(initialProducts);
     setOpenCreateModal(false);
+    setSelectedRowKeys([]);
   };
 
   const handleCreateModalCancel = () => {
     form.resetFields();
     setProducts(initialProducts);
     setOpenCreateModal(false);
+    // setSelectedRowKeys([]);
   };
 
   const handleShowEditModal = () => {
@@ -232,6 +234,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
   }
 
   const handleEditModalOk = () => {
+    debugger;
     const { id } = selectedCutomer;
     const { key } = selectedCutomer;
 
@@ -277,7 +280,8 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
 
     form.resetFields();
     setProducts(initialProducts);
-    setOpenCreateModal(false);
+    setOpenEditModal(false);
+    setSelectedRowKeys([]);
   };
 
   const handleEditModalCancel = () => {
@@ -714,7 +718,6 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
 
       const list = response.data;
       const filteredList = list.filter((item) => item.type === selectedOption);
-      debugger;
       appContext.setCustomersList(list);
       appContext.setFilteredCustomersList(filteredList);
 
@@ -1014,7 +1017,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
         open={openEditModal}
         title={`${
           selectedOption === TYPE.customer ? 'Edit Customer' : 'Edit Vendor'
-        } - ${customerUUID}`}
+        }`}
         width={selectedOption === TYPE.vendor ? 1000 : 500}
         onOk={handleEditModalOk}
         onCancel={handleEditModalCancel}
