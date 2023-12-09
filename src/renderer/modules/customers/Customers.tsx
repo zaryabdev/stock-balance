@@ -475,10 +475,10 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
 
       if (
         isUnique &&
-        context.currentProducts &&
-        context.currentProducts.length > 0
+        appContext.currentProducts &&
+        appContext.currentProducts.length > 0
       ) {
-        context.currentProducts.map((product) => {
+        appContext.currentProducts.map((product) => {
           if (row.label === product.label) {
             isUnique = false;
           }
