@@ -16,9 +16,9 @@ interface DataType {
 
 type DataIndex = keyof DataType;
 
-const Balance: React.FC = ({ activeTab }) => {
+const Balance: React.FC = ({ activeTab, customersList }) => {
   const appContext = useContext(context);
-
+  console.log(appContext.customersList);
   const [allInvoices, setAllInvoices] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -152,7 +152,7 @@ const Balance: React.FC = ({ activeTab }) => {
       Object.keys(customerBalanceMap).forEach(function (key, index) {
         const _data = customerBalanceMap[key];
         let _balance = 0;
-
+        let _name = '';
         _data.map((item, index) => {
           if (item.product === RECORD_TYPE.previous_balance) {
             item.balance = item.debit;
@@ -168,9 +168,17 @@ const Balance: React.FC = ({ activeTab }) => {
           return item;
         });
 
+        if (appContext.customersList) {
+          appContext.customersList.map((customer) => {
+            if (customer.id === key) {
+              _name = customer.name;
+            }
+          });
+        }
+
         customerBalanceArr.push({
           customerId: key,
-          name: '',
+          name: _name,
           balance: _balance,
         });
       });
@@ -184,7 +192,7 @@ const Balance: React.FC = ({ activeTab }) => {
       Object.keys(vendorBalanceMap).forEach(function (key, index) {
         const _data = vendorBalanceMap[key];
         let _balance = 0;
-
+        let _name = '';
         _data.map((item, index) => {
           if (item.product === RECORD_TYPE.previous_balance) {
             item.balance = item.debit;
@@ -199,19 +207,29 @@ const Balance: React.FC = ({ activeTab }) => {
 
           return item;
         });
+
+        if (appContext.customersList) {
+          appContext.customersList.map((customer) => {
+            if (customer.id === key) {
+              _name = customer.name;
+            }
+          });
+        }
+
         vendorBalanceArr.push({
           customerId: key,
-          name: '',
+          name: _name,
           balance: _balance,
         });
       });
     } catch (error) {
       console.error(error);
     }
+
     setCustomerData(customerBalanceArr);
     setVendorData(vendorBalanceArr);
     // appContext.success(`Balance sheet updated.`);
-  }, [allInvoices]);
+  }, [allInvoices, appContext.customersList]);
 
   const start = () => {
     getAllRecords();

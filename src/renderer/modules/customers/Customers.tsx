@@ -131,8 +131,6 @@ const EditableCell: React.FC<EditableCellProps> = ({
 function Customers({ getCurrentStock, getCurrentProducts }) {
   const appContext = useContext(context);
 
-  const [customersList, setCustomersList] = useState([]);
-  const [filteredCustomersList, setFilteredCustomersList] = useState([]);
   const [selectedCutomer, setSelectedCutomer] = useState(initialCustomerState);
   const [selectedCutomersToLoad, setSelectedCutomersToLoad] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
@@ -299,12 +297,12 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
 
   useEffect(() => {
     if (selectedOption === TYPE.both) {
-      setFilteredCustomersList(customersList);
+      appContext.setFilteredCustomersList(appContext.customersList);
     } else {
-      const filteredList = customersList.filter(
+      const filteredList = appContext.customersList.filter(
         (item) => item.type === selectedOption,
       );
-      setFilteredCustomersList(filteredList);
+      appContext.setFilteredCustomersList(filteredList);
     }
   }, [selectedOption]);
 
@@ -506,7 +504,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
         }
       } else {
         appContext.warning(
-          `${row.label} already exixts. Cannot have duplicate products.`,
+          `${row.label} already exists. Cannot have duplicate products.`,
         );
       }
     } catch (errInfo) {
@@ -634,7 +632,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
     if (keys.length === 0) {
       setSelectedCutomer(initialCustomerState);
     } else if (keys.length === 1) {
-      const foundItem = customersList.find((c) => c.key === keys[0]);
+      const foundItem = appContext.customersList.find((c) => c.key === keys[0]);
       setSelectedCutomer(foundItem);
     } else {
       setSelectedCutomer(initialCustomerState);
@@ -710,9 +708,9 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
 
       const list = response.data;
       const filteredList = list.filter((item) => item.type === selectedOption);
-
-      setCustomersList(list);
-      setFilteredCustomersList(filteredList);
+      debugger;
+      appContext.setCustomersList(list);
+      appContext.setFilteredCustomersList(filteredList);
 
       // const newActiveKey = uuidv4();
       // const newPanes = [...tabs];
@@ -883,7 +881,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
               </Button>
             </div>
             <List
-              data={filteredCustomersList}
+              data={appContext.filteredCustomersList}
               option={selectedOption}
               selectedRowKeys={selectedRowKeys}
               handleSelectedRowKeys={handleSelectedRowKeys}
@@ -892,7 +890,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
         </Col>
         <Col span={appContext.toggleSideBar ? 18 : 24}>
           <MultiCustomersTabs
-            customersList={customersList}
+            customersList={appContext.customersList}
             getCurrentStock={getCurrentStock}
             selectedCutomersToLoad={selectedCutomersToLoad}
           />

@@ -24,6 +24,8 @@ export default function App() {
   const [toggleSideBar, setToggleSideBar] = useState(true);
   const [currentStock, setCurrentStock] = useState([]);
   const [currentProducts, setCurrentProducts] = useState([]);
+  const [customersList, setCustomersList] = useState([]);
+  const [filteredCustomersList, setFilteredCustomersList] = useState([]);
 
   useEffect(() => {
     getCurrentStock();
@@ -106,6 +108,10 @@ export default function App() {
         toggleSideBar,
         currentStock,
         currentProducts,
+        customersList,
+        filteredCustomersList,
+        setFilteredCustomersList,
+        setCustomersList,
         setToggleSideBar,
         success,
         error,

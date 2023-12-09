@@ -78,7 +78,7 @@ function MultiCustomerTabs({
       setTabs(tabsToCreate);
       setActiveTabKey(activeKeyToSet);
     }
-  }, [selectedCutomersToLoad]);
+  }, [selectedCutomersToLoad, customersList]);
 
   function getTabs(keys: type, currentTabs, list) {
     let arr = [];
