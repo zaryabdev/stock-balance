@@ -609,7 +609,12 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
       icon: <ExclamationCircleFilled />,
       content: (
         <span>
-          <code>{JSON.stringify(selectedRowKeys)}</code>
+          {appContext.customersList.map((customer) => {
+            if (selectedRowKeys.includes(customer.id)) {
+              return <span>{customer.name} | </span>;
+            }
+            return null;
+          })}
         </span>
       ),
       okText: 'Yes',
