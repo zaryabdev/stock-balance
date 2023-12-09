@@ -19,6 +19,7 @@ class ProductRepository {
           qty_ctn INTEGER,
           status TEXT,
           state TEXT,
+          timestamp TEXT,
           meta_text TEXT,
           meta_number REAL
         )`;

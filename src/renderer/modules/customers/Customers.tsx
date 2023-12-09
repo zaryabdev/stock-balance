@@ -51,7 +51,7 @@ const options = [
   { label: 'Venders', value: TYPE.vendor },
   { label: 'Customers & Vendors', value: TYPE.both },
   { label: <DeleteOutlined />, value: TYPE.deleted },
-  { label: <InboxOutlined />, value: TYPE.archived },
+  // { label: <InboxOutlined />, value: TYPE.archived },
 ];
 
 const initialCustomerState = {
@@ -820,7 +820,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
               value={selectedOption}
               optionType="button"
               buttonStyle="solid"
-              size="small"
+              size="middle"
             />
           </div>
           <>
@@ -883,7 +883,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
                 // loading={loading}
                 // disabled={}
               >
-                Hide
+                Hide List
               </Button>
             </div>
             <List
@@ -906,7 +906,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
         open={openCreateModal}
         title={`${
           selectedOption === TYPE.customer ? 'Create Customer' : 'Create Vendor'
-        } - ${customerUUID}`}
+        }`}
         width={selectedOption === TYPE.vendor ? 1000 : 500}
         onOk={handleCreateModalOk}
         onCancel={handleCreateModalCancel}
