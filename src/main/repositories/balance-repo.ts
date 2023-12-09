@@ -1,4 +1,5 @@
 import logger from '../logger';
+
 const { v4: uuidv4 } = require('uuid');
 
 class BalanceRepository {
@@ -13,7 +14,9 @@ class BalanceRepository {
         CREATE TABLE IF NOT EXISTS balance (
           id TEXT,
           customer_id TEXT,
-          balance REAL
+          balance REAL,
+          meta_text TEXT,
+          meta_number REAL
         )`;
     return this.dao.run(sql);
   }
@@ -61,7 +64,7 @@ class BalanceRepository {
     console.log('update called for BalanceRepository');
     const { id, customer_id, balance } = data;
 
-    let query = `UPDATE balance SET customer_id='${customer_id}', balance='${balance}' WHERE id='${id}';`;
+    const query = `UPDATE balance SET customer_id='${customer_id}', balance='${balance}' WHERE id='${id}';`;
 
     console.log({ id, customer_id, balance });
     console.log(callbackFunction);

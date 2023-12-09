@@ -184,6 +184,7 @@ class CustomerInvoicRepository {
         customer_id TEXT,
         source TEXT,
         state TEXT,
+        status TEXT,
         date TEXT,
         product TEXT,
         payment TEXT,
@@ -194,7 +195,9 @@ class CustomerInvoicRepository {
         debit REAL,
         credit REAL,
         balance REAL,
-        current_balance REAL
+        current_balance REAL,
+        meta_text TEXT,
+        meta_number REAL
         )`;
 
     return this.dao.run(sql);

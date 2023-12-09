@@ -17,7 +17,10 @@ class ProductRepository {
           value TEXT,
           label INTEGER,
           qty_ctn INTEGER,
-          status TEXT
+          status TEXT,
+          state TEXT,
+          meta_text TEXT,
+          meta_number REAL
         )`;
     return this.dao.run(sql);
   }

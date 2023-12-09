@@ -1,4 +1,5 @@
 import logger from '../logger';
+
 const { v4: uuidv4 } = require('uuid');
 
 class StockRepository {
@@ -15,7 +16,9 @@ class StockRepository {
           product TEXT,
           carton INTEGER,
           qty_ctn INTEGER,
-          total_qty INTEGER
+          total_qty INTEGER,
+          meta_text TEXT,
+          meta_number REAL
         )`;
     return this.dao.run(sql);
   }
@@ -71,10 +74,10 @@ class StockRepository {
     //   callbackFunction,
     // );
 
-    let currentThis = this;
+    const currentThis = this;
 
     console.log('update called for StockRepository');
-    console.log('Data length : ' + data.length);
+    console.log(`Data length : ${data.length}`);
 
     if (data.length === 0) {
       const res = {
@@ -107,12 +110,12 @@ class StockRepository {
 
     // create records
     if (toCreate.length > 0) {
-      console.log('Length of toCreate' + toCreate.length);
+      console.log(`Length of toCreate${toCreate.length}`);
 
       // const { id, product, carton, qty_ctn, total_qty } = data;
 
       const formatedSqlValuesArr = toCreate.map((el) => {
-        let id = uuidv4();
+        const id = uuidv4();
         return `('${id}','${el.product}','${el.carton}','${el.qty_ctn}','${el.total_qty}')`;
       });
 
@@ -128,7 +131,7 @@ class StockRepository {
 
       this.dao.run(insertQuery, [], data, toUpdateCbFunc);
     } else {
-      console.log('Length of toCreate' + toCreate.length);
+      console.log(`Length of toCreate${toCreate.length}`);
       console.log('Going to call updateRecords() because nothing to create...');
       updateRecords({ status: 'SUCCESS' });
     }
@@ -155,7 +158,7 @@ class StockRepository {
         for (let index = 0; index < toUpdate.length; index++) {
           const record = toUpdate[index];
           // const { id, product, carton, qty_ctn, total_qty } = data;
-          let query = `
+          const query = `
           UPDATE stock SET product='${record.product}', carton='${record.carton}', qty_ctn='${record.qty_ctn}', total_qty='${record.total_qty}' WHERE id='${record.id}';
         `;
 
@@ -165,7 +168,7 @@ class StockRepository {
               console.log(res);
             }
           });
-          updatedRecords = updatedRecords - 1;
+          updatedRecords -= 1;
         }
 
         console.log('All records updated');
@@ -182,7 +185,7 @@ class StockRepository {
           }, 500);
         }
       } else {
-        console.log('Length of toUpdate' + toUpdate.length);
+        console.log(`Length of toUpdate${toUpdate.length}`);
         console.log(
           'Going to call callbackFunction() because nothing to update...',
         );

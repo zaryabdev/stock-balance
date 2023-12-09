@@ -308,6 +308,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
 
   const handleSelectionChange = ({ target: { value } }: RadioChangeEvent) => {
     setSelectedOption(value);
+    setSelectedRowKeys([]);
   };
 
   // const createNewCustomer = () => {

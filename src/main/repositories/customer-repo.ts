@@ -16,7 +16,10 @@ class CustomerRepository {
         address TEXT,
         phone TEXT,
         type TEXT,
-        timestamp TEXT
+        status TEXT,
+        timestamp TEXT,
+        meta_text TEXT,
+        meta_number REAL
         )`;
 
     return this.dao.run(sql);
