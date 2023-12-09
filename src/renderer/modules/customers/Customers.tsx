@@ -277,8 +277,23 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
 
     appContext.success('Saved Successfully.');
 
+    const productsToCreate = [];
+    const productsToUpdate = [];
+    debugger;
+    products.map((product) => {
+      const hasItem = appContext.currentProducts.filter(
+        (p) => product.id === p.id,
+      );
+      if (hasItem.length > 0) {
+        productsToUpdate.push(product);
+      } else {
+        productsToCreate.push(product);
+      }
+    });
+
     window.electron.ipcRenderer.updateCustomer(customerData);
-    window.electron.ipcRenderer.updateProduct(products);
+    window.electron.ipcRenderer.updateProduct(productsToUpdate);
+    window.electron.ipcRenderer.createProduct(productsToCreate);
 
     form.resetFields();
     setProducts(initialProducts);
@@ -477,7 +492,11 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
       if (products.length > 0) {
         products.map((product) => {
           if (key === product.key) {
-            if (row.label === product.label) {
+            debugger;
+
+            if (product.label === 'Sample product') {
+              isProductNameSame = true;
+            } else if (row.label === product.label) {
               isProductNameSame = true;
             } else {
               isProductNameSame = false;
@@ -494,8 +513,12 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
         appContext.currentProducts.length > 0
       ) {
         appContext.currentProducts.map((product) => {
-          if (key === product.id) {
-            if (row.label === product.label) {
+          if (key === product.key) {
+            debugger;
+
+            if (product.label === 'Sample product') {
+              isProductNameSame = true;
+            } else if (row.label === product.label) {
               isProductNameSame = true;
             } else {
               isProductNameSame = false;
@@ -607,6 +630,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
   });
 
   const addNewProduct = () => {
+    debugger;
     const id = uuidv4();
     const row = [
       {
@@ -1114,7 +1138,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
             />
             <Products
               productsForm={productsForm}
-              addRow={addNewProduct}
+              addNewProduct={addNewProduct}
               products={products}
               mergedColumns={mergedColumns}
               cancel={cancel}
