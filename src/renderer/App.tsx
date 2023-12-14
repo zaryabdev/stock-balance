@@ -69,6 +69,10 @@ export default function App() {
     console.log('getCurrentProducts()');
     window.electron.ipcRenderer.getAllProduct({});
   }
+  function getCurrentCustomers(params: type) {
+    console.log('getCurrentCustomers()');
+    window.electron.ipcRenderer.getAllCustomers({});
+  }
 
   // window.electron.ipcRenderer.on('get:all:stock-response', (response) => {
   //   console.log('get:all:stock-response reponse came back');
@@ -127,6 +131,7 @@ export default function App() {
         <Customers
           getCurrentStock={getCurrentStock}
           getCurrentProducts={getCurrentProducts}
+          getCurrentCustomers={getCurrentCustomers}
         />
         <FloatButton
           tooltip={`${toggleSideBar ? 'Hide sidebar' : 'Show sidebar'}`}

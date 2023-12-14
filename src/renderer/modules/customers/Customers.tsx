@@ -49,9 +49,10 @@ type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 const options = [
   { label: 'Customers', value: TYPE.customer },
   { label: 'Venders', value: TYPE.vendor },
-  { label: 'Customers & Vendors', value: TYPE.both },
+  // { label: 'Customers & Vendors', value: TYPE.both },
+  { label: 'All', value: TYPE.both },
+  { label: <InboxOutlined />, value: TYPE.archived },
   { label: <DeleteOutlined />, value: TYPE.deleted },
-  // { label: <InboxOutlined />, value: TYPE.archived },
 ];
 
 const initialCustomerState = {
@@ -128,7 +129,11 @@ const EditableCell: React.FC<EditableCellProps> = ({
   );
 };
 
-function Customers({ getCurrentStock, getCurrentProducts }) {
+function Customers({
+  getCurrentStock,
+  getCurrentProducts,
+  getCurrentCustomers,
+}) {
   const appContext = useContext(context);
 
   const [selectedCutomer, setSelectedCutomer] = useState(initialCustomerState);
@@ -318,9 +323,23 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
 
   useEffect(() => {
     if (selectedOption === TYPE.both) {
-      appContext.setFilteredCustomersList(appContext.customersList);
+      const nonArchived = appContext.customersList.filter(
+        (item) => item.status !== TYPE.archived,
+      );
+
+      appContext.setFilteredCustomersList(nonArchived);
+    }
+    if (selectedOption === TYPE.archived) {
+      const archived = appContext.customersList.filter(
+        (item) => item.status === TYPE.archived,
+      );
+      appContext.setFilteredCustomersList(archived);
     } else {
-      const filteredList = appContext.customersList.filter(
+      const nonArchived = appContext.customersList.filter(
+        (item) => item.status !== TYPE.archived,
+      );
+
+      const filteredList = nonArchived.filter(
         (item) => item.type === selectedOption,
       );
       appContext.setFilteredCustomersList(filteredList);
@@ -681,6 +700,35 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
       },
     });
   };
+  const showArchiveConfirm = () => {
+    confirm({
+      title: `Are you sure archive ${
+        selectedOption === TYPE.customer ? 'Customer' : 'Vendor'
+      }`,
+      icon: <ExclamationCircleFilled />,
+      content: (
+        <span>
+          {appContext.customersList.map((customer) => {
+            if (selectedRowKeys.includes(customer.id)) {
+              return <span>{customer.name} | </span>;
+            }
+            return null;
+          })}
+        </span>
+      ),
+      okText: 'Yes',
+      okType: 'danger',
+      cancelText: 'No',
+      onOk() {
+        const data = [...selectedRowKeys];
+        window.electron.ipcRenderer.archiveCustomers(data);
+        // window.electron.ipcRenderer.deleteCustomers(data);
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
+  };
 
   const handleSelectedRowKeys = (keys: any) => {
     console.log('Selected row keys');
@@ -764,9 +812,23 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
       console.log(response);
 
       const list = response.data;
-      const filteredList = list.filter((item) => item.type === selectedOption);
-      appContext.setCustomersList(list);
-      appContext.setFilteredCustomersList(filteredList);
+
+      if (selectedOption !== TYPE.archived) {
+        const nonArchived = list.filter(
+          (item) => item.status !== TYPE.archived,
+        );
+
+        const filteredList = nonArchived.filter(
+          (item) => item.type === selectedOption,
+        );
+
+        appContext.setCustomersList(list);
+        appContext.setFilteredCustomersList(filteredList);
+      } else {
+        const archived = list.filter((item) => item.status === TYPE.archived);
+        appContext.setCustomersList(list);
+        appContext.setFilteredCustomersList(archived);
+      }
 
       // const newActiveKey = uuidv4();
       // const newPanes = [...tabs];
@@ -864,6 +926,31 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
     }
   });
 
+  window.electron.ipcRenderer.on('archive:customer-response', (response) => {
+    console.log('archive:customer-response reponse came back');
+    console.log(response);
+
+    if (response.status === STATUS.FAILED) {
+      console.log(response.message);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('response of archive:customer-response ');
+      console.log(response);
+      getCurrentCustomers({});
+
+      // const newActiveKey = uuidv4();
+      // const newPanes = [...tabs];
+      // newPanes.push({
+      //   label: 'New Tab',
+      //   children: <CustomerEditGrid label={`Tab ID =  ${newActiveKey}`} />,
+      //   key: newActiveKey,
+      // });
+      // setTabs(newPanes);
+      // setActiveTabKey(newActiveKey);
+    }
+  });
+
   window.electron.ipcRenderer.on('get:all:product-response', (response) => {
     console.log('get:all:product-response reponse came back');
     console.log(response);
@@ -938,7 +1025,7 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
               >
                 Load
               </Button>
-              <Button
+              {/* <Button
                 type="default"
                 size="middle"
                 style={{ margin: 2 }}
@@ -950,6 +1037,19 @@ function Customers({ getCurrentStock, getCurrentProducts }) {
                 disabled
               >
                 Delete
+              </Button> */}
+              <Button
+                type="default"
+                size="middle"
+                style={{ margin: 2 }}
+                onClick={showArchiveConfirm}
+                // loading={loading}
+                disabled={
+                  selectedRowKeys.length < 1 || selectedOption === TYPE.both
+                }
+                // disabled
+              >
+                Archive
               </Button>
               <Button
                 type="default"
