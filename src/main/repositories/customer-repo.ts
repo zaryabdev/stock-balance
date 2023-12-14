@@ -143,6 +143,70 @@ class CustomerRepository {
     }
   }
 
+  unarchiveRecords(data = [], callbackFunction) {
+    console.log(`unarchive called`);
+
+    const currentThis = this;
+    // const timestamp = Date.now();
+    console.log('unarchive called for CustomerRepository');
+    console.log(`Data length : ${data.length}`);
+
+    if (data.length === 0) {
+      const res = {
+        status: 'SUCCESS',
+        data: [],
+        message: 'No records were updated',
+      };
+      callbackFunction(res);
+      return;
+    }
+
+    console.log('Inside updateRecords');
+
+    if (data.length > 0) {
+      console.log('Going to update records');
+
+      let updatedRecords = data.length;
+
+      for (let index = 0; index < data.length; index++) {
+        const id = data[index];
+        const query = `
+          UPDATE customer SET status='${TYPE.unarchived}' WHERE id='${id}';
+        `;
+
+        currentThis.dao.run(query, [], data, (res) => {
+          if (res.status === 'SUCCESS') {
+            console.log('Update was success');
+            console.log(res);
+          }
+        });
+        updatedRecords -= 1;
+      }
+
+      console.log('All records updated');
+
+      if (updatedRecords === 0) {
+        setTimeout(() => {
+          callbackFunction({
+            status: 'SUCCESS',
+            data: [...data],
+            message: 'All records updated successfulyy',
+          });
+        }, 500);
+      }
+    } else {
+      console.log(`Length of toUpdate${data.length}`);
+      console.log(
+        'Going to call callbackFunction() because nothing to update...',
+      );
+      callbackFunction({
+        status: 'SUCCESS',
+        data: [...data],
+        message: 'All records updated successfulyy',
+      });
+    }
+  }
+
   // getById(id) {
   //   console.log(`getById called`);
   //   return this.dao.get(`SELECT * FROM product_type WHERE id = ?`, [id]);

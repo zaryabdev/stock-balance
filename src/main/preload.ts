@@ -34,6 +34,11 @@ const electronHandler = {
       console.log(data);
       ipcRenderer.send('archive:customer', data);
     },
+    unarchiveCustomers(data) {
+      console.log('Inside preload unarchive:customer');
+      console.log(data);
+      ipcRenderer.send('unarchive:customer', data);
+    },
     createCustomerInvoice(data) {
       console.log('Inside preload create:customer-invoice');
       console.log(data);

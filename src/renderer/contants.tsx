@@ -21,6 +21,7 @@ export const TYPE = {
   both: 'BOTH',
   deleted: 'DELETED',
   archived: 'ARCHIVED',
+  unarchived: 'UNARCHIVED',
 };
 
 export const MODE = {

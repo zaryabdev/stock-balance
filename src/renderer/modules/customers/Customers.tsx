@@ -730,6 +730,40 @@ function Customers({
     });
   };
 
+  const showUnarchiveConfirm = () => {
+    confirm({
+      title: `Are you sure to unarchive ${
+        selectedOption === TYPE.customer ? '' : ''
+      }`,
+      icon: <ExclamationCircleFilled />,
+      content: (
+        <span>
+          {appContext.customersList.map((customer, index) => {
+            if (selectedRowKeys.includes(customer.id)) {
+              return (
+                <span>
+                  {`${customer.name}${selectedRowKeys.length > 1 ? ',' : '.'}`}{' '}
+                </span>
+              );
+            }
+            return null;
+          })}
+        </span>
+      ),
+      okText: 'Yes',
+      okType: 'default',
+      cancelText: 'No',
+      onOk() {
+        const data = [...selectedRowKeys];
+        window.electron.ipcRenderer.unarchiveCustomers(data);
+        // window.electron.ipcRenderer.deleteCustomers(data);
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
+  };
+
   const handleSelectedRowKeys = (keys: any) => {
     console.log('Selected row keys');
     console.log(keys);
@@ -1025,6 +1059,7 @@ function Customers({
               >
                 Load
               </Button>
+
               {/* <Button
                 type="default"
                 size="middle"
@@ -1038,19 +1073,51 @@ function Customers({
               >
                 Delete
               </Button> */}
-              <Button
-                type="default"
-                size="middle"
-                style={{ margin: 2 }}
-                onClick={showArchiveConfirm}
-                // loading={loading}
-                disabled={
-                  selectedRowKeys.length < 1 || selectedOption === TYPE.both
-                }
-                // disabled
-              >
-                Archive
-              </Button>
+              {selectedOption === TYPE.archived && (
+                <Button
+                  type="default"
+                  size="middle"
+                  style={{ margin: 2 }}
+                  onClick={showUnarchiveConfirm}
+                  // loading={loading}
+                  disabled={
+                    selectedRowKeys.length < 1 || selectedOption === TYPE.both
+                  }
+                >
+                  Unarchive
+                </Button>
+              )}
+              {selectedOption === TYPE.customer && (
+                <Button
+                  type="default"
+                  size="middle"
+                  style={{ margin: 2 }}
+                  onClick={showArchiveConfirm}
+                  // loading={loading}
+                  disabled={
+                    selectedRowKeys.length < 1 || selectedOption === TYPE.both
+                  }
+                  // disabled
+                >
+                  Archive
+                </Button>
+              )}
+              {selectedOption === TYPE.vendor && (
+                <Button
+                  type="default"
+                  size="middle"
+                  style={{ margin: 2 }}
+                  onClick={showArchiveConfirm}
+                  // loading={loading}
+                  disabled={
+                    selectedRowKeys.length < 1 || selectedOption === TYPE.both
+                  }
+                  // disabled
+                >
+                  Archive
+                </Button>
+              )}
+
               <Button
                 type="default"
                 size="middle"

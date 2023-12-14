@@ -585,6 +585,31 @@ ipcMain.on('archive:customer', (event, data) => {
   customerRepo.archiveRecords(data, callbackFunction);
 });
 
+ipcMain.on('unarchive:customer', (event, data) => {
+  console.log('Inside Main unarchive:customer');
+  console.log(data);
+  const callbackFunction = (response, err) => {
+    // const webContents = event.sender;
+    // const win = BrowserWindow.fromWebContents(webContents);
+    console.log('callback function called!! for delete');
+    if (err) {
+      console.log(err);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('respose was success');
+      // console.log(win);
+      event.reply('unarchive:customer-response', response);
+
+      // win.webContents.send('create:customer', response);
+    } else {
+      console.log(response.message);
+    }
+  };
+
+  customerRepo.unarchiveRecords(data, callbackFunction);
+});
+
 ipcMain.on('delete:customer-invoice', (event, data) => {
   console.log('Inside Main delete:customer-invoice');
   console.log(data);
