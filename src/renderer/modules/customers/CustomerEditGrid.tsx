@@ -785,13 +785,24 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
     // startY is basically margin-top
     doc.autoTable(tableColumn, tableRows, { startY: 20 });
-    const date = Date().split(' ');
+    // const date = Date().split(' ');
     // we use a date string to generate our filename.
     // const dateStr = date[0] + date[1] + date[2] + date[3] + date[4];
     // ticket title. and margin-top + margin-left
     // doc.text(`Customer ID : ${customerId}`, 14, 15);
     // we define the name of our PDF file.
-    doc.save(`report_${customerId}.pdf`);
+
+    let name = '';
+
+    if (context.customersList) {
+      context.customersList.map((c) => {
+        if (c.id === customerId) {
+          name = c.name;
+        }
+      });
+    }
+
+    doc.save(`${_date}-${name}.pdf`);
   };
 
   // IPC Main listeners Customer Invoice
