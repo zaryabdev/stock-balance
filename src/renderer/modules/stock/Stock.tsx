@@ -1,12 +1,14 @@
 import { SearchOutlined } from '@ant-design/icons';
 import type { InputRef } from 'antd';
-import { Button, Input, Space, Table } from 'antd';
+import { Button, Input, Space, Table, Tag, Typography } from 'antd';
 import type { ColumnType, ColumnsType } from 'antd/es/table';
 import type { FilterConfirmProps } from 'antd/es/table/interface';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
 import context from '../../AppContext';
 import { RECORD_TYPE, STATUS, TYPE } from '../../contants';
+
+const { Text } = Typography;
 
 interface DataType {
   id: string;
@@ -254,18 +256,33 @@ const Stock: React.FC = ({ activeTab }) => {
       key: 'product',
       width: '30%',
       ...getColumnSearchProps('product'),
+      render: (_, { total_qty, product }) => (
+        <Text type={`${total_qty > 0 ? '' : 'danger'}`} key={total_qty}>
+          {product}
+        </Text>
+      ),
     },
     {
       title: 'Carton',
       dataIndex: 'carton',
       key: 'carton',
-      width: '20%',
+      render: (_, { total_qty, carton }) => (
+        <Text type={`${total_qty > 0 ? '' : 'danger'}`} key={total_qty}>
+          {carton}
+        </Text>
+      ),
+      // width: '20%',
       //   ...getColumnSearchProps('carton'),
     },
     {
       title: 'Quantity / Carton',
       dataIndex: 'qty_ctn',
       key: 'qty_ctn',
+      render: (_, { total_qty, qty_ctn }) => (
+        <Text type={`${total_qty > 0 ? '' : 'danger'}`} key={total_qty}>
+          {qty_ctn}
+        </Text>
+      ),
       //   ...getColumnSearchProps('qty_ctn'),
     },
     {
@@ -275,6 +292,11 @@ const Stock: React.FC = ({ activeTab }) => {
       ...getColumnSearchProps('total_qty'),
       sorter: (a, b) => a.total_qty - b.total_qty,
       sortDirections: ['descend', 'ascend'],
+      render: (_, { total_qty }) => (
+        <Text type={`${total_qty > 0 ? '' : 'danger'}`} key={total_qty}>
+          {total_qty}
+        </Text>
+      ),
     },
     {
       title: 'Current Rate',
@@ -283,6 +305,11 @@ const Stock: React.FC = ({ activeTab }) => {
       ...getColumnSearchProps('current_rate'),
       sorter: (a, b) => a.current_rate - b.current_rate,
       sortDirections: ['descend', 'ascend'],
+      render: (_, { total_qty, current_rate }) => (
+        <Text type={`${total_qty > 0 ? '' : 'danger'}`} key={total_qty}>
+          {current_rate}
+        </Text>
+      ),
     },
     {
       title: 'Current Worth',
@@ -291,6 +318,21 @@ const Stock: React.FC = ({ activeTab }) => {
       ...getColumnSearchProps('current_worth'),
       sorter: (a, b) => a.current_worth - b.current_worth,
       sortDirections: ['descend', 'ascend'],
+      render: (_, { total_qty, current_worth }) => (
+        <Text type={`${total_qty > 0 ? '' : 'danger'}`} key={total_qty}>
+          {current_worth}
+        </Text>
+      ),
+    },
+    {
+      title: 'Status',
+      key: 'status',
+      dataIndex: 'status',
+      render: (_, { total_qty }) => (
+        <Tag color={`${total_qty > 0 ? 'green' : 'red'}`} key={total_qty}>
+          {`${total_qty > 0 ? 'In Stock' : 'Out of Stock'}`}
+        </Tag>
+      ),
     },
   ];
 
