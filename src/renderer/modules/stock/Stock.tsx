@@ -15,6 +15,8 @@ interface DataType {
   carton: number;
   qty_ctn: number;
   total_qty: number;
+  current_rate: number;
+  current_worth: number;
 }
 
 type DataIndex = keyof DataType;
@@ -48,7 +50,6 @@ const Stock: React.FC = ({ activeTab }) => {
   useEffect(() => {
     const vendorStock = {};
     const customerStock = {};
-
     allInvoices.map((item) => {
       const { type, product } = item;
       if (type === TYPE.vendor) {
@@ -93,6 +94,7 @@ const Stock: React.FC = ({ activeTab }) => {
     });
     console.log(vendorStock);
     console.log(customerStock);
+    debugger;
     const newStock = [];
 
     try {
@@ -106,10 +108,18 @@ const Stock: React.FC = ({ activeTab }) => {
             itemInCurrentStock.total_qty - itemInNewStock.total_qty;
           itemInNewStock.carton = newCarton;
           itemInNewStock.total_qty = newTotalQty;
+          itemInNewStock.current_rate = itemInCurrentStock.rate_each;
+          itemInNewStock.current_worth =
+            itemInCurrentStock.rate_each * itemInCurrentStock.total_qty;
 
           newStock.push(itemInNewStock);
         } else {
-          newStock.push(vendorStock[key]);
+          const itemInCurrentStock = vendorStock[key];
+          itemInCurrentStock.current_rate = itemInCurrentStock.rate_each;
+          itemInNewStock.current_worth =
+            itemInCurrentStock.rate_each * itemInCurrentStock.total_qty;
+
+          newStock.push(itemInCurrentStock);
         }
       });
     } catch (error) {
@@ -264,6 +274,22 @@ const Stock: React.FC = ({ activeTab }) => {
       key: 'total_qty',
       ...getColumnSearchProps('total_qty'),
       sorter: (a, b) => a.total_qty - b.total_qty,
+      sortDirections: ['descend', 'ascend'],
+    },
+    {
+      title: 'Current Rate',
+      dataIndex: 'current_rate',
+      key: 'current_rate',
+      ...getColumnSearchProps('current_rate'),
+      sorter: (a, b) => a.current_rate - b.current_rate,
+      sortDirections: ['descend', 'ascend'],
+    },
+    {
+      title: 'Current Worth',
+      dataIndex: 'current_worth',
+      key: 'current_worth',
+      ...getColumnSearchProps('current_worth'),
+      sorter: (a, b) => a.current_worth - b.current_worth,
       sortDirections: ['descend', 'ascend'],
     },
   ];

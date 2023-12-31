@@ -415,7 +415,6 @@ function PriceInTotal({ data }) {
 
   useEffect(() => {
     if (data) {
-      debugger;
       let price = 0;
 
       data.forEach((element) => {

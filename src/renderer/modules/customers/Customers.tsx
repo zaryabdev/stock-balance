@@ -220,7 +220,6 @@ function Customers({
   };
 
   const handleShowEditModal = () => {
-    debugger;
     setCustomerUUID(selectedCutomer.id);
     const _products = [];
     if (appContext.currentProducts) {
@@ -241,7 +240,6 @@ function Customers({
   }
 
   const handleEditModalOk = () => {
-    debugger;
     const { id } = selectedCutomer;
     const { key } = selectedCutomer;
 
@@ -284,7 +282,6 @@ function Customers({
 
     const productsToCreate = [];
     const productsToUpdate = [];
-    debugger;
     products.map((product) => {
       const hasItem = appContext.currentProducts.filter(
         (p) => product.id === p.id,
@@ -464,7 +461,6 @@ function Customers({
   // };
 
   const edit = (record: Partial<Item> & { key: React.Key }) => {
-    debugger;
     productsForm.setFieldsValue({
       customer_id: customerUUID,
       ...record,
@@ -473,7 +469,6 @@ function Customers({
   };
 
   const deleteProduct = (record: Partial<Item> & { key: React.Key }) => {
-    debugger;
     // const updatedProducts = products.filter(
     //   (product) => product.key !== record.key,
     // );
@@ -496,13 +491,11 @@ function Customers({
   };
 
   const cancel = () => {
-    debugger;
     setEditingKey('');
   };
 
   const save = async (key: React.Key) => {
     try {
-      debugger;
       const row = (await productsForm.validateFields()) as Item;
 
       let isProductNameUnique = true;
@@ -511,8 +504,6 @@ function Customers({
       if (products.length > 0) {
         products.map((product) => {
           if (key === product.key) {
-            debugger;
-
             if (product.label === 'Sample product') {
               isProductNameSame = true;
             } else if (row.label === product.label) {
@@ -525,7 +516,6 @@ function Customers({
           }
         });
       }
-      debugger;
       if (
         isProductNameUnique &&
         appContext.currentProducts &&
@@ -533,8 +523,6 @@ function Customers({
       ) {
         appContext.currentProducts.map((product) => {
           if (key === product.key) {
-            debugger;
-
             if (product.label === 'Sample product') {
               isProductNameSame = true;
             } else if (row.label === product.label) {
@@ -649,7 +637,6 @@ function Customers({
   });
 
   const addNewProduct = () => {
-    debugger;
     const id = uuidv4();
     const row = [
       {
