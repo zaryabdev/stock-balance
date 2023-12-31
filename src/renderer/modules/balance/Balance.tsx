@@ -1,12 +1,14 @@
 import { SearchOutlined } from '@ant-design/icons';
 import type { InputRef } from 'antd';
-import { Button, Col, Input, Row, Space, Table } from 'antd';
+import { Button, Col, Input, Row, Space, Table, Typography } from 'antd';
 import type { ColumnType, ColumnsType } from 'antd/es/table';
 import type { FilterConfirmProps } from 'antd/es/table/interface';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
 import context from '../../AppContext';
 import { RECORD_TYPE, STATUS, TYPE } from '../../contants';
+
+const { Text, Link } = Typography;
 
 interface DataType {
   id: string;
@@ -397,13 +399,38 @@ const Balance: React.FC = ({ activeTab, customersList }) => {
       <Row>
         <Col span={12}>
           <Table columns={columns} dataSource={customerData} />
+          <PriceInTotal data={customerData} />
         </Col>
         <Col span={12}>
           <Table columns={columns} dataSource={vendorData} />
+          <PriceInTotal data={vendorData} />
         </Col>
       </Row>
     </div>
   );
 };
+
+function PriceInTotal({ data }) {
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  useEffect(() => {
+    if (data) {
+      debugger;
+      let price = 0;
+
+      data.forEach((element) => {
+        price += element.balance;
+      });
+
+      setTotalPrice(price);
+    }
+  }, [data]);
+
+  return (
+    <Text>
+      Total : <Text strong>{totalPrice}</Text>
+    </Text>
+  );
+}
 
 export default Balance;
