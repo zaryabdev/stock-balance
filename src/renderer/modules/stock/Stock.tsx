@@ -118,7 +118,7 @@ const Stock: React.FC = ({ activeTab }) => {
         } else {
           const itemInCurrentStock = vendorStock[key];
           itemInCurrentStock.current_rate = itemInCurrentStock.rate_each;
-          itemInNewStock.current_worth =
+          itemInCurrentStock.current_worth =
             itemInCurrentStock.rate_each * itemInCurrentStock.total_qty;
 
           newStock.push(itemInCurrentStock);
@@ -264,6 +264,7 @@ const Stock: React.FC = ({ activeTab }) => {
     },
     {
       title: 'Carton',
+      align: 'right',
       dataIndex: 'carton',
       key: 'carton',
       render: (_, { total_qty, carton }) => (
@@ -276,6 +277,7 @@ const Stock: React.FC = ({ activeTab }) => {
     },
     {
       title: 'Quantity / Carton',
+      align: 'right',
       dataIndex: 'qty_ctn',
       key: 'qty_ctn',
       render: (_, { total_qty, qty_ctn }) => (
@@ -287,6 +289,7 @@ const Stock: React.FC = ({ activeTab }) => {
     },
     {
       title: 'Total Quantity',
+      align: 'right',
       dataIndex: 'total_qty',
       key: 'total_qty',
       ...getColumnSearchProps('total_qty'),
@@ -300,6 +303,7 @@ const Stock: React.FC = ({ activeTab }) => {
     },
     {
       title: 'Current Rate',
+      align: 'right',
       dataIndex: 'current_rate',
       key: 'current_rate',
       ...getColumnSearchProps('current_rate'),
@@ -307,12 +311,17 @@ const Stock: React.FC = ({ activeTab }) => {
       sortDirections: ['descend', 'ascend'],
       render: (_, { total_qty, current_rate }) => (
         <Text type={`${total_qty > 0 ? '' : 'danger'}`} key={total_qty}>
-          {current_rate}
+          {/* {current_rate.toFixed(2)} */}
+          {current_rate.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}
         </Text>
       ),
     },
     {
       title: 'Current Worth',
+      align: 'right',
       dataIndex: 'current_worth',
       key: 'current_worth',
       ...getColumnSearchProps('current_worth'),
@@ -320,7 +329,12 @@ const Stock: React.FC = ({ activeTab }) => {
       sortDirections: ['descend', 'ascend'],
       render: (_, { total_qty, current_worth }) => (
         <Text type={`${total_qty > 0 ? '' : 'danger'}`} key={total_qty}>
-          {current_worth}
+          {/* {current_worth} */}
+
+          {current_worth.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}
         </Text>
       ),
     },
