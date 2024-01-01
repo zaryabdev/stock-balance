@@ -16,6 +16,13 @@ interface DataType {
   balance: number;
 }
 
+interface TotalBalanceSheetDataType {
+  vendor: string;
+  customer: number;
+  current_worth: number;
+  stock_worth: number;
+}
+
 type DataIndex = keyof DataType;
 
 const Balance: React.FC = ({ activeTab, customersList }) => {
@@ -27,6 +34,9 @@ const Balance: React.FC = ({ activeTab, customersList }) => {
   const [searchCustoemrText, setCustomerSearchText] = useState('');
   const [searchedCustomerColumn, setSearchedCustomerColumn] = useState('');
   const [customerData, setCustomerData] = useState<DataType[]>([]);
+  const [balanceSheetData, setBalanceSheetData] = useState<
+    TotalBalanceSheetDataType[]
+  >([]);
   const searchCustomerInput = useRef<InputRef>(null);
 
   const [searchVendorText, setVendorSearchText] = useState('');
@@ -230,6 +240,30 @@ const Balance: React.FC = ({ activeTab, customersList }) => {
 
     setCustomerData(customerBalanceArr);
     setVendorData(vendorBalanceArr);
+
+    let customerBalance = 0;
+
+    customerBalanceArr.forEach((element) => {
+      customerBalance += element.balance;
+    });
+
+    let vendorBalance = 0;
+
+    vendorBalanceArr.forEach((element) => {
+      vendorBalance += element.balance;
+    });
+
+    const worth = vendorBalance - customerBalance;
+
+    setBalanceSheetData([
+      {
+        vendor: vendorBalance,
+        customer: customerBalance,
+        current_worth: worth,
+        stock_worth: 0,
+      },
+    ]);
+
     // appContext.success(`Balance sheet updated.`);
   }, [allInvoices, appContext.customersList]);
 
@@ -356,7 +390,7 @@ const Balance: React.FC = ({ activeTab, customersList }) => {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-      width: '30%',
+
       ...getColumnSearchProps('name'),
     },
     {
@@ -366,6 +400,79 @@ const Balance: React.FC = ({ activeTab, customersList }) => {
       ...getColumnSearchProps('balance'),
       sorter: (a, b) => a.balance - b.balance,
       sortDirections: ['descend', 'ascend'],
+      align: 'right',
+      render: (_, { balance }) => (
+        <Text type={`${balance > 0 ? '' : 'danger'}`} key={balance}>
+          {/* {balance} */}
+          {balance.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}
+        </Text>
+      ),
+    },
+  ];
+
+  const balanceSheetColumns: ColumnsType<TotalBalanceSheetDataType> = [
+    {
+      title: 'Vendor',
+      dataIndex: 'vendor',
+      align: 'right',
+      key: 'vendor',
+      render: (_, { vendor }) => (
+        <Text type={`${vendor > 0 ? '' : 'danger'}`} key={vendor}>
+          {/* {vendor} */}
+          {vendor.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}
+        </Text>
+      ),
+    },
+    {
+      title: 'Customer',
+      dataIndex: 'customer',
+      key: 'customer',
+      align: 'right',
+      render: (_, { customer }) => (
+        <Text type={`${customer > 0 ? '' : 'danger'}`} key={customer}>
+          {/* {customer} */}
+          {customer.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}
+        </Text>
+      ),
+    },
+    {
+      title: 'Worth',
+      dataIndex: 'current_worth',
+      key: 'current_worth',
+      align: 'right',
+      render: (_, { current_worth }) => (
+        <Text type={`${current_worth > 0 ? '' : 'danger'}`} key={current_worth}>
+          {/* {current_worth} */}
+          {current_worth.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}
+        </Text>
+      ),
+    },
+    {
+      title: 'Stock Worth',
+      dataIndex: 'stock_worth',
+      align: 'right',
+      key: 'stock_worth',
+      render: (_, { stock_worth }) => (
+        <Text type={`${stock_worth > 0 ? '' : 'danger'}`} key={stock_worth}>
+          {/* {stock_worth} */}
+          {stock_worth.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}
+        </Text>
+      ),
     },
   ];
 
@@ -396,40 +503,45 @@ const Balance: React.FC = ({ activeTab, customersList }) => {
       <Button type="primary" onClick={start} loading={loading}>
         Refresh Balance
       </Button>
+      <Table
+        style={{
+          margin: 5,
+        }}
+        columns={balanceSheetColumns}
+        dataSource={balanceSheetData}
+        bordered
+        pagination={false}
+        title={() => 'Total Balance Sheet'}
+        // footer={() => 'Footer'}
+      />
       <Row>
         <Col span={12}>
-          <Table columns={columns} dataSource={customerData} />
-          <PriceInTotal data={customerData} />
+          <Table
+            style={{
+              margin: 5,
+            }}
+            columns={columns}
+            dataSource={customerData}
+            bordered
+            title={() => "Customer's Balance Sheet"}
+            // footer={() => 'Footer'}
+          />
         </Col>
         <Col span={12}>
-          <Table columns={columns} dataSource={vendorData} />
-          <PriceInTotal data={vendorData} />
+          <Table
+            style={{
+              margin: 5,
+            }}
+            columns={columns}
+            dataSource={vendorData}
+            bordered
+            title={() => "Vendor's Balance Sheet"}
+            // footer={() => 'Footer'}
+          />
         </Col>
       </Row>
     </div>
   );
 };
-
-function PriceInTotal({ data }) {
-  const [totalPrice, setTotalPrice] = useState(0);
-
-  useEffect(() => {
-    if (data) {
-      let price = 0;
-
-      data.forEach((element) => {
-        price += element.balance;
-      });
-
-      setTotalPrice(price);
-    }
-  }, [data]);
-
-  return (
-    <Text>
-      Total : <Text strong>{totalPrice}</Text>
-    </Text>
-  );
-}
 
 export default Balance;
