@@ -1,16 +1,24 @@
-Isssues :
+## Isssues :
 
 1. When saving an empty record sql throws error
 2. Un-archive
 3. Floating number in print
 4. Defalut Value
 
-Stock
+## Features :
 
-Add clear filters
-Add Global Search
-Add print option
+1. Stock
 
-Balance
+   - Add clear filters
+   - Add Global Search
+   - Add print option
 
-Stock Worth
+2. Balance
+
+   - Stock Worth
+
+3. License
+   - Add product key encryption
+   - https://stackoverflow.com/questions/44708242/is-it-possible-to-create-product-keys-for-my-electron-application
+   - getmac /v /fo list
+   - Office D4-BE-D9-84-AB-3D

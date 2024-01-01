@@ -739,7 +739,11 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
   };
 
   const print = () => {
-    const doc = new jsPDF();
+    const doc = new jsPDF({
+      format: 'a5',
+      orientation: 'portrait',
+      unit: 'mm',
+    });
 
     // define the columns we want and their titles
     const tableColumn = [
@@ -765,8 +769,30 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
         return true;
       }
     });
+
     // let filteredData = data;
+
     filteredData.forEach((record) => {
+      let rate_each = record.rate_each.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
+
+      let debit = record.debit.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
+
+      let credit = record.credit.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
+
+      let balance = record.balance.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
+
       const inArr = [
         record.date,
         record.payment,
@@ -774,23 +800,14 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
         record.carton,
         record.qty_ctn,
         record.total_qty,
-        record.rate_each,
-        record.debit,
-        record.credit,
-        record.balance,
+        rate_each,
+        debit,
+        credit,
+        balance,
       ];
       // push each tickcet's info into a row
       tableRows.push(inArr);
     });
-
-    // startY is basically margin-top
-    doc.autoTable(tableColumn, tableRows, { startY: 20 });
-    // const date = Date().split(' ');
-    // we use a date string to generate our filename.
-    // const dateStr = date[0] + date[1] + date[2] + date[3] + date[4];
-    // ticket title. and margin-top + margin-left
-    // doc.text(`Customer ID : ${customerId}`, 14, 15);
-    // we define the name of our PDF file.
 
     let name = '';
 
@@ -801,6 +818,10 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
         }
       });
     }
+
+    doc.text(`Customer's Name : ${name}`, 20, 20);
+
+    doc.autoTable(tableColumn, tableRows, { startY: 30 });
 
     doc.save(`${_date}-${name}.pdf`);
   };
@@ -909,9 +930,9 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
   return (
     <div className="">
-      <center>
+      {/* <center>
         <code>{currentBalance}</code>
-      </center>
+      </center> */}
       <DataSheetGrid
         className=""
         style={{ height: '400px' }}

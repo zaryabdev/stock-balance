@@ -63,6 +63,7 @@ const Stock: React.FC = ({ activeTab }) => {
             const currentStockItem = vendorStock[product];
             const newStockItem = { ...item };
             const newCarton = currentStockItem.carton + newStockItem.carton;
+            debugger;
             const newTotalQty =
               currentStockItem.total_qty + newStockItem.total_qty;
             newStockItem.total_qty = newTotalQty;
@@ -94,9 +95,10 @@ const Stock: React.FC = ({ activeTab }) => {
         }
       }
     });
-    console.log(vendorStock);
-    console.log(customerStock);
-    debugger;
+
+    // console.log(vendorStock);
+    // console.log(customerStock);
+
     const newStock = [];
 
     try {
@@ -111,6 +113,7 @@ const Stock: React.FC = ({ activeTab }) => {
           itemInNewStock.carton = newCarton;
           itemInNewStock.total_qty = newTotalQty;
           itemInNewStock.current_rate = itemInCurrentStock.rate_each;
+
           itemInNewStock.current_worth =
             itemInCurrentStock.rate_each * itemInCurrentStock.total_qty;
 
