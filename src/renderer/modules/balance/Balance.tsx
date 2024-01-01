@@ -255,12 +255,105 @@ const Balance: React.FC = ({ activeTab, customersList }) => {
 
     const worth = vendorBalance - customerBalance;
 
+    // For Stock
+
+    const vendorStock = {};
+    const customerStock = {};
+
+    allInvoices.map((item) => {
+      const { type, product } = item;
+      if (type === TYPE.vendor) {
+        if (
+          product !== RECORD_TYPE.previous_balance &&
+          product !== RECORD_TYPE.none
+        ) {
+          if (vendorStock[product]) {
+            const currentStockItem = vendorStock[product];
+            const newStockItem = { ...item };
+            const newCarton = currentStockItem.carton + newStockItem.carton;
+            debugger;
+            const newTotalQty =
+              currentStockItem.total_qty + newStockItem.total_qty;
+            newStockItem.total_qty = newTotalQty;
+            newStockItem.carton = newCarton;
+            vendorStock[product] = { ...newStockItem };
+          } else {
+            vendorStock[product] = { ...item };
+          }
+        }
+      }
+
+      if (type === TYPE.customer) {
+        if (
+          product !== RECORD_TYPE.previous_balance &&
+          product !== RECORD_TYPE.none
+        ) {
+          if (customerStock[product]) {
+            const currentStockItem = customerStock[product];
+            const newStockItem = { ...item };
+            const newCarton = currentStockItem.carton + newStockItem.carton;
+            const newTotalQty =
+              currentStockItem.total_qty + newStockItem.total_qty;
+            newStockItem.total_qty = newTotalQty;
+            newStockItem.carton = newCarton;
+            customerStock[product] = { ...newStockItem };
+          } else {
+            customerStock[product] = { ...item };
+          }
+        }
+      }
+    });
+
+    // console.log(vendorStock);
+    // console.log(customerStock);
+
+    const newStock = [];
+
+    try {
+      Object.keys(vendorStock).forEach(function (key, index) {
+        if (customerStock[key]) {
+          const itemInCurrentStock = vendorStock[key];
+          const itemInNewStock = customerStock[key];
+
+          const newCarton = itemInCurrentStock.carton - itemInNewStock.carton;
+          const newTotalQty =
+            itemInCurrentStock.total_qty - itemInNewStock.total_qty;
+          itemInNewStock.carton = newCarton;
+          itemInNewStock.total_qty = newTotalQty;
+          itemInNewStock.current_rate = itemInCurrentStock.rate_each;
+
+          itemInNewStock.current_worth =
+            itemInCurrentStock.rate_each * itemInCurrentStock.total_qty;
+
+          newStock.push(itemInNewStock);
+        } else {
+          const itemInCurrentStock = vendorStock[key];
+          itemInCurrentStock.current_rate = itemInCurrentStock.rate_each;
+          itemInCurrentStock.current_worth =
+            itemInCurrentStock.rate_each * itemInCurrentStock.total_qty;
+
+          newStock.push(itemInCurrentStock);
+        }
+      });
+    } catch (error) {
+      console.error(error);
+    }
+
+    console.log(newStock);
+    debugger;
+
+    let _stockWorth = 0;
+
+    newStock.map((_stock) => {
+      _stockWorth += _stock.current_worth;
+    });
+
     setBalanceSheetData([
       {
         vendor: vendorBalance,
         customer: customerBalance,
         current_worth: worth,
-        stock_worth: 0,
+        stock_worth: _stockWorth,
       },
     ]);
 
@@ -445,7 +538,7 @@ const Balance: React.FC = ({ activeTab, customersList }) => {
       ),
     },
     {
-      title: 'Worth',
+      title: 'Current Worth',
       dataIndex: 'current_worth',
       key: 'current_worth',
       align: 'right',
