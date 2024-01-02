@@ -19,6 +19,8 @@ class CustomerRepository {
         type TEXT,
         status TEXT,
         timestamp TEXT,
+        date_created TEXT,
+        date_modified TEXT,
         meta_text TEXT,
         meta_number REAL
         )`;

@@ -197,6 +197,8 @@ class CustomerInvoicRepository {
         balance REAL,
         current_balance REAL,
         timestamp TEXT,
+        date_created TEXT,
+        date_modified TEXT,
         meta_text TEXT,
         meta_number REAL
         )`;

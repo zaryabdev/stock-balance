@@ -20,6 +20,8 @@ class ProductRepository {
           status TEXT,
           state TEXT,
           timestamp TEXT,
+          date_created TEXT,
+          date_modified TEXT,
           meta_text TEXT,
           meta_number REAL
         )`;
