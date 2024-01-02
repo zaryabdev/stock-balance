@@ -271,7 +271,6 @@ const Balance: React.FC = ({ activeTab, customersList }) => {
             const currentStockItem = vendorStock[product];
             const newStockItem = { ...item };
             const newCarton = currentStockItem.carton + newStockItem.carton;
-            debugger;
             const newTotalQty =
               currentStockItem.total_qty + newStockItem.total_qty;
             newStockItem.total_qty = newTotalQty;
@@ -340,8 +339,6 @@ const Balance: React.FC = ({ activeTab, customersList }) => {
     }
 
     console.log(newStock);
-    debugger;
-
     let _stockWorth = 0;
 
     newStock.map((_stock) => {

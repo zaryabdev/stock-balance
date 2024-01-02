@@ -15,7 +15,7 @@
 
 2. Balance
 
-   - Stock Worth
+   -
 
 3. License
    - Add product key encryption

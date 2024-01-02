@@ -390,6 +390,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
               if (newValue[index].id === id) {
                 const currentRecord = newValue[index];
                 const { product } = currentRecord;
+                debugger;
                 console.log(currentVendorProducts);
                 if (currentVendorProducts) {
                   const currentProduct = currentVendorProducts[product];
@@ -419,7 +420,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
                         currentRecord.carton * currentProduct.qty_ctn;
                       currentRecord.debit =
                         currentRecord.rate_each * currentRecord.total_qty;
-                      // ;
+
                       currentRecord.balance = currentRecord.debit;
                       //   element.balance + element.debit - element.credit;
 
@@ -427,6 +428,15 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
                     }
                     newValue[index] = currentRecord;
                   } else {
+                    // currentRecord.payment = RECORD_TYPE.none;
+                    // currentRecord.qty_ctn = 0;
+                    // currentRecord.carton = 0;
+                    // currentRecord.total_qty = 0;
+                    // currentRecord.rate_each = 0;
+                    // currentRecord.credit = 0;
+                    // currentRecord.balance = currentRecord.debit;
+                    // currentRecord.state = STATE.updated;
+                    // newValue[index] = currentRecord;
                     // test use cases for deleted records
                   }
                 }
@@ -487,6 +497,110 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
     }
   }
 
+  const validateData = (data) => {
+    const invalidRows = [];
+
+    data.map((item, index) => {
+      const {
+        date,
+        product,
+        carton,
+        qty_ctn,
+        total_qty,
+        rate_each,
+        debit,
+        credit,
+        balance,
+        current_balance,
+      } = item;
+
+      let msg = '';
+      let valid = true;
+
+      if (!date || date === 'null') {
+        msg += 'Date, ';
+        valid = false;
+      }
+
+      // if (!product || product === 'null') {
+      //   debugger;
+      //   msg += 'product, ';
+      //   valid = false;
+      // }
+
+      if (!carton || carton === 'null') {
+        if (carton !== 0) {
+          msg += 'Carton, ';
+          valid = false;
+        }
+      }
+
+      if (!qty_ctn || qty_ctn === 'null') {
+        if (qty_ctn !== 0) {
+          msg += 'Qty / Ctn, ';
+          valid = false;
+        }
+      }
+
+      if (!total_qty || total_qty === 'null') {
+        if (total_qty !== 0) {
+          msg += 'Total Qty, ';
+          valid = false;
+        }
+      }
+
+      if (!rate_each || rate_each === 'null') {
+        if (rate_each !== 0) {
+          msg += 'Rate Each, ';
+          valid = false;
+        }
+      }
+
+      if (!debit) {
+        if (debit !== 0 || debit === 'null') {
+          msg += 'Debit, ';
+          valid = false;
+        }
+      }
+
+      if (!credit || credit === 'null') {
+        if (credit !== 0) {
+          msg += 'Credit, ';
+          valid = false;
+        }
+      }
+
+      if (!current_balance || current_balance === 'null') {
+        if (current_balance !== 0) {
+          msg += 'Balance, ';
+          valid = false;
+        }
+      }
+
+      if (!valid) {
+        invalidRows.push({
+          rowId: index,
+          message: msg,
+          record: item,
+        });
+      }
+    });
+
+    const validation = {
+      isValid: true,
+      message: '',
+      invalidRows: [],
+    };
+
+    if (invalidRows.length > 0) {
+      validation.isValid = false;
+      validation.invalidRows = invalidRows;
+      validation.message = 'Invalid Data';
+    }
+
+    return validation;
+  };
+
   const commit = () => {
     /* Perform insert, update, and delete to the database here */
 
@@ -497,214 +611,238 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
     // console.log(deletedRowIds);
     // console.log(updatedRowIds);
 
-    const withState = data.map((element) => {
-      if (createdRowIds.has(element.id)) {
-        element.state = STATE.created;
-      }
-
-      if (updatedRowIds.has(element.id)) {
-        element.state = STATE.updated;
-      }
-
-      if (deletedRowIds.has(element.id)) {
-        element.state = STATE.deleted;
-      }
-
-      return element;
-    });
-
-    setData(withState);
-    setPrevData(withState);
-    if (type === TYPE.customer) {
-      const newStock = {};
-      withState.map((record) => {
-        if (newStock[record.product]) {
-          const currentStock = newStock[record.product];
-
-          if (record.state === STATE.deleted) {
-            // let carton = record.carton ? record.carton : 0;
-            // currentStock.carton = currentStock.carton - carton;
-            // let qty_ctn = record.qty_ctn ? record.qty_ctn : 0;
-            // currentStock.qty_ctn = currentStock.qty_ctn - qty_ctn;
-          } else {
-            currentStock.carton += record.carton;
-            currentStock.total_qty += record.total_qty;
-          }
-          newStock[record.product] = currentStock;
-        } else if (record.state === STATE.deleted) {
-          // let carton = record.carton ? record.carton : 0;
-          // let qty_ctn = record.qty_ctn ? record.qty_ctn : 0;
-          // let total_qty = record.total_qty ? record.total_qty : 0;
-
-          const currentStock = {
-            id: 'NEW',
-            product: record.product,
-            carton: 0,
-            qty_ctn: 0,
-            total_qty: 0,
-          };
-
-          newStock[record.product] = currentStock;
-        } else {
-          const currentStock = {
-            id: 'NEW',
-            product: record.product,
-            carton: record.carton,
-            qty_ctn: record.qty_ctn,
-            total_qty: record.total_qty,
-          };
-
-          newStock[record.product] = currentStock;
+    const validation = validateData(data);
+    if (validation.isValid) {
+      const withState = data.map((element) => {
+        if (createdRowIds.has(element.id)) {
+          element.state = STATE.created;
         }
+
+        if (updatedRowIds.has(element.id)) {
+          element.state = STATE.updated;
+        }
+
+        if (deletedRowIds.has(element.id)) {
+          element.state = STATE.deleted;
+        }
+
+        return element;
       });
 
-      const currentCotextStock = {};
+      setData(withState);
+      setPrevData(withState);
 
-      if (context && context.currentStock) {
-        context.currentStock.map((item) => {
-          const { product } = item;
-          currentCotextStock[product] = item;
+      if (type === TYPE.customer) {
+        const newStock = {};
+        withState.map((record) => {
+          if (newStock[record.product]) {
+            const currentStock = newStock[record.product];
+
+            if (record.state === STATE.deleted) {
+              // let carton = record.carton ? record.carton : 0;
+              // currentStock.carton = currentStock.carton - carton;
+              // let qty_ctn = record.qty_ctn ? record.qty_ctn : 0;
+              // currentStock.qty_ctn = currentStock.qty_ctn - qty_ctn;
+            } else {
+              currentStock.carton += record.carton;
+              currentStock.total_qty += record.total_qty;
+            }
+            newStock[record.product] = currentStock;
+          } else if (record.state === STATE.deleted) {
+            // let carton = record.carton ? record.carton : 0;
+            // let qty_ctn = record.qty_ctn ? record.qty_ctn : 0;
+            // let total_qty = record.total_qty ? record.total_qty : 0;
+
+            const currentStock = {
+              id: 'NEW',
+              product: record.product,
+              carton: 0,
+              qty_ctn: 0,
+              total_qty: 0,
+            };
+
+            newStock[record.product] = currentStock;
+          } else {
+            const currentStock = {
+              id: 'NEW',
+              product: record.product,
+              carton: record.carton,
+              qty_ctn: record.qty_ctn,
+              total_qty: record.total_qty,
+            };
+
+            newStock[record.product] = currentStock;
+          }
         });
+
+        const currentCotextStock = {};
+
+        if (context && context.currentStock) {
+          context.currentStock.map((item) => {
+            const { product } = item;
+            currentCotextStock[product] = item;
+          });
+        }
+
+        console.log(currentCotextStock);
+        console.log(newStock);
+        try {
+          Object.keys(currentCotextStock).forEach(function (key, index) {
+            if (newStock[key]) {
+              const itemInCurrentStock = { ...currentCotextStock[key] };
+              const itemInNewStock = { ...newStock[key] };
+              const newCarton =
+                itemInCurrentStock.carton - itemInNewStock.carton;
+              const newTotalQty =
+                itemInCurrentStock.total_qty - itemInNewStock.total_qty;
+              itemInNewStock.carton = newCarton;
+              itemInNewStock.total_qty = newTotalQty;
+              itemInNewStock.id = itemInCurrentStock.id;
+
+              newStock[key] = itemInNewStock;
+            }
+          });
+        } catch (error) {
+          console.error(error);
+        }
+
+        console.log(currentCotextStock);
+        console.log(newStock);
+        const updatedStock = [];
+
+        Object.keys(newStock).forEach(function (key, index) {
+          updatedStock.push(newStock[key]);
+        });
+
+        console.log(withState);
+        console.log(newStock);
+
+        console.log(updatedStock);
+
+        const withFinalBalance = withState.map((item, index) => {
+          item.current_balance = currentBalance;
+
+          return item;
+        });
+        window.electron.ipcRenderer.updateCustomerInvoice(withFinalBalance);
+        // window.electron.ipcRenderer.updateStock(updatedStock);
+        // window.electron.ipcRenderer.createBalance({
+        //   id : uuidv4(),
+        //   customer_id : customerId,
+        //   balance : currentBalance
+        // });
+
+        createdRowIds.clear();
+        deletedRowIds.clear();
+        updatedRowIds.clear();
+        context.success('Invoice Saved Successfully.');
       }
 
-      console.log(currentCotextStock);
-      console.log(newStock);
-      try {
+      if (type === TYPE.vendor) {
+        const newStock = {};
+
+        withState.map((record) => {
+          if (newStock[record.product]) {
+            const currentStock = { ...newStock[record.product] };
+
+            if (record.state === STATE.deleted) {
+              // let carton = record.carton ? record.carton : 0;
+              // currentStock.carton = currentStock.carton - carton;
+              // let qty_ctn = record.qty_ctn ? record.qty_ctn : 0;
+              // currentStock.qty_ctn = currentStock.qty_ctn - qty_ctn;
+            } else {
+              currentStock.carton += record.carton;
+              currentStock.total_qty += record.total_qty;
+            }
+            newStock[record.product] = currentStock;
+          } else if (record.state === STATE.deleted) {
+            // let carton = record.carton ? record.carton : 0;
+            // let qty_ctn = record.qty_ctn ? record.qty_ctn : 0;
+            // let total_qty = record.total_qty ? record.total_qty : 0;
+
+            const currentStock = {
+              id: 'NEW',
+              product: record.product,
+              carton: 0,
+              qty_ctn: 0,
+              total_qty: 0,
+            };
+
+            newStock[record.product] = currentStock;
+          } else {
+            const currentStock = {
+              id: 'NEW',
+              product: record.product,
+              carton: record.carton,
+              qty_ctn: record.qty_ctn,
+              total_qty: record.total_qty,
+            };
+
+            newStock[record.product] = currentStock;
+          }
+        });
+
+        const currentCotextStock = {};
+
+        if (context && context.currentStock) {
+          context.currentStock.map((item) => {
+            const { product } = item;
+            currentCotextStock[product] = item;
+          });
+        }
+
+        console.log(currentCotextStock);
+        console.log(newStock);
         Object.keys(currentCotextStock).forEach(function (key, index) {
           if (newStock[key]) {
-            const itemInCurrentStock = { ...currentCotextStock[key] };
-            const itemInNewStock = { ...newStock[key] };
-            const newCarton = itemInCurrentStock.carton - itemInNewStock.carton;
-            const newTotalQty =
-              itemInCurrentStock.total_qty - itemInNewStock.total_qty;
-            itemInNewStock.carton = newCarton;
-            itemInNewStock.total_qty = newTotalQty;
-            itemInNewStock.id = itemInCurrentStock.id;
-
-            newStock[key] = itemInNewStock;
+            newStock[key].id = currentCotextStock[key].id;
           }
         });
-      } catch (error) {
-        console.error(error);
+
+        console.log(currentCotextStock);
+        console.log(newStock);
+        const updatedStock = [];
+
+        Object.keys(newStock).forEach(function (key, index) {
+          updatedStock.push(newStock[key]);
+        });
+
+        console.log(withState);
+        console.log(newStock);
+
+        console.log(updatedStock);
+
+        const withFinalBalance = withState.map((item, index) => {
+          item.current_balance = currentBalance;
+
+          return item;
+        });
+        window.electron.ipcRenderer.updateCustomerInvoice(withFinalBalance);
+        // window.electron.ipcRenderer.updateStock(updatedStock);
+
+        createdRowIds.clear();
+        deletedRowIds.clear();
+        updatedRowIds.clear();
+        context.success('Invoice Saved Successfully.');
       }
+    } else {
+      console.log(validation);
 
-      console.log(currentCotextStock);
-      console.log(newStock);
-      const updatedStock = [];
+      let name = '';
 
-      Object.keys(newStock).forEach(function (key, index) {
-        updatedStock.push(newStock[key]);
-      });
-
-      console.log(withState);
-      console.log(newStock);
-
-      console.log(updatedStock);
-
-      const withFinalBalance = withState.map((item, index) => {
-        item.current_balance = currentBalance;
-
-        return item;
-      });
-      window.electron.ipcRenderer.updateCustomerInvoice(withFinalBalance);
-      // window.electron.ipcRenderer.updateStock(updatedStock);
-      // window.electron.ipcRenderer.createBalance({
-      //   id : uuidv4(),
-      //   customer_id : customerId,
-      //   balance : currentBalance
-      // });
-
-      createdRowIds.clear();
-      deletedRowIds.clear();
-      updatedRowIds.clear();
-    }
-
-    if (type === TYPE.vendor) {
-      const newStock = {};
-
-      withState.map((record) => {
-        if (newStock[record.product]) {
-          const currentStock = { ...newStock[record.product] };
-
-          if (record.state === STATE.deleted) {
-            // let carton = record.carton ? record.carton : 0;
-            // currentStock.carton = currentStock.carton - carton;
-            // let qty_ctn = record.qty_ctn ? record.qty_ctn : 0;
-            // currentStock.qty_ctn = currentStock.qty_ctn - qty_ctn;
-          } else {
-            currentStock.carton += record.carton;
-            currentStock.total_qty += record.total_qty;
+      if (context.customersList) {
+        context.customersList.map((c) => {
+          if (c.id === customerId) {
+            name = c.name;
           }
-          newStock[record.product] = currentStock;
-        } else if (record.state === STATE.deleted) {
-          // let carton = record.carton ? record.carton : 0;
-          // let qty_ctn = record.qty_ctn ? record.qty_ctn : 0;
-          // let total_qty = record.total_qty ? record.total_qty : 0;
-
-          const currentStock = {
-            id: 'NEW',
-            product: record.product,
-            carton: 0,
-            qty_ctn: 0,
-            total_qty: 0,
-          };
-
-          newStock[record.product] = currentStock;
-        } else {
-          const currentStock = {
-            id: 'NEW',
-            product: record.product,
-            carton: record.carton,
-            qty_ctn: record.qty_ctn,
-            total_qty: record.total_qty,
-          };
-
-          newStock[record.product] = currentStock;
-        }
-      });
-
-      const currentCotextStock = {};
-
-      if (context && context.currentStock) {
-        context.currentStock.map((item) => {
-          const { product } = item;
-          currentCotextStock[product] = item;
         });
       }
 
-      console.log(currentCotextStock);
-      console.log(newStock);
-      Object.keys(currentCotextStock).forEach(function (key, index) {
-        if (newStock[key]) {
-          newStock[key].id = currentCotextStock[key].id;
-        }
+      validation.invalidRows.map((row) => {
+        context.error(
+          `Invalid fields ${row.message} of ${name} at ${row.rowId + 1}.`,
+        );
       });
-
-      console.log(currentCotextStock);
-      console.log(newStock);
-      const updatedStock = [];
-
-      Object.keys(newStock).forEach(function (key, index) {
-        updatedStock.push(newStock[key]);
-      });
-
-      console.log(withState);
-      console.log(newStock);
-
-      console.log(updatedStock);
-
-      const withFinalBalance = withState.map((item, index) => {
-        item.current_balance = currentBalance;
-
-        return item;
-      });
-      window.electron.ipcRenderer.updateCustomerInvoice(withFinalBalance);
-      // window.electron.ipcRenderer.updateStock(updatedStock);
-
-      createdRowIds.clear();
-      deletedRowIds.clear();
-      updatedRowIds.clear();
-      context.success('Invoice Saved Successfully.');
     }
 
     //  const isInCurrentStock = currentStock.filter(stock=> stock.product === record.product);

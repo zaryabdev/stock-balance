@@ -47,6 +47,7 @@ export default function App() {
     messageApi.open({
       type: 'error',
       content: `${content}`,
+      duration: 10,
     });
   };
 

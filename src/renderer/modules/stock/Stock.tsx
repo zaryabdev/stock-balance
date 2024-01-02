@@ -63,7 +63,6 @@ const Stock: React.FC = ({ activeTab }) => {
             const currentStockItem = vendorStock[product];
             const newStockItem = { ...item };
             const newCarton = currentStockItem.carton + newStockItem.carton;
-            debugger;
             const newTotalQty =
               currentStockItem.total_qty + newStockItem.total_qty;
             newStockItem.total_qty = newTotalQty;
