@@ -888,7 +888,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       body: [
         [
           {
-            content: 'Madina Traders.',
+            content: 'Al Faisal Packages',
             styles: {
               halign: 'left',
               fontSize: 20,
@@ -915,7 +915,8 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       body: [
         [
           {
-            content: 'Billed to:' + '\nLala Musa' + '\nBilling Address line 1',
+            content:
+              'Billed to:' + '\nCustomer One' + '\nBilling Address line 1',
             styles: {
               halign: 'left',
             },
