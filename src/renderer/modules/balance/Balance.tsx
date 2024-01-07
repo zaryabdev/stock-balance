@@ -535,7 +535,7 @@ const Balance: React.FC = ({ activeTab, customersList }) => {
       ),
     },
     {
-      title: 'Current Worth',
+      title: 'Total Balance',
       dataIndex: 'current_worth',
       key: 'current_worth',
       align: 'right',

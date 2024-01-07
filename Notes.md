@@ -4,6 +4,11 @@
 2. Un-archive
 3. Floating number in print
 4. Defalut Value
+5. payment const chnage it from none to payment
+6. All filter not working
+7. Add delete customers
+8. Change action buttons
+9. Add stock worth on Stock Tab
 
 ## Features :
 
