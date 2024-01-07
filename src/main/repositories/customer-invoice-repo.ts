@@ -200,7 +200,8 @@ class CustomerInvoicRepository {
         date_created TEXT,
         date_modified TEXT,
         meta_text TEXT,
-        meta_number REAL
+        meta_number REAL,
+        data_json TEXT
         )`;
 
     return this.dao.run(sql);

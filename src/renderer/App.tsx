@@ -134,16 +134,25 @@ export default function App() {
           getCurrentProducts={getCurrentProducts}
           getCurrentCustomers={getCurrentCustomers}
         />
-        <FloatButton
-          tooltip={`${toggleSideBar ? 'Hide sidebar' : 'Show sidebar'}`}
-          style={{ right: 75, bottom: 15 }}
-          type="default"
-          shape="circle"
-          icon={
-            toggleSideBar ? <DoubleLeftOutlined /> : <DoubleRightOutlined />
-          }
-          onClick={() => hideSideBar()}
-        />
+        {toggleSideBar ? (
+          <FloatButton
+            tooltip="Hide sidebar"
+            style={{ right: 95, bottom: 15 }}
+            type="default"
+            shape="circle"
+            icon={<DoubleLeftOutlined />}
+            onClick={() => hideSideBar()}
+          />
+        ) : (
+          <FloatButton
+            tooltip="Show sidebar"
+            style={{ right: 15, bottom: 15 }}
+            type="primary"
+            shape="circle"
+            icon={<DoubleRightOutlined />}
+            onClick={() => hideSideBar()}
+          />
+        )}
       </ConfigProvider>
     </Context.Provider>
   );

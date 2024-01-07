@@ -1349,25 +1349,22 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
         }}
       />
 
-      <FloatButton.Group
-        trigger="hover"
+      {/* <FloatButton tooltip="Undo" onClick={cancel} icon={<UndoOutlined />} /> */}
+
+      <FloatButton
+        tooltip="Print"
+        style={{ right: 55, bottom: 15 }}
+        onClick={showModal}
+        icon={<FilePdfOutlined />}
+      />
+      <FloatButton
+        tooltip={`Save ${customerId}`}
+        style={{ right: 15, bottom: 15 }}
+        onClick={commit}
         type="primary"
-        shape="circle"
-        style={{ right: 30, bottom: 15 }}
-        icon={<EditOutlined />}
-      >
-        {/* <FloatButton tooltip="Undo" onClick={cancel} icon={<UndoOutlined />} /> */}
-        <FloatButton
-          tooltip="Print"
-          onClick={showModal}
-          icon={<FilePdfOutlined />}
-        />
-        <FloatButton
-          tooltip={`Save ${customerId}`}
-          onClick={commit}
-          icon={<SaveOutlined />}
-        />
-      </FloatButton.Group>
+        icon={<SaveOutlined />}
+      />
+
       <Modal
         title="Basic Modal"
         open={isModalOpen}
