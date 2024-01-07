@@ -195,7 +195,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
     return null;
   }
 
-  const showModal = () => {
+  const showPrintModal = () => {
     setIsModalOpen(true);
   };
 
@@ -840,7 +840,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
       validation.invalidRows.map((row) => {
         context.error(
-          `Invalid fields ${row.message} of ${name} at ${row.rowId + 1}.`,
+          `Invalid fields ${row.message} of ${name} at Id ${row.rowId + 1}.`,
         );
       });
     }
@@ -878,7 +878,67 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
   };
 
   const print = () => {
-    // const doc = new jsPDF();
+    debugger;
+
+    const doc = new jsPDF({
+      format: 'a5',
+      orientation: 'landscape',
+      unit: 'mm',
+    });
+
+    // Header
+    autoTable(doc, {
+      body: [
+        [
+          {
+            content: 'Madina Traders.',
+            styles: {
+              halign: 'left',
+              fontSize: 20,
+              textColor: '#ffffff',
+            },
+          },
+          {
+            content: 'Balance Sheet',
+            styles: {
+              halign: 'right',
+              fontSize: 20,
+              textColor: '#ffffff',
+            },
+          },
+        ],
+      ],
+      theme: 'plain',
+      styles: {
+        fillColor: '#343a40',
+      },
+    });
+
+    autoTable(doc, {
+      body: [
+        [
+          {
+            content: 'Billed to:' + '\nLala Musa' + '\nBilling Address line 1',
+            styles: {
+              halign: 'left',
+            },
+          },
+          {
+            content:
+              `Invoice Type: Vendor` +
+              `\nDate:${formatedDate}\nInvoice number : 123456`,
+            styles: {
+              halign: 'right',
+            },
+          },
+        ],
+      ],
+      theme: 'plain',
+    });
+
+    const uuid = uuidv4();
+
+    doc.save(`${uuid} invoice`);
 
     // const doc = new jsPDF({
     //   format: 'a5',
@@ -886,331 +946,85 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
     //   unit: 'mm',
     // });
 
-    // autoTable(doc, {
-    //   body: [
-    //     [
-    //       {
-    //         content: 'Stock Balance Inc.',
-    //         styles: {
-    //           halign: 'left',
-    //           fontSize: 20,
-    //           textColor: '#ffffff',
-    //         },
-    //       },
-    //       {
-    //         content: 'Invoice',
-    //         styles: {
-    //           halign: 'right',
-    //           fontSize: 20,
-    //           textColor: '#ffffff',
-    //         },
-    //       },
-    //     ],
-    //   ],
-    //   theme: 'plain',
-    //   styles: {
-    //     fillColor: '#343a40',
-    //   },
+    // // define the columns we want and their titles
+    // const tableColumn = [
+    //   'Date',
+    //   'Payment',
+    //   'Product',
+    //   'Carton',
+    //   'Qty / Ctn',
+    //   'Total Qty',
+    //   'Rate Each',
+    //   'Debit',
+    //   'Credit',
+    //   'Balance',
+    // ];
+    // // define an empty array of rows
+    // const tableRows = [];
+
+    // // for each ticket pass all its data into an array
+    // const _date = dayjs(printDate).format('YYYY-MM-DD');
+
+    // const filteredData = data.filter((item) => {
+    //   if (item.date === _date) {
+    //     return true;
+    //   }
     // });
 
-    // autoTable(doc, {
-    //   body: [
-    //     [
-    //       {
-    //         content:
-    //           'Reference: #INV0001' +
-    //           '\nDate: 2022-01-27' +
-    //           '\nInvoice number: 123456',
-    //         styles: {
-    //           halign: 'right',
-    //         },
-    //       },
-    //     ],
-    //   ],
-    //   theme: 'plain',
+    // // let filteredData = data;
+
+    // filteredData.forEach((record) => {
+    //   const rate_each = record.rate_each.toLocaleString(undefined, {
+    //     minimumFractionDigits: 2,
+    //     maximumFractionDigits: 2,
+    //   });
+
+    //   const debit = record.debit.toLocaleString(undefined, {
+    //     minimumFractionDigits: 2,
+    //     maximumFractionDigits: 2,
+    //   });
+
+    //   const credit = record.credit.toLocaleString(undefined, {
+    //     minimumFractionDigits: 2,
+    //     maximumFractionDigits: 2,
+    //   });
+
+    //   const balance = record.balance.toLocaleString(undefined, {
+    //     minimumFractionDigits: 2,
+    //     maximumFractionDigits: 2,
+    //   });
+
+    //   const inArr = [
+    //     record.date,
+    //     record.payment,
+    //     record.product,
+    //     record.carton,
+    //     record.qty_ctn,
+    //     record.total_qty,
+    //     rate_each,
+    //     debit,
+    //     credit,
+    //     balance,
+    //   ];
+    //   // push each tickcet's info into a row
+    //   tableRows.push(inArr);
     // });
 
-    // autoTable(doc, {
-    //   body: [
-    //     [
-    //       {
-    //         content:
-    //           'Billed to:' +
-    //           '\nJohn Doe' +
-    //           '\nBilling Address line 1' +
-    //           '\nBilling Address line 2' +
-    //           '\nZip code - City' +
-    //           '\nCountry',
-    //         styles: {
-    //           halign: 'left',
-    //         },
-    //       },
-    //       {
-    //         content:
-    //           'Shipping address:' +
-    //           '\nJohn Doe' +
-    //           '\nShipping Address line 1' +
-    //           '\nShipping Address line 2' +
-    //           '\nZip code - City' +
-    //           '\nCountry',
-    //         styles: {
-    //           halign: 'left',
-    //         },
-    //       },
-    //       {
-    //         content:
-    //           'From:' +
-    //           '\nCompany name' +
-    //           '\nShipping Address line 1' +
-    //           '\nShipping Address line 2' +
-    //           '\nZip code - City' +
-    //           '\nCountry',
-    //         styles: {
-    //           halign: 'right',
-    //         },
-    //       },
-    //     ],
-    //   ],
-    //   theme: 'plain',
-    // });
+    // let name = '';
 
-    // autoTable(doc, {
-    //   body: [
-    //     [
-    //       {
-    //         content: 'Amount due:',
-    //         styles: {
-    //           halign: 'right',
-    //           fontSize: 14,
-    //         },
-    //       },
-    //     ],
-    //     [
-    //       {
-    //         content: '$4000',
-    //         styles: {
-    //           halign: 'right',
-    //           fontSize: 20,
-    //           textColor: '#3366ff',
-    //         },
-    //       },
-    //     ],
-    //     [
-    //       {
-    //         content: 'Due date: 2022-02-01',
-    //         styles: {
-    //           halign: 'right',
-    //         },
-    //       },
-    //     ],
-    //   ],
-    //   theme: 'plain',
-    // });
+    // if (context.customersList) {
+    //   context.customersList.map((c) => {
+    //     if (c.id === customerId) {
+    //       name = c.name;
+    //     }
+    //   });
+    // }
 
-    // autoTable(doc, {
-    //   body: [
-    //     [
-    //       {
-    //         content: 'Products & Services',
-    //         styles: {
-    //           halign: 'left',
-    //           fontSize: 14,
-    //         },
-    //       },
-    //     ],
-    //   ],
-    //   theme: 'plain',
-    // });
+    // doc.text(`Customer's Name : ${name}`, 20, 20);
 
-    // autoTable(doc, {
-    //   head: [['Items', 'Category', 'Quantity', 'Price', 'Tax', 'Amount']],
-    //   body: [
-    //     ['Product or service name', 'Category', '2', '$450', '$50', '$1000'],
-    //     ['Product or service name', 'Category', '2', '$450', '$50', '$1000'],
-    //     ['Product or service name', 'Category', '2', '$450', '$50', '$1000'],
-    //     ['Product or service name', 'Category', '2', '$450', '$50', '$1000'],
-    //   ],
-    //   theme: 'striped',
-    //   headStyles: {
-    //     fillColor: '#343a40',
-    //   },
-    // });
+    // doc.autoTable(tableColumn, tableRows, { startY: 30 });
 
-    // autoTable(doc, {
-    //   body: [
-    //     [
-    //       {
-    //         content: 'Subtotal:',
-    //         styles: {
-    //           halign: 'right',
-    //         },
-    //       },
-    //       {
-    //         content: '$3600',
-    //         styles: {
-    //           halign: 'right',
-    //         },
-    //       },
-    //     ],
-    //     [
-    //       {
-    //         content: 'Total tax:',
-    //         styles: {
-    //           halign: 'right',
-    //         },
-    //       },
-    //       {
-    //         content: '$400',
-    //         styles: {
-    //           halign: 'right',
-    //         },
-    //       },
-    //     ],
-    //     [
-    //       {
-    //         content: 'Total amount:',
-    //         styles: {
-    //           halign: 'right',
-    //         },
-    //       },
-    //       {
-    //         content: '$4000',
-    //         styles: {
-    //           halign: 'right',
-    //         },
-    //       },
-    //     ],
-    //   ],
-    //   theme: 'plain',
-    // });
-
-    // autoTable(doc, {
-    //   body: [
-    //     [
-    //       {
-    //         content: 'Terms & notes',
-    //         styles: {
-    //           halign: 'left',
-    //           fontSize: 14,
-    //         },
-    //       },
-    //     ],
-    //     [
-    //       {
-    //         content:
-    //           'orem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia' +
-    //           'molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum' +
-    //           'numquam blanditiis harum quisquam eius sed odit fugiat iusto fuga praesentium',
-    //         styles: {
-    //           halign: 'left',
-    //         },
-    //       },
-    //     ],
-    //   ],
-    //   theme: 'plain',
-    // });
-
-    // autoTable(doc, {
-    //   body: [
-    //     [
-    //       {
-    //         content: 'This is a centered footer',
-    //         styles: {
-    //           halign: 'center',
-    //         },
-    //       },
-    //     ],
-    //   ],
-    //   theme: 'plain',
-    // });
-
-    // doc.save('invoice');
-
-    const doc = new jsPDF({
-      format: 'a5',
-      orientation: 'portrait',
-      unit: 'mm',
-    });
-
-    // define the columns we want and their titles
-    const tableColumn = [
-      'Date',
-      'Payment',
-      'Product',
-      'Carton',
-      'Qty / Ctn',
-      'Total Qty',
-      'Rate Each',
-      'Debit',
-      'Credit',
-      'Balance',
-    ];
-    // define an empty array of rows
-    const tableRows = [];
-
-    // for each ticket pass all its data into an array
-    const _date = dayjs(printDate).format('YYYY-MM-DD');
-
-    const filteredData = data.filter((item) => {
-      if (item.date === _date) {
-        return true;
-      }
-    });
-
-    // let filteredData = data;
-
-    filteredData.forEach((record) => {
-      const rate_each = record.rate_each.toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      });
-
-      const debit = record.debit.toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      });
-
-      const credit = record.credit.toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      });
-
-      const balance = record.balance.toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      });
-
-      const inArr = [
-        record.date,
-        record.payment,
-        record.product,
-        record.carton,
-        record.qty_ctn,
-        record.total_qty,
-        rate_each,
-        debit,
-        credit,
-        balance,
-      ];
-      // push each tickcet's info into a row
-      tableRows.push(inArr);
-    });
-
-    let name = '';
-
-    if (context.customersList) {
-      context.customersList.map((c) => {
-        if (c.id === customerId) {
-          name = c.name;
-        }
-      });
-    }
-
-    doc.text(`Customer's Name : ${name}`, 20, 20);
-
-    doc.autoTable(tableColumn, tableRows, { startY: 30 });
-
-    doc.save(`${_date}-${name}.pdf`);
+    // doc.save(`${_date}-${name}.pdf`);
   };
 
   // IPC Main listeners Customer Invoice
@@ -1354,7 +1168,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       <FloatButton
         tooltip="Print"
         style={{ right: 55, bottom: 15 }}
-        onClick={showModal}
+        onClick={showPrintModal}
         icon={<FilePdfOutlined />}
       />
       <FloatButton
