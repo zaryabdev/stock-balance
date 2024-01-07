@@ -134,7 +134,7 @@ export default function App() {
           getCurrentProducts={getCurrentProducts}
           getCurrentCustomers={getCurrentCustomers}
         />
-        {toggleSideBar ? (
+        {/* {toggleSideBar ? (
           <FloatButton
             tooltip="Hide sidebar"
             style={{ right: 95, bottom: 15 }}
@@ -152,7 +152,18 @@ export default function App() {
             icon={<DoubleRightOutlined />}
             onClick={() => hideSideBar()}
           />
-        )}
+        )} */}
+
+        <FloatButton
+          tooltip={`${toggleSideBar ? 'Hide sidebar' : 'Show sidebar'}`}
+          style={{ right: 95, bottom: 15 }}
+          type="default"
+          shape="circle"
+          icon={
+            toggleSideBar ? <DoubleLeftOutlined /> : <DoubleRightOutlined />
+          }
+          onClick={() => hideSideBar()}
+        />
       </ConfigProvider>
     </Context.Provider>
   );
