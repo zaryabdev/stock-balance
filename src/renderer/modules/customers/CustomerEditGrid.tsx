@@ -390,7 +390,6 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
               if (newValue[index].id === id) {
                 const currentRecord = newValue[index];
                 const { product } = currentRecord;
-                debugger;
                 console.log(currentVendorProducts);
                 if (currentVendorProducts) {
                   const currentProduct = currentVendorProducts[product];
@@ -523,7 +522,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       }
 
       // if (!product || product === 'null') {
-      //   debugger;
+      //   ;
       //   msg += 'product, ';
       //   valid = false;
       // }
@@ -878,10 +877,8 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
   };
 
   const print = () => {
-    debugger;
-
     const doc = new jsPDF({
-      format: 'a5',
+      format: 'a4',
       orientation: 'landscape',
       unit: 'mm',
     });
@@ -910,7 +907,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       ],
       theme: 'plain',
       styles: {
-        fillColor: '#343a40',
+        fillColor: '#393E46',
       },
     });
 
@@ -936,95 +933,153 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       theme: 'plain',
     });
 
-    const uuid = uuidv4();
+    const tableColumn = [
+      'Date',
+      'Payment',
+      'Product',
+      'Carton',
+      'Qty / Ctn',
+      'Total Qty',
+      'Rate Each',
+      'Debit',
+      'Credit',
+      'Balance',
+    ];
+    // define an empty array of rows
+    const tableRows = [];
 
-    doc.save(`${uuid} invoice`);
+    // for each ticket pass all its data into an array
+    const _date = dayjs(printDate).format('YYYY-MM-DD');
 
-    // const doc = new jsPDF({
-    //   format: 'a5',
-    //   orientation: 'portrait',
-    //   unit: 'mm',
-    // });
+    const filteredData = data.filter((item) => {
+      if (item.date === _date) {
+        return true;
+      }
+    });
 
-    // // define the columns we want and their titles
-    // const tableColumn = [
-    //   'Date',
-    //   'Payment',
-    //   'Product',
-    //   'Carton',
-    //   'Qty / Ctn',
-    //   'Total Qty',
-    //   'Rate Each',
-    //   'Debit',
-    //   'Credit',
-    //   'Balance',
-    // ];
-    // // define an empty array of rows
-    // const tableRows = [];
+    // let filteredData = data;
 
-    // // for each ticket pass all its data into an array
-    // const _date = dayjs(printDate).format('YYYY-MM-DD');
+    filteredData.forEach((record) => {
+      const rate_each = record.rate_each.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
 
-    // const filteredData = data.filter((item) => {
-    //   if (item.date === _date) {
-    //     return true;
-    //   }
-    // });
+      const debit = record.debit.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
 
-    // // let filteredData = data;
+      const credit = record.credit.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
 
-    // filteredData.forEach((record) => {
-    //   const rate_each = record.rate_each.toLocaleString(undefined, {
-    //     minimumFractionDigits: 2,
-    //     maximumFractionDigits: 2,
-    //   });
+      const balance = record.balance.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
 
-    //   const debit = record.debit.toLocaleString(undefined, {
-    //     minimumFractionDigits: 2,
-    //     maximumFractionDigits: 2,
-    //   });
+      const inArr = [
+        record.date,
+        record.payment,
+        record.product,
+        record.carton,
+        record.qty_ctn,
+        record.total_qty,
+        rate_each,
+        debit,
+        credit,
+        balance,
+      ];
+      // push each tickcet's info into a row
+      tableRows.push(inArr);
+    });
 
-    //   const credit = record.credit.toLocaleString(undefined, {
-    //     minimumFractionDigits: 2,
-    //     maximumFractionDigits: 2,
-    //   });
+    let name = '';
 
-    //   const balance = record.balance.toLocaleString(undefined, {
-    //     minimumFractionDigits: 2,
-    //     maximumFractionDigits: 2,
-    //   });
-
-    //   const inArr = [
-    //     record.date,
-    //     record.payment,
-    //     record.product,
-    //     record.carton,
-    //     record.qty_ctn,
-    //     record.total_qty,
-    //     rate_each,
-    //     debit,
-    //     credit,
-    //     balance,
-    //   ];
-    //   // push each tickcet's info into a row
-    //   tableRows.push(inArr);
-    // });
-
-    // let name = '';
-
-    // if (context.customersList) {
-    //   context.customersList.map((c) => {
-    //     if (c.id === customerId) {
-    //       name = c.name;
-    //     }
-    //   });
-    // }
+    if (context.customersList) {
+      context.customersList.map((c) => {
+        if (c.id === customerId) {
+          name = c.name;
+        }
+      });
+    }
 
     // doc.text(`Customer's Name : ${name}`, 20, 20);
 
     // doc.autoTable(tableColumn, tableRows, { startY: 30 });
+    autoTable(doc, {
+      head: [[...tableColumn]],
+      showHead: 'everyPage',
+      body: tableRows,
+      theme: 'striped',
+      styles: { overflow: 'linebreak', cellWidth: 'wrap', halign: 'right' },
+      columnStyles: {
+        0: { halign: 'left' },
+        1: { halign: 'left' },
+        2: { halign: 'left' },
+      },
+
+      headStyles: {
+        fillColor: '#606470',
+        halign: 'left',
+      },
+    });
+
+    autoTable(doc, {
+      body: [
+        [
+          {
+            content: 'Subtotal:',
+            styles: {
+              halign: 'right',
+            },
+          },
+          {
+            content: '$3600',
+            styles: {
+              halign: 'right',
+            },
+          },
+        ],
+        [
+          {
+            content: 'Total tax:',
+            styles: {
+              halign: 'right',
+            },
+          },
+          {
+            content: '$400',
+            styles: {
+              halign: 'right',
+            },
+          },
+        ],
+        [
+          {
+            content: 'Total amount:',
+            styles: {
+              halign: 'right',
+            },
+          },
+          {
+            content: '$4000',
+            styles: {
+              halign: 'right',
+            },
+          },
+        ],
+      ],
+      theme: 'plain',
+    });
 
     // doc.save(`${_date}-${name}.pdf`);
+
+    const uuid = uuidv4();
+
+    doc.save(`${uuid} invoice`);
   };
 
   // IPC Main listeners Customer Invoice
