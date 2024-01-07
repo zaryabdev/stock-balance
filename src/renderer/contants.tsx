@@ -31,5 +31,6 @@ export const MODE = {
 
 export const RECORD_TYPE = {
   none: '',
+  payment: 'Payment',
   previous_balance: 'Previous Balance',
 };

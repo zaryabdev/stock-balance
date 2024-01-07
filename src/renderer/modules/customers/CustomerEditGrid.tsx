@@ -220,7 +220,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       label: 'Payment',
       qty_ctn: 0,
       status: 'NONE',
-      value: RECORD_TYPE.none,
+      value: RECORD_TYPE.payment,
     },
     {
       customer_id: '',
@@ -240,7 +240,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
         const { value } = product;
         if (
           value !== RECORD_TYPE.previous_balance &&
-          value !== RECORD_TYPE.none
+          value !== RECORD_TYPE.payment
         ) {
           currentVendorProducts[value] = product;
         }
@@ -259,7 +259,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
         if (
           value !== RECORD_TYPE.previous_balance &&
-          value !== RECORD_TYPE.none
+          value !== RECORD_TYPE.payment
         ) {
           currentVendorProducts[value] = product;
         }
@@ -403,7 +403,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
                       currentRecord.credit = 0;
                       currentRecord.balance = currentRecord.debit;
                       currentRecord.state = STATE.updated;
-                    } else if (product === RECORD_TYPE.none) {
+                    } else if (product === RECORD_TYPE.payment) {
                       // currentRecord.payment = RECORD_TYPE;
                       currentRecord.qty_ctn = 0;
                       currentRecord.carton = 0;
@@ -413,7 +413,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
                       currentRecord.balance = currentRecord.credit;
                       currentRecord.state = STATE.updated;
                     } else {
-                      currentRecord.payment = RECORD_TYPE.none;
+                      currentRecord.payment = RECORD_TYPE.payment;
                       currentRecord.qty_ctn = currentProduct.qty_ctn;
                       currentRecord.total_qty =
                         currentRecord.carton * currentProduct.qty_ctn;
@@ -427,7 +427,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
                     }
                     newValue[index] = currentRecord;
                   } else {
-                    // currentRecord.payment = RECORD_TYPE.none;
+                    // currentRecord.payment = RECORD_TYPE.payment;
                     // currentRecord.qty_ctn = 0;
                     // currentRecord.carton = 0;
                     // currentRecord.total_qty = 0;
@@ -480,7 +480,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
         if (item.product === RECORD_TYPE.previous_balance) {
           item.balance = item.debit;
           _balance += item.balance;
-        } else if (item.product === RECORD_TYPE.none) {
+        } else if (item.product === RECORD_TYPE.payment) {
           item.balance = _balance - item.credit;
           _balance -= item.credit;
         } else {
