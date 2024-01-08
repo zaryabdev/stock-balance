@@ -21,13 +21,13 @@ import CustomerInvoicRepository from './repositories/customer-invoice-repo';
 import CustomerRepository from './repositories/customer-repo';
 import ProductRepository from './repositories/product-repo';
 // import StockRepository from './repositories/stock-repo';
-import BalanceRepository from './repositories/balance-repo';
+// import BalanceRepository from './repositories/balance-repo';
 
 const dao = new AppDAO('db.sqlite3');
 const customerRepo = new CustomerRepository(dao);
 const customerInvoiceRepo = new CustomerInvoicRepository(dao);
 // const stockRepo = new StockRepository(dao);
-const balanceRepo = new BalanceRepository(dao);
+// const balanceRepo = new BalanceRepository(dao);
 const productRepo = new ProductRepository(dao);
 
 const STATUS = {
@@ -38,7 +38,7 @@ const STATUS = {
 // stockRepo.createTable();
 customerRepo.createTable();
 productRepo.createTable();
-balanceRepo.createTable();
+// balanceRepo.createTable();
 customerInvoiceRepo.createTable();
 
 const store = new Store();
@@ -357,106 +357,107 @@ ipcMain.on('delete:customer', (event, data) => {
 
 //   stockRepo.deleteRecords(data, callbackFunction);
 // });
+
 // IPC listener - balance
-ipcMain.on('create:balance', (event, data) => {
-  console.log('Inside Main create:balance');
-  console.log(data);
-  const callbackFunction = (response, err) => {
-    // const webContents = event.sender;
-    // const win = BrowserWindow.fromWebContents(webContents);
-    console.log('callback function called!!');
-    if (err) {
-      console.log(err);
-    }
+// ipcMain.on('create:balance', (event, data) => {
+//   console.log('Inside Main create:balance');
+//   console.log(data);
+//   const callbackFunction = (response, err) => {
+//     // const webContents = event.sender;
+//     // const win = BrowserWindow.fromWebContents(webContents);
+//     console.log('callback function called!!');
+//     if (err) {
+//       console.log(err);
+//     }
 
-    if (response.status === STATUS.SUCCESS) {
-      console.log('respose was success');
-      // console.log(win);
-      event.reply('create:balance', response);
+//     if (response.status === STATUS.SUCCESS) {
+//       console.log('respose was success');
+//       // console.log(win);
+//       event.reply('create:balance', response);
 
-      // win.webContents.send('create:customer', response);
-    } else {
-      console.log(response.message);
-    }
-  };
+//       // win.webContents.send('create:customer', response);
+//     } else {
+//       console.log(response.message);
+//     }
+//   };
 
-  balanceRepo.create(data, callbackFunction);
-});
+//   balanceRepo.create(data, callbackFunction);
+// });
 
-ipcMain.on('update:balance', (event, data) => {
-  console.log('Inside Main update:balance');
-  console.log(data);
-  const callbackFunction = (response, err) => {
-    // const webContents = event.sender;
-    // const win = BrowserWindow.fromWebContents(webContents);
-    console.log('callback function called!!');
-    if (err) {
-      console.log(err);
-    }
+// ipcMain.on('update:balance', (event, data) => {
+//   console.log('Inside Main update:balance');
+//   console.log(data);
+//   const callbackFunction = (response, err) => {
+//     // const webContents = event.sender;
+//     // const win = BrowserWindow.fromWebContents(webContents);
+//     console.log('callback function called!!');
+//     if (err) {
+//       console.log(err);
+//     }
 
-    if (response.status === STATUS.SUCCESS) {
-      console.log('respose was success');
-      // console.log(win);
-      event.reply('update:balance-response', response);
+//     if (response.status === STATUS.SUCCESS) {
+//       console.log('respose was success');
+//       // console.log(win);
+//       event.reply('update:balance-response', response);
 
-      // win.webContents.send('create:balance', response);
-    } else {
-      console.log(response.message);
-    }
-  };
+//       // win.webContents.send('create:balance', response);
+//     } else {
+//       console.log(response.message);
+//     }
+//   };
 
-  balanceRepo.update(data, callbackFunction);
-});
+//   balanceRepo.update(data, callbackFunction);
+// });
 
-ipcMain.on('get:all:balance', (event, data) => {
-  console.log('Inside Main get:all:balance');
-  console.log(data);
-  const callbackFunction = (response, err) => {
-    // const webContents = event.sender;
-    // const win = BrowserWindow.fromWebContents(webContents);
-    console.log('callback function called!!');
-    if (err) {
-      console.log(err);
-    }
+// ipcMain.on('get:all:balance', (event, data) => {
+//   console.log('Inside Main get:all:balance');
+//   console.log(data);
+//   const callbackFunction = (response, err) => {
+//     // const webContents = event.sender;
+//     // const win = BrowserWindow.fromWebContents(webContents);
+//     console.log('callback function called!!');
+//     if (err) {
+//       console.log(err);
+//     }
 
-    if (response.status === STATUS.SUCCESS) {
-      console.log('respose was success');
-      // console.log(win);
-      event.reply('get:all:balance-response', response);
+//     if (response.status === STATUS.SUCCESS) {
+//       console.log('respose was success');
+//       // console.log(win);
+//       event.reply('get:all:balance-response', response);
 
-      // win.webContents.send('create:customer', response);
-    } else {
-      console.log(response.message);
-    }
-  };
+//       // win.webContents.send('create:customer', response);
+//     } else {
+//       console.log(response.message);
+//     }
+//   };
 
-  balanceRepo.getAll(data, callbackFunction);
-});
+//   balanceRepo.getAll(data, callbackFunction);
+// });
 
-ipcMain.on('delete:balance', (event, data) => {
-  console.log('Inside Main delete:balance');
-  console.log(data);
-  const callbackFunction = (response, err) => {
-    // const webContents = event.sender;
-    // const win = BrowserWindow.fromWebContents(webContents);
-    console.log('callback function called!! for delete');
-    if (err) {
-      console.log(err);
-    }
+// ipcMain.on('delete:balance', (event, data) => {
+//   console.log('Inside Main delete:balance');
+//   console.log(data);
+//   const callbackFunction = (response, err) => {
+//     // const webContents = event.sender;
+//     // const win = BrowserWindow.fromWebContents(webContents);
+//     console.log('callback function called!! for delete');
+//     if (err) {
+//       console.log(err);
+//     }
 
-    if (response.status === STATUS.SUCCESS) {
-      console.log('respose was success');
-      // console.log(win);
-      event.reply('delete:balance-response', response);
+//     if (response.status === STATUS.SUCCESS) {
+//       console.log('respose was success');
+//       // console.log(win);
+//       event.reply('delete:balance-response', response);
 
-      // win.webContents.send('create:customer', response);
-    } else {
-      console.log(response.message);
-    }
-  };
+//       // win.webContents.send('create:customer', response);
+//     } else {
+//       console.log(response.message);
+//     }
+//   };
 
-  balanceRepo.deleteRecords(data, callbackFunction);
-});
+//   balanceRepo.deleteRecords(data, callbackFunction);
+// });
 
 // IPC listener - customer-invoice
 ipcMain.on('create:customer-invoice', (event, data) => {
