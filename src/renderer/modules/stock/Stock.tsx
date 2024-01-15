@@ -379,7 +379,12 @@ const Stock: React.FC = ({ activeTab }) => {
       <Button type="primary" onClick={start} loading={loading}>
         Refresh Stock
       </Button>
-      <Table columns={columns} dataSource={data} />
+      <Table
+        columns={columns}
+        dataSource={data}
+        pagination={{ pageSize: 1000 }}
+        // scroll={{ y: 240 }}
+      />
     </div>
   );
 };

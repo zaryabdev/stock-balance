@@ -182,6 +182,7 @@ const List: React.FC = ({
           hideSelectAll: false,
           ...rowSelection,
         }}
+        pagination={{ pageSize: 1000 }}
         dataSource={data}
         onRow={(record, rowIndex) => {
           return {

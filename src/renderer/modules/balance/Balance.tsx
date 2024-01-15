@@ -600,6 +600,7 @@ const Balance: React.FC = ({ activeTab, customersList }) => {
         columns={balanceSheetColumns}
         dataSource={balanceSheetData}
         bordered
+        pagination={{ pageSize: 1000 }}
         pagination={false}
         title={() => 'Total Balance Sheet'}
         // footer={() => 'Footer'}
@@ -610,6 +611,7 @@ const Balance: React.FC = ({ activeTab, customersList }) => {
             style={{
               margin: 5,
             }}
+            pagination={{ pageSize: 1000 }}
             columns={columns}
             dataSource={customerData}
             bordered
@@ -622,6 +624,7 @@ const Balance: React.FC = ({ activeTab, customersList }) => {
             style={{
               margin: 5,
             }}
+            pagination={{ pageSize: 1000 }}
             columns={columns}
             dataSource={vendorData}
             bordered
