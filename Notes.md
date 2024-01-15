@@ -1,3 +1,9 @@
+# Critical Issues :
+
+- Current worth is not 0 even all stok is at 0
+  - Total Worth is 0 but stock is still available
+- Double ID gerations ( Add & Delete both )
+
 # Isssues :
 
 - When saving an empty record sql throws error FIXED
@@ -8,8 +14,19 @@
 - All filter not working
 - Add delete customers
 - Change action buttons
+- Convert pagination to infinite scroll
+- Why payment is empty ?
 
 # Features :
+
+- Show All stock sheet on print
+- Show date
+- Show Checkboxes
+- Add this information to Balnce Sheet and Invoice
+  - G#29 , 7 Star Plaza Abkari Road, New Anarkali, Lahore.
+  - 042-7112172
+  - 0300-9409063
+  - 0328-3700010
 
 ## Stock
 
