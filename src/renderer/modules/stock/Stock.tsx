@@ -95,16 +95,17 @@ const Stock: React.FC = ({ activeTab }) => {
       }
     });
 
-    // console.log(vendorStock);
-    // console.log(customerStock);
+    console.log(vendorStock);
+    console.log(customerStock);
 
     const newStock = [];
 
     try {
-      Object.keys(vendorStock).forEach(function (key, index) {
-        if (customerStock[key]) {
-          const itemInCurrentStock = vendorStock[key];
-          const itemInNewStock = customerStock[key];
+      Object.keys(customerStock).forEach(function (key, index) {
+        debugger;
+        if (vendorStock[key]) {
+          const itemInCurrentStock = customerStock[key];
+          const itemInNewStock = vendorStock[key];
 
           const newCarton = itemInCurrentStock.carton - itemInNewStock.carton;
           const newTotalQty =
@@ -129,6 +130,36 @@ const Stock: React.FC = ({ activeTab }) => {
     } catch (error) {
       console.error(error);
     }
+
+    // try {
+    //   Object.keys(vendorStock).forEach(function (key, index) {
+    //     if (customerStock[key]) {
+    //       const itemInCurrentStock = vendorStock[key];
+    //       const itemInNewStock = customerStock[key];
+
+    //       const newCarton = itemInCurrentStock.carton - itemInNewStock.carton;
+    //       const newTotalQty =
+    //         itemInCurrentStock.total_qty - itemInNewStock.total_qty;
+    //       itemInNewStock.carton = newCarton;
+    //       itemInNewStock.total_qty = newTotalQty;
+    //       itemInNewStock.current_rate = itemInCurrentStock.rate_each;
+
+    //       itemInNewStock.current_worth =
+    //         itemInCurrentStock.rate_each * itemInCurrentStock.total_qty;
+
+    //       newStock.push(itemInNewStock);
+    //     } else {
+    //       const itemInCurrentStock = vendorStock[key];
+    //       itemInCurrentStock.current_rate = itemInCurrentStock.rate_each;
+    //       itemInCurrentStock.current_worth =
+    //         itemInCurrentStock.rate_each * itemInCurrentStock.total_qty;
+
+    //       newStock.push(itemInCurrentStock);
+    //     }
+    //   });
+    // } catch (error) {
+    //   console.error(error);
+    // }
     setData(newStock);
     appContext.success(`Stocks and Balance Sheet updated.`);
   }, [allInvoices]);

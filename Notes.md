@@ -1,6 +1,6 @@
 # Critical Issues :
 
-- Current worth is not 0 even all stok is at 0
+- Current worth is not 0 even all stock is at 0
   - Total Worth is 0 but stock is still available
 - Double ID gerations ( Add & Delete both )
 
@@ -69,3 +69,10 @@
 
 https://dev.to/maxwelladn/build-a-pdf-invoice-template-using-only-typescript-and-jspdf-autotable-25gn
 https://marketsplash.com/tutorials/node-js/node-js-printing/
+
+# Unsorted
+
+- Sort by alphabetical order
+- By default open each grid at last scroll level
+- Payment make it free entry
+- Add date range to print
