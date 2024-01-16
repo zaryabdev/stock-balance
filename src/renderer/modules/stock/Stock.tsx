@@ -102,7 +102,6 @@ const Stock: React.FC = ({ activeTab }) => {
 
     try {
       Object.keys(vendorStock).forEach(function (key, index) {
-        debugger;
         if (customerStock[key]) {
           const itemInCurrentStock = vendorStock[key];
           const itemInNewStock = customerStock[key];

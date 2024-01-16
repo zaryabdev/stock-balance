@@ -1,7 +1,7 @@
 # Critical Issues :
 
-- Current worth is not 0 even all stock is at 0
-  - Total Worth is 0 but stock is still available
+- Current worth is not 0 even all stock is at 0 FIXED
+  - Total Worth is 0 but stock is still available FIXED
 - Double ID gerations ( Add & Delete both )
 
 # Isssues :
@@ -73,6 +73,10 @@ https://marketsplash.com/tutorials/node-js/node-js-printing/
 # Unsorted
 
 - Sort by alphabetical order
-- By default open each grid at last scroll level
+- By default open each grid at last scroll level FIXED
 - Payment make it free entry
 - Add date range to print
+
+## Walking Customer
+
+- Add module for walking customer
