@@ -322,7 +322,7 @@ const Balance: React.FC = ({ activeTab, customersList }) => {
           itemInNewStock.current_rate = itemInCurrentStock.rate_each;
 
           itemInNewStock.current_worth =
-            itemInCurrentStock.rate_each * itemInCurrentStock.total_qty;
+            itemInCurrentStock.rate_each * newTotalQty;
 
           newStock.push(itemInNewStock);
         } else {

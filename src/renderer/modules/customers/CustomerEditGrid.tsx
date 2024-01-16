@@ -35,6 +35,7 @@ import {
   CellProps,
   Column,
   DataSheetGrid,
+  DataSheetGridRef,
   checkboxColumn,
   floatColumn,
   intColumn,
@@ -168,6 +169,12 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [printDate, setPrintDate] = useState(currentDate);
+  const datasheetGridRef = useRef<DataSheetGridRef>(null);
+
+  const [data, setData] = useState<Row[]>([
+    //   // { ...initialState, id: uuidv4(), customer_id: customerId },
+  ]);
+  const [prevData, setPrevData] = useState(data);
 
   const initialState = {
     id: '',
@@ -186,6 +193,21 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
     balance: 0,
     current_balance: 0,
   };
+
+  const hasScrolled = useRef(false);
+
+  useEffect(() => {
+    if (!hasScrolled.current) {
+      const container = document.querySelector('.dsg-container');
+
+      if (data.length > 0 && container) {
+        let scrollPixels = data.length * 50;
+
+        container.scrollTo({ behavior: 'smooth', top: scrollPixels });
+        hasScrolled.current = true;
+      }
+    }
+  }, [data]);
 
   useEffect(() => {
     getAllRecordsById(customerId);
@@ -333,11 +355,6 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
     //   title: 'ID',
     // },
   ];
-
-  const [data, setData] = useState<Row[]>([
-    //   // { ...initialState, id: uuidv4(), customer_id: customerId },
-  ]);
-  const [prevData, setPrevData] = useState(data);
 
   const createdRowIds = useMemo(() => new Set(), []);
   const deletedRowIds = useMemo(() => new Set(), []);
@@ -1192,7 +1209,8 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       </center> */}
       <DataSheetGrid
         className=""
-        style={{ height: '400px' }}
+        ref={datasheetGridRef}
+        // style={{ height: '400px' }}
         value={data}
         columns={columns}
         createRow={() => ({
