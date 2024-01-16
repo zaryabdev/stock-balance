@@ -346,6 +346,8 @@ const Stock: React.FC = ({ activeTab }) => {
       title: 'Status',
       key: 'status',
       dataIndex: 'status',
+      sorter: (a, b) => a.total_qty - b.total_qty,
+      sortDirections: ['descend', 'ascend'],
       render: (_, { total_qty }) => (
         <Tag color={`${total_qty > 0 ? 'green' : 'red'}`} key={total_qty}>
           {`${total_qty > 0 ? 'In Stock' : 'Out of Stock'}`}

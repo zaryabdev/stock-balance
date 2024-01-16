@@ -49,6 +49,8 @@ import { v4 as uuidv4 } from 'uuid';
 import appContext from '../../AppContext';
 import { RECORD_TYPE, SOURCE, STATE, STATUS, TYPE } from '../../contants';
 
+const { RangePicker } = DatePicker;
+
 type Choice = {
   label: string;
   value: string;
@@ -161,6 +163,8 @@ const selectColumn = (
     options.choices.find((choice) => choice.label === value)?.value ?? null,
 });
 
+const dateFormat = 'YYYY-MM-DD';
+
 function CustomerEditGrid({ customerId, type, getCurrentStock }) {
   const context = useContext(appContext);
   const formatedDate = format(new Date(), 'yyyy-MM-dd');
@@ -201,7 +205,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       const container = document.querySelector('.dsg-container');
 
       if (data.length > 0 && container) {
-        let scrollPixels = data.length * 50;
+        const scrollPixels = data.length * 50;
 
         container.scrollTo({ behavior: 'smooth', top: scrollPixels });
         hasScrolled.current = true;
@@ -900,6 +904,16 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       unit: 'mm',
     });
 
+    let name = '';
+
+    if (context.customersList) {
+      context.customersList.map((c) => {
+        if (c.id === customerId) {
+          name = c.name;
+        }
+      });
+    }
+
     // Header
     autoTable(doc, {
       body: [
@@ -932,16 +946,16 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       body: [
         [
           {
-            content:
-              'Billed to:' + '\nCustomer One' + '\nBilling Address line 1',
+            content: `Billed to:\n${name}\n`,
             styles: {
               halign: 'left',
             },
           },
           {
             content:
-              `Invoice Type: Vendor` +
-              `\nDate:${formatedDate}\nInvoice number : 123456`,
+              `\nDate : ${formatedDate}\nTelephone : 042-7112172\nCell Phone : 0300-9409063\n0328-3700010` +
+              `Address : G#29 , 7 Star Plaza Abkari Road, New Anarkali, Lahore.`,
+
             styles: {
               halign: 'right',
             },
@@ -1014,16 +1028,6 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       tableRows.push(inArr);
     });
 
-    let name = '';
-
-    if (context.customersList) {
-      context.customersList.map((c) => {
-        if (c.id === customerId) {
-          name = c.name;
-        }
-      });
-    }
-
     // doc.text(`Customer's Name : ${name}`, 20, 20);
 
     // doc.autoTable(tableColumn, tableRows, { startY: 30 });
@@ -1045,59 +1049,58 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       },
     });
 
-    autoTable(doc, {
-      body: [
-        [
-          {
-            content: 'Subtotal:',
-            styles: {
-              halign: 'right',
-            },
-          },
-          {
-            content: '$3600',
-            styles: {
-              halign: 'right',
-            },
-          },
-        ],
-        [
-          {
-            content: 'Total tax:',
-            styles: {
-              halign: 'right',
-            },
-          },
-          {
-            content: '$400',
-            styles: {
-              halign: 'right',
-            },
-          },
-        ],
-        [
-          {
-            content: 'Total amount:',
-            styles: {
-              halign: 'right',
-            },
-          },
-          {
-            content: '$4000',
-            styles: {
-              halign: 'right',
-            },
-          },
-        ],
-      ],
-      theme: 'plain',
-    });
+    // autoTable(doc, {
+    //   body: [
+    //     [
+    //       {
+    //         content: 'Subtotal:',
+    //         styles: {
+    //           halign: 'right',
+    //         },
+    //       },
+    //       {
+    //         content: '$3600',
+    //         styles: {
+    //           halign: 'right',
+    //         },
+    //       },
+    //     ],
+    //     [
+    //       {
+    //         content: 'Total tax:',
+    //         styles: {
+    //           halign: 'right',
+    //         },
+    //       },
+    //       {
+    //         content: '$400',
+    //         styles: {
+    //           halign: 'right',
+    //         },
+    //       },
+    //     ],
+    //     [
+    //       {
+    //         content: 'Total amount:',
+    //         styles: {
+    //           halign: 'right',
+    //         },
+    //       },
+    //       {
+    //         content: '$4000',
+    //         styles: {
+    //           halign: 'right',
+    //         },
+    //       },
+    //     ],
+    //   ],
+    //   theme: 'plain',
+    // });
 
-    // doc.save(`${_date}-${name}.pdf`);
+    // const uuid = uuidv4();
 
-    const uuid = uuidv4();
-
-    doc.save(`${uuid} invoice`);
+    doc.save(`${_date}-${name}.pdf`);
+    // doc.save(`${uuid} invoice`);
   };
 
   // IPC Main listeners Customer Invoice
@@ -1260,6 +1263,11 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
         onCancel={handleCancel}
       >
         <DatePicker defaultValue={printDate} onChange={onDateChange} />
+        <hr />
+        <RangePicker
+          defaultValue={[printDate, printDate]}
+          format={dateFormat}
+        />
       </Modal>
     </div>
   );
