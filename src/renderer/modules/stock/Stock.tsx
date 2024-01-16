@@ -258,6 +258,8 @@ const Stock: React.FC = ({ activeTab }) => {
       key: 'product',
       width: '30%',
       ...getColumnSearchProps('product'),
+      sorter: (a, b) => a.product.length - b.product.length,
+      sortDirections: ['descend', 'ascend'],
       render: (_, { total_qty, product }) => (
         <Text type={`${total_qty > 0 ? '' : 'danger'}`} key={total_qty}>
           {product}
@@ -383,7 +385,7 @@ const Stock: React.FC = ({ activeTab }) => {
         columns={columns}
         dataSource={data}
         pagination={{ pageSize: 1000 }}
-        // scroll={{ y: 240 }}
+        scroll={{ y: 440 }}
       />
     </div>
   );

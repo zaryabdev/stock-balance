@@ -480,7 +480,8 @@ const Balance: React.FC = ({ activeTab, customersList }) => {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-
+      sorter: (a, b) => a.name.length - b.name.length,
+      sortDirections: ['descend', 'ascend'],
       ...getColumnSearchProps('name'),
     },
     {
@@ -509,6 +510,7 @@ const Balance: React.FC = ({ activeTab, customersList }) => {
       dataIndex: 'vendor',
       align: 'right',
       key: 'vendor',
+
       render: (_, { vendor }) => (
         <Text type={`${vendor > 0 ? '' : 'danger'}`} key={vendor}>
           {/* {vendor} */}
@@ -602,7 +604,7 @@ const Balance: React.FC = ({ activeTab, customersList }) => {
         bordered
         pagination={{ pageSize: 1000 }}
         pagination={false}
-        title={() => 'Total Balance Sheet'}
+        // title={() => 'Total Balance Sheet'}
         // footer={() => 'Footer'}
       />
       <Row>
@@ -613,6 +615,7 @@ const Balance: React.FC = ({ activeTab, customersList }) => {
             }}
             pagination={{ pageSize: 1000 }}
             columns={columns}
+            scroll={{ y: 360 }}
             dataSource={customerData}
             bordered
             title={() => "Customer's Balance Sheet"}
@@ -627,6 +630,7 @@ const Balance: React.FC = ({ activeTab, customersList }) => {
             pagination={{ pageSize: 1000 }}
             columns={columns}
             dataSource={vendorData}
+            scroll={{ y: 360 }}
             bordered
             title={() => "Vendor's Balance Sheet"}
             // footer={() => 'Footer'}

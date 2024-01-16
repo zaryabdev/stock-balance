@@ -151,6 +151,8 @@ const List: React.FC = ({
       dataIndex: 'name',
       key: 'name',
       ellipsis: true,
+      sorter: (a, b) => a.name.length - b.name.length,
+      sortDirections: ['descend', 'ascend'],
       width: '100%',
       ...getColumnSearchProps('name'),
     },
@@ -182,6 +184,7 @@ const List: React.FC = ({
           hideSelectAll: false,
           ...rowSelection,
         }}
+        scroll={{ y: 500 }}
         pagination={{ pageSize: 1000 }}
         dataSource={data}
         onRow={(record, rowIndex) => {
