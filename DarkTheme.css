@@ -1,0 +1,72 @@
+:root {
+  --darkreader-bg--dsg-border-color: #242728;
+  --darkreader-bg--dsg-cell-background-color: #181a1b;
+  --darkreader-text--dsg-header-text-color: #afa89d;
+  --darkreader-border--dsg-border-color: #363a3d;
+}
+
+body {
+  margin: 0 !important;
+  overflow-x: hidden;
+  background-color: black;
+}
+
+.dsg-container {
+  height: 500px !important;
+  background-image: initial !important;
+  background-color: rgb(24, 26, 27) !important;
+  border-left-color: initial !important;
+  border-top-color: initial !important;
+  color: rgb(232, 230, 227) !important;
+}
+
+.dsg-row {
+  box-shadow: 0 1px var(--darkreader-bg--dsg-border-color) inset !important;
+}
+
+.dsg-cell,
+.dsg-row {
+  background: var(--darkreader-bg--dsg-cell-background-color) !important;
+}
+
+.dsg-cell-gutter,
+.dsg-cell-header {
+  box-shadow: none;
+  color: var(--darkreader-text--dsg-header-text-color);
+}
+
+.dsg-cell {
+  border-bottom-color: initial;
+  border-right-color: initial;
+  box-shadow: 1px 1px var(--darkreader-bg--dsg-border-color);
+}
+
+.dsg-cell,
+.dsg-scrollable-view {
+  border: 1px solid var(--darkreader-border--dsg-border-color);
+}
+
+.dsg-cell,
+.dsg-row {
+  background: var(--darkreader-bg--dsg-cell-background-color);
+}
+
+html,
+body,
+input,
+textarea,
+select,
+button {
+  border-color: #736b5e;
+  color: #e8e6e3;
+}
+
+html,
+body,
+input,
+textarea,
+select,
+button,
+dialog {
+  background-color: #181a1b;
+}

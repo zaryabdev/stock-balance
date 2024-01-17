@@ -18,7 +18,7 @@
 - Change action buttons position [DONE]
 - Convert pagination to infinite scroll [DONE]
 - Why payment is empty ?
-- Convert Dollar Sign to PKR
+- Convert Dollar Sign to PKR in Report
 
 # Features :
 
