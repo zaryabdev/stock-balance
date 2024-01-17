@@ -64,6 +64,7 @@ const initialCustomerState = {
   phone: '',
   address: '',
   type: TYPE.customer,
+  status: TYPE.unarchived,
 };
 
 // Editable Table
@@ -312,28 +313,70 @@ function Customers({
   }, []);
 
   useEffect(() => {
+    let filteredList = [];
+
     if (selectedOption === TYPE.both) {
-      const nonArchived = appContext.customersList.filter(
-        (item) => item.status !== TYPE.archived,
-      );
+      const nonArchivedOrDeleted = appContext.customersList.filter((item) => {
+        let bool = true;
 
-      appContext.setFilteredCustomersList(nonArchived);
+        if (
+          item.status &&
+          item.status !== TYPE.deleted &&
+          item.status !== TYPE.unarchived
+        ) {
+          bool = false;
+        }
+
+        return bool;
+      });
+
+      filteredList = [...nonArchivedOrDeleted];
     }
-    if (selectedOption === TYPE.archived) {
-      const archived = appContext.customersList.filter(
-        (item) => item.status === TYPE.archived,
-      );
-      appContext.setFilteredCustomersList(archived);
-    } else {
-      const nonArchived = appContext.customersList.filter(
-        (item) => item.status !== TYPE.archived,
-      );
 
-      const filteredList = nonArchived.filter(
+    if (selectedOption === TYPE.customer || selectedOption === TYPE.vendor) {
+      const nonArchivedOrDeleted = appContext.customersList.filter((item) => {
+        let bool = true;
+
+        if (
+          item.status &&
+          item.status !== TYPE.deleted &&
+          item.status !== TYPE.unarchived
+        ) {
+          bool = false;
+        }
+
+        return bool;
+      });
+
+      const _filteredList = nonArchivedOrDeleted.filter(
         (item) => item.type === selectedOption,
       );
-      appContext.setFilteredCustomersList(filteredList);
+
+      filteredList = [..._filteredList];
     }
+
+    if (selectedOption === TYPE.archived) {
+      const nonDeletedOrUnArchived = appContext.customersList.filter((item) => {
+        let bool = true;
+
+        if (
+          item.status &&
+          item.status !== TYPE.deleted &&
+          item.status !== TYPE.unarchived &&
+          item.status === TYPE.archived
+        ) {
+          bool = true;
+        } else {
+          bool = false;
+        }
+
+        return bool;
+      });
+
+      filteredList = [...nonDeletedOrUnArchived];
+    }
+
+    appContext.setFilteredCustomersList(filteredList);
   }, [selectedOption]);
 
   const handleSelectionChange = ({ target: { value } }: RadioChangeEvent) => {
@@ -702,6 +745,7 @@ function Customers({
       onOk() {
         const data = [...selectedRowKeys];
         window.electron.ipcRenderer.archiveCustomers(data);
+        setSelectedRowKeys([]);
         // window.electron.ipcRenderer.deleteCustomers(data);
       },
       onCancel() {
@@ -736,6 +780,7 @@ function Customers({
       onOk() {
         const data = [...selectedRowKeys];
         window.electron.ipcRenderer.unarchiveCustomers(data);
+        setSelectedRowKeys([]);
         // window.electron.ipcRenderer.deleteCustomers(data);
       },
       onCancel() {
@@ -943,6 +988,7 @@ function Customers({
   window.electron.ipcRenderer.on('archive:customer-response', (response) => {
     console.log('archive:customer-response reponse came back');
     console.log(response);
+    appContext.success('Archived Successfully.');
 
     if (response.status === STATUS.FAILED) {
       console.log(response.message);
@@ -968,6 +1014,7 @@ function Customers({
   window.electron.ipcRenderer.on('unarchive:customer-response', (response) => {
     console.log('unarchive:customer-response reponse came back');
     console.log(response);
+    appContext.success('Unarchived Successfully.');
 
     if (response.status === STATUS.FAILED) {
       console.log(response.message);

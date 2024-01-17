@@ -13,7 +13,7 @@
   - Payment const change it from none to payment
 - Custoemrs List Filters
   - All filter not working
-  - Un-archive not working
+  - Un-archive not working [FIXED]
   - Add delete customers
 - Change action buttons position [DONE]
 - Convert pagination to infinite scroll [DONE]
