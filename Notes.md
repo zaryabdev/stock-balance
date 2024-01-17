@@ -4,6 +4,7 @@
   - Total Worth is 0 but stock is still available [FIXED]
 - Double ID gerations ( Add & Delete both )
 - Payment make it free entry
+- Optimize Application
 
 # Isssues :
 
@@ -12,7 +13,7 @@
 - Defalut Value not changing for payment & previous balance
   - Payment const change it from none to payment
 - Custoemrs List Filters
-  - All filter not working
+  - All filter not working [FIXED]
   - Un-archive not working [FIXED]
   - Add delete customers
 - Change action buttons position [DONE]
@@ -72,6 +73,8 @@
 
 https://dev.to/maxwelladn/build-a-pdf-invoice-template-using-only-typescript-and-jspdf-autotable-25gn
 https://marketsplash.com/tutorials/node-js/node-js-printing/
+
+https://blog.logrocket.com/advanced-electron-js-architecture/
 
 # Unsorted
 

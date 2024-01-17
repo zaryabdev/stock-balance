@@ -38,6 +38,7 @@ import {
 } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
+import { useRenderCount } from '@uidotdev/usehooks';
 import context from '../../AppContext';
 import { STATE, STATUS, TYPE } from '../../contants';
 import CustomersList from './CustomersList';
@@ -146,6 +147,8 @@ function Customers({
   const isEditing = (record: Item) => record.key === editingKey;
 
   const [customerUUID, setCustomerUUID] = useState('NEW');
+
+  const renderCount = useRenderCount();
 
   useEffect(() => {
     getAllProductList();
@@ -1054,6 +1057,10 @@ function Customers({
 
   return (
     <div>
+      <center>
+        {' '}
+        <p>Render Count: {renderCount}</p>
+      </center>
       <Row gutter={[8, 8]}>
         <Col
           className={`${

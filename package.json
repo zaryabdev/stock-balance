@@ -101,6 +101,7 @@
     }
   },
   "dependencies": {
+    "@uidotdev/usehooks": "^2.4.1",
     "antd": "^5.13.1",
     "date-fns": "^2.30.0",
     "dayjs": "^1.11.10",

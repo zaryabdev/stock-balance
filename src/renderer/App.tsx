@@ -70,8 +70,9 @@ export default function App() {
     console.log('getCurrentProducts()');
     window.electron.ipcRenderer.getAllProduct({});
   }
+
   function getCurrentCustomers(params: type) {
-    console.log('getCurrentCustomers()');
+    console.log('getAllCustomers()');
     window.electron.ipcRenderer.getAllCustomers({});
   }
 
