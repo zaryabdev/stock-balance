@@ -72,7 +72,8 @@ https://marketsplash.com/tutorials/node-js/node-js-printing/
 
 # Unsorted
 
-- Sort by alphabetical order
+- Sort by alphabetical order [ DONE ]
+  - List, Stock, Balance
 - By default open each grid at last scroll level FIXED
 - Payment make it free entry
 - Add date range to print
