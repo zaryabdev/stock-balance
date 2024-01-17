@@ -14,7 +14,7 @@ interface DataType {
 
 type DataIndex = keyof DataType;
 
-const List: React.FC = ({
+const CustomersList: React.FC = ({
   data,
   selectedRowKeys,
   handleSelectedRowKeys,
@@ -207,4 +207,4 @@ const List: React.FC = ({
   );
 };
 
-export default List;
+export default CustomersList;

@@ -17,6 +17,7 @@ export const STATE = {
 
 export const TYPE = {
   customer: 'CUSTOMER',
+  walkingCustomer: 'WALKING_CUSTOMER',
   vendor: 'VENDOR',
   both: 'BOTH',
   deleted: 'DELETED',

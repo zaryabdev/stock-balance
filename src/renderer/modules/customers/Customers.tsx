@@ -40,16 +40,18 @@ import { v4 as uuidv4 } from 'uuid';
 
 import context from '../../AppContext';
 import { STATE, STATUS, TYPE } from '../../contants';
-import List from './List';
+import CustomersList from './CustomersList';
 import MultiCustomersTabs from './MultiCustomersTabs';
 
 const { confirm } = Modal;
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
+// { label: 'Walking', value: TYPE.walkingCustomer },
+// { label: 'Customers & Vendors', value: TYPE.both },
+
 const options = [
   { label: 'Customers', value: TYPE.customer },
   { label: 'Venders', value: TYPE.vendor },
-  // { label: 'Customers & Vendors', value: TYPE.both },
   { label: 'All', value: TYPE.both },
   { label: <InboxOutlined />, value: TYPE.archived },
   { label: <DeleteOutlined />, value: TYPE.deleted },
@@ -75,15 +77,6 @@ interface Item {
 }
 
 const initialProducts: Item[] = [];
-
-// for (let i = 0; i < 1; i++) {
-//   originData.push({
-//     key: i.toString(),
-//     name: `Edward ${i}`,
-//     age: 32,
-//     address: `London Park no. ${i}`,
-//   });
-// }
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
   editing: boolean;
@@ -972,6 +965,31 @@ function Customers({
     }
   });
 
+  window.electron.ipcRenderer.on('unarchive:customer-response', (response) => {
+    console.log('unarchive:customer-response reponse came back');
+    console.log(response);
+
+    if (response.status === STATUS.FAILED) {
+      console.log(response.message);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('response of unarchive:customer-response ');
+      console.log(response);
+      getCurrentCustomers({});
+
+      // const newActiveKey = uuidv4();
+      // const newPanes = [...tabs];
+      // newPanes.push({
+      //   label: 'New Tab',
+      //   children: <CustomerEditGrid label={`Tab ID =  ${newActiveKey}`} />,
+      //   key: newActiveKey,
+      // });
+      // setTabs(newPanes);
+      // setActiveTabKey(newActiveKey);
+    }
+  });
+
   window.electron.ipcRenderer.on('get:all:product-response', (response) => {
     console.log('get:all:product-response reponse came back');
     console.log(response);
@@ -1116,7 +1134,7 @@ function Customers({
                 Hide List
               </Button>
             </div>
-            <List
+            <CustomersList
               data={appContext.filteredCustomersList}
               option={selectedOption}
               selectedRowKeys={selectedRowKeys}
