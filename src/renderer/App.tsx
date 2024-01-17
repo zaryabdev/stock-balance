@@ -155,7 +155,7 @@ export default function App() {
         )} */}
 
         <FloatButton
-          tooltip={`${toggleSideBar ? 'Hide sidebar' : 'Show sidebar'}`}
+          // tooltip={`${toggleSideBar ? 'Hide sidebar' : 'Show sidebar'}`}
           style={{ right: 95, bottom: 15 }}
           type="default"
           shape="circle"

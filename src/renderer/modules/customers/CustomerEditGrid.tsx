@@ -1243,13 +1243,13 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       {/* <FloatButton tooltip="Undo" onClick={cancel} icon={<UndoOutlined />} /> */}
 
       <FloatButton
-        tooltip="Print"
+        // tooltip="Print"
         style={{ right: 55, bottom: 15 }}
         onClick={showPrintModal}
         icon={<FilePdfOutlined />}
       />
       <FloatButton
-        tooltip={`Save ${customerId}`}
+        // tooltip={`Save ${customerId}`}
         style={{ right: 15, bottom: 15 }}
         onClick={commit}
         type="primary"

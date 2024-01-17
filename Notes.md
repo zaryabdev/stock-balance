@@ -1,21 +1,24 @@
 # Critical Issues :
 
-- Current worth is not 0 even all stock is at 0 FIXED
-  - Total Worth is 0 but stock is still available FIXED
+- Current worth is not 0 even all stock is at 0 [FIXED]
+  - Total Worth is 0 but stock is still available [FIXED]
 - Double ID gerations ( Add & Delete both )
+- Payment make it free entry
 
 # Isssues :
 
-- When saving an empty record sql throws error FIXED
-- Un-archive not working
-- Floating number in print DONE
+- When saving an empty record sql throws error [FIXED]
+- Floating number in print [DONE]
 - Defalut Value not changing for payment & previous balance
-- payment const change it from none to payment
-- All filter not working
-- Add delete customers
-- Change action buttons
-- Convert pagination to infinite scroll
+  - Payment const change it from none to payment
+- Custoemrs List Filters
+  - All filter not working
+  - Un-archive not working
+  - Add delete customers
+- Change action buttons position [DONE]
+- Convert pagination to infinite scroll [DONE]
 - Why payment is empty ?
+- Convert Dollar Sign to PKR
 
 # Features :
 
@@ -72,10 +75,9 @@ https://marketsplash.com/tutorials/node-js/node-js-printing/
 
 # Unsorted
 
-- Sort by alphabetical order [ DONE ]
+- Sort by alphabetical order [DONE]
   - List, Stock, Balance
-- By default open each grid at last scroll level FIXED
-- Payment make it free entry
+- By default open each grid at last scroll level [ISSUE]
 - Add date range to print
 
 ## Walking Customer

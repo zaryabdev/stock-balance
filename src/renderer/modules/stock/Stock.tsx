@@ -23,12 +23,32 @@ interface DataType {
 
 type DataIndex = keyof DataType;
 
+const TotalWorth = ({ currentStockWorth = 0 }) => {
+  return (
+    <span
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'end',
+        paddingRight: '20px',
+      }}
+    >
+      <b>Total Worth : </b>&nbsp;
+      {currentStockWorth.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}
+    </span>
+  );
+};
+
 const Stock: React.FC = ({ activeTab }) => {
   const appContext = useContext(context);
 
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const [data, setData] = useState<DataType[]>([]);
+  const [currentStockWorth, setCurrentStockWorth] = useState(0);
   const [allInvoices, setAllInvoices] = useState([]);
   const searchInput = useRef<InputRef>(null);
   const [loading, setLoading] = useState(false);
@@ -129,6 +149,15 @@ const Stock: React.FC = ({ activeTab }) => {
     } catch (error) {
       console.error(error);
     }
+
+    let _stockWorth = 0;
+
+    newStock.map((_stock) => {
+      _stockWorth += _stock.current_worth;
+    });
+
+    setCurrentStockWorth(_stockWorth);
+
     setData(newStock);
     appContext.success(`Stocks and Balance Sheet updated.`);
   }, [allInvoices]);
@@ -267,6 +296,18 @@ const Stock: React.FC = ({ activeTab }) => {
       ),
     },
     {
+      title: 'Status',
+      key: 'status',
+      dataIndex: 'status',
+      sorter: (a, b) => a.total_qty - b.total_qty,
+      sortDirections: ['descend', 'ascend'],
+      render: (_, { total_qty }) => (
+        <Tag color={`${total_qty > 0 ? 'green' : 'red'}`} key={total_qty}>
+          {`${total_qty > 0 ? 'In Stock' : 'Out of Stock'}`}
+        </Tag>
+      ),
+    },
+    {
       title: 'Carton',
       align: 'right',
       dataIndex: 'carton',
@@ -296,7 +337,7 @@ const Stock: React.FC = ({ activeTab }) => {
       align: 'right',
       dataIndex: 'total_qty',
       key: 'total_qty',
-      ...getColumnSearchProps('total_qty'),
+      // ...getColumnSearchProps('total_qty'),
       sorter: (a, b) => a.total_qty - b.total_qty,
       sortDirections: ['descend', 'ascend'],
       render: (_, { total_qty }) => (
@@ -310,7 +351,7 @@ const Stock: React.FC = ({ activeTab }) => {
       align: 'right',
       dataIndex: 'current_rate',
       key: 'current_rate',
-      ...getColumnSearchProps('current_rate'),
+      // ...getColumnSearchProps('current_rate'),
       sorter: (a, b) => a.current_rate - b.current_rate,
       sortDirections: ['descend', 'ascend'],
       render: (_, { total_qty, current_rate }) => (
@@ -328,7 +369,7 @@ const Stock: React.FC = ({ activeTab }) => {
       align: 'right',
       dataIndex: 'current_worth',
       key: 'current_worth',
-      ...getColumnSearchProps('current_worth'),
+      // ...getColumnSearchProps('current_worth'),
       sorter: (a, b) => a.current_worth - b.current_worth,
       sortDirections: ['descend', 'ascend'],
       render: (_, { total_qty, current_worth }) => (
@@ -340,18 +381,6 @@ const Stock: React.FC = ({ activeTab }) => {
             maximumFractionDigits: 2,
           })}
         </Text>
-      ),
-    },
-    {
-      title: 'Status',
-      key: 'status',
-      dataIndex: 'status',
-      sorter: (a, b) => a.total_qty - b.total_qty,
-      sortDirections: ['descend', 'ascend'],
-      render: (_, { total_qty }) => (
-        <Tag color={`${total_qty > 0 ? 'green' : 'red'}`} key={total_qty}>
-          {`${total_qty > 0 ? 'In Stock' : 'Out of Stock'}`}
-        </Tag>
       ),
     },
   ];
@@ -388,6 +417,7 @@ const Stock: React.FC = ({ activeTab }) => {
         dataSource={data}
         pagination={{ pageSize: 1000 }}
         scroll={{ y: 440 }}
+        footer={() => <TotalWorth currentStockWorth={currentStockWorth} />}
       />
     </div>
   );
