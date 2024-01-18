@@ -1,20 +1,21 @@
 # Critical Issues :
 
+- Optimize Application
+  - Too many messages and events, responses 😟
 - Current worth is not 0 even all stock is at 0 [FIXED]
   - Total Worth is 0 but stock is still available [FIXED]
 - Double ID gerations ( Add & Delete both )
-- Payment make it free entry
-- Optimize Application
+- Defalut Value not changing for payment & previous balance
+  - Payment make it free entry
+  - Payment const change it from none to payment
 
 # Isssues :
 
 - When saving an empty record sql throws error [FIXED]
 - Floating number in print [DONE]
-- Defalut Value not changing for payment & previous balance
-  - Payment const change it from none to payment
-- Custoemrs List Filters
+- Customers List Filters
   - All filter not working [FIXED]
-  - Un-archive not working [FIXED]
+  - Un-archive not working [ISSUE] [triggers too many events]
   - Add delete customers
 - Change action buttons position [DONE]
 - Convert pagination to infinite scroll [DONE]
@@ -80,7 +81,7 @@ https://blog.logrocket.com/advanced-electron-js-architecture/
 
 - Sort by alphabetical order [DONE]
   - List, Stock, Balance
-- By default open each grid at last scroll level [ISSUE]
+- By default open each grid at last scroll level [ISSUE] [Onlu works on first tab]
 - Add date range to print
 
 ## Walking Customer
