@@ -23,7 +23,7 @@ interface DataType {
 
 type DataIndex = keyof DataType;
 
-const TotalWorth = ({ currentStockWorth = 0 }) => {
+function TotalWorth({ currentStockWorth = 0 }) {
   return (
     <span
       style={{
@@ -40,7 +40,7 @@ const TotalWorth = ({ currentStockWorth = 0 }) => {
       })}
     </span>
   );
-};
+}
 
 const Stock: React.FC = ({ activeTab }) => {
   const appContext = useContext(context);
@@ -317,7 +317,7 @@ const Stock: React.FC = ({ activeTab }) => {
           {carton}
         </Text>
       ),
-      // width: '20%',
+      width: '8%',
       //   ...getColumnSearchProps('carton'),
     },
     {
@@ -415,7 +415,7 @@ const Stock: React.FC = ({ activeTab }) => {
       <Table
         columns={columns}
         dataSource={data}
-        pagination={{ pageSize: 1000 }}
+        pagination={{ hideOnSinglePage: true, pageSize: 1000 }}
         scroll={{ y: 440 }}
         footer={() => <TotalWorth currentStockWorth={currentStockWorth} />}
       />

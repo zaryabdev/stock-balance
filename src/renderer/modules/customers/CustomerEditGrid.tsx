@@ -1130,7 +1130,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
     const docTitle =
       startDate === endDate
         ? `${startDate}-${name}.pdf`
-        : `${startDate}${endDate}-${name}.pdf`;
+        : `${startDate}-${endDate}-${name}.pdf`;
 
     doc.save(docTitle);
     // doc.save(`${uuid} invoice`);

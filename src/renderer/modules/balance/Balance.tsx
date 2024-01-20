@@ -596,6 +596,37 @@ const Balance: React.FC = ({ activeTab, customersList }) => {
       <Button type="primary" onClick={start} loading={loading}>
         Refresh Balance
       </Button>
+
+      <Row>
+        <Col span={12}>
+          <Table
+            style={{
+              margin: 5,
+            }}
+            pagination={{ hideOnSinglePage: true, pageSize: 1000 }}
+            columns={columns}
+            scroll={{ y: 360 }}
+            dataSource={customerData}
+            bordered
+            title={() => <b>Customer's Balance Sheet</b>}
+            // footer={() => 'Footer'}
+          />
+        </Col>
+        <Col span={12}>
+          <Table
+            style={{
+              margin: 5,
+            }}
+            pagination={{ hideOnSinglePage: true, pageSize: 1000 }}
+            columns={columns}
+            dataSource={vendorData}
+            scroll={{ y: 360 }}
+            bordered
+            title={() => <b>Vendor's Balance Sheet</b>}
+            // footer={() => 'Footer'}
+          />
+        </Col>
+      </Row>
       <Table
         style={{
           margin: 5,
@@ -603,41 +634,11 @@ const Balance: React.FC = ({ activeTab, customersList }) => {
         columns={balanceSheetColumns}
         dataSource={balanceSheetData}
         bordered
-        pagination={{ pageSize: 1000 }}
+        pagination={{ hideOnSinglePage: true, pageSize: 1000 }}
         pagination={false}
         // title={() => 'Total Balance Sheet'}
         // footer={() => 'Footer'}
       />
-      <Row>
-        <Col span={12}>
-          <Table
-            style={{
-              margin: 5,
-            }}
-            pagination={{ pageSize: 1000 }}
-            columns={columns}
-            scroll={{ y: 360 }}
-            dataSource={customerData}
-            bordered
-            title={() => "Customer's Balance Sheet"}
-            // footer={() => 'Footer'}
-          />
-        </Col>
-        <Col span={12}>
-          <Table
-            style={{
-              margin: 5,
-            }}
-            pagination={{ pageSize: 1000 }}
-            columns={columns}
-            dataSource={vendorData}
-            scroll={{ y: 360 }}
-            bordered
-            title={() => "Vendor's Balance Sheet"}
-            // footer={() => 'Footer'}
-          />
-        </Col>
-      </Row>
     </div>
   );
 };
