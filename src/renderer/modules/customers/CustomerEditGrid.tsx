@@ -1268,9 +1268,9 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
   return (
     <div className="">
-      <center>
+      {/* <center>
         <code>{JSON.stringify(minMaxRecordDates)}</code>
-      </center>
+      </center> */}
       <DataSheetGrid
         className=""
         ref={datasheetGridRef}

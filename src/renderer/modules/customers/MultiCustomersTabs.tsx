@@ -15,6 +15,7 @@ import { ExclamationCircleFilled } from '@ant-design/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import Balance from '../balance/Balance';
+import Dashboard from '../dashboard/Dashboard';
 import Stock from '../stock/Stock';
 import CustomerEditGrid from './CustomerEditGrid';
 
@@ -36,8 +37,14 @@ function MultiCustomerTabs({
   selectedCutomersToLoad = [],
   getCurrentStock,
 }) {
-  const [activeTabKey, setActiveTabKey] = useState('STOCK');
+  const [activeTabKey, setActiveTabKey] = useState('DASHBOARD');
   const [tabs, setTabs] = useState([
+    {
+      label: 'Dashboard',
+      children: <Dashboard activeTab={activeTabKey} />,
+      key: 'DASHBOARD',
+      closable: false,
+    },
     {
       label: 'Stock',
       children: <Stock activeTab={activeTabKey} />,

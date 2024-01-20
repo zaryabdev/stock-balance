@@ -185,8 +185,8 @@ const CustomersList: React.FC = ({
           hideSelectAll: false,
           ...rowSelection,
         }}
-        scroll={{ y: 500 }}
-        pagination={{ pageSize: 1000 }}
+        scroll={{ y: 550 }}
+        pagination={{ hideOnSinglePage: true, pageSize: 1000 }}
         dataSource={data}
         onRow={(record, rowIndex) => {
           return {

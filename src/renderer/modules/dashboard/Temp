@@ -16,18 +16,27 @@ interface DataType {
   balance: number;
 }
 
+interface TotalBalanceSheetDataType {
+  vendor: string;
+  customer: number;
+  current_worth: number;
+  stock_worth: number;
+}
+
 type DataIndex = keyof DataType;
 
-const Balance: React.FC = ({}) => {
+const Dashboard: React.FC = ({ activeTab, customersList }) => {
   const appContext = useContext(context);
-
+  console.log(appContext.customersList);
   const [allInvoices, setAllInvoices] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const [searchCustoemrText, setCustomerSearchText] = useState('');
   const [searchedCustomerColumn, setSearchedCustomerColumn] = useState('');
   const [customerData, setCustomerData] = useState<DataType[]>([]);
-  const [balanceSheetData, setBalanceSheetData] = useState({});
+  const [balanceSheetData, setBalanceSheetData] = useState<
+    TotalBalanceSheetDataType[]
+  >([]);
   const searchCustomerInput = useRef<InputRef>(null);
 
   const [searchVendorText, setVendorSearchText] = useState('');
@@ -336,12 +345,14 @@ const Balance: React.FC = ({}) => {
       _stockWorth += _stock.current_worth;
     });
 
-    setBalanceSheetData({
-      vendor: vendorBalance,
-      customer: customerBalance,
-      current_worth: worth,
-      stock_worth: _stockWorth,
-    });
+    setBalanceSheetData([
+      {
+        vendor: vendorBalance,
+        customer: customerBalance,
+        current_worth: worth,
+        stock_worth: _stockWorth,
+      },
+    ]);
 
     // appContext.success(`Balance sheet updated.`);
   }, [allInvoices, appContext.customersList]);
@@ -494,6 +505,70 @@ const Balance: React.FC = ({}) => {
     },
   ];
 
+  const balanceSheetColumns: ColumnsType<TotalBalanceSheetDataType> = [
+    {
+      title: 'Vendor',
+      dataIndex: 'vendor',
+      align: 'right',
+      key: 'vendor',
+
+      render: (_, { vendor }) => (
+        <Text type={`${vendor > 0 ? '' : 'danger'}`} key={vendor}>
+          {/* {vendor} */}
+          {vendor.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}
+        </Text>
+      ),
+    },
+    {
+      title: 'Customer',
+      dataIndex: 'customer',
+      key: 'customer',
+      align: 'right',
+      render: (_, { customer }) => (
+        <Text type={`${customer > 0 ? '' : 'danger'}`} key={customer}>
+          {/* {customer} */}
+          {customer.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}
+        </Text>
+      ),
+    },
+    {
+      title: 'Total Balance',
+      dataIndex: 'current_worth',
+      key: 'current_worth',
+      align: 'right',
+      render: (_, { current_worth }) => (
+        <Text type={`${current_worth > 0 ? '' : 'danger'}`} key={current_worth}>
+          {/* {current_worth} */}
+          {current_worth.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}
+        </Text>
+      ),
+    },
+    {
+      title: 'Stock Worth',
+      dataIndex: 'stock_worth',
+      align: 'right',
+      key: 'stock_worth',
+      render: (_, { stock_worth }) => (
+        <Text type={`${stock_worth > 0 ? '' : 'danger'}`} key={stock_worth}>
+          {/* {stock_worth} */}
+          {stock_worth.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}
+        </Text>
+      ),
+    },
+  ];
+
   window.electron.ipcRenderer.on(
     'get:all:customer-invoices-response',
     (response) => {
@@ -530,13 +605,11 @@ const Balance: React.FC = ({}) => {
             }}
             pagination={{ hideOnSinglePage: true, pageSize: 1000 }}
             columns={columns}
-            scroll={{ y: 400 }}
+            scroll={{ y: 360 }}
             dataSource={customerData}
             bordered
             title={() => <b>Customer's Balance Sheet</b>}
-            footer={() => (
-              <TotalBalance currentStockWorth={balanceSheetData.customer} />
-            )}
+            // footer={() => 'Footer'}
           />
         </Col>
         <Col span={12}>
@@ -547,36 +620,27 @@ const Balance: React.FC = ({}) => {
             pagination={{ hideOnSinglePage: true, pageSize: 1000 }}
             columns={columns}
             dataSource={vendorData}
-            scroll={{ y: 400 }}
+            scroll={{ y: 360 }}
             bordered
             title={() => <b>Vendor's Balance Sheet</b>}
-            footer={() => (
-              <TotalBalance currentStockWorth={balanceSheetData.vendor} />
-            )}
+            // footer={() => 'Footer'}
           />
         </Col>
       </Row>
+      <Table
+        style={{
+          margin: 5,
+        }}
+        columns={balanceSheetColumns}
+        dataSource={balanceSheetData}
+        bordered
+        pagination={{ hideOnSinglePage: true, pageSize: 1000 }}
+        pagination={false}
+        // title={() => 'Total Balance Sheet'}
+        // footer={() => 'Footer'}
+      />
     </div>
   );
 };
 
-function TotalBalance({ currentStockWorth = 0 }) {
-  return (
-    <span
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'end',
-        paddingRight: '20px',
-      }}
-    >
-      <b>Total Balance : </b>&nbsp;
-      {currentStockWorth.toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      })}
-    </span>
-  );
-}
-
-export default Balance;
+export default Dashboard;

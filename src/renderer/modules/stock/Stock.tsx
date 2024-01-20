@@ -23,25 +23,6 @@ interface DataType {
 
 type DataIndex = keyof DataType;
 
-function TotalWorth({ currentStockWorth = 0 }) {
-  return (
-    <span
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'end',
-        paddingRight: '20px',
-      }}
-    >
-      <b>Total Worth : </b>&nbsp;
-      {currentStockWorth.toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      })}
-    </span>
-  );
-}
-
 const Stock: React.FC = ({ activeTab }) => {
   const appContext = useContext(context);
 
@@ -422,5 +403,24 @@ const Stock: React.FC = ({ activeTab }) => {
     </div>
   );
 };
+
+function TotalWorth({ currentStockWorth = 0 }) {
+  return (
+    <span
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'end',
+        paddingRight: '20px',
+      }}
+    >
+      <b>Total Worth : </b>&nbsp;
+      {currentStockWorth.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}
+    </span>
+  );
+}
 
 export default Stock;

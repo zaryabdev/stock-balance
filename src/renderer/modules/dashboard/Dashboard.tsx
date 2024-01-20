@@ -1,6 +1,16 @@
-import { SearchOutlined } from '@ant-design/icons';
+import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
 import type { InputRef } from 'antd';
-import { Button, Col, Input, Row, Space, Table, Typography } from 'antd';
+import {
+  Button,
+  Card,
+  Col,
+  Input,
+  Row,
+  Space,
+  Statistic,
+  Table,
+  Typography,
+} from 'antd';
 import type { ColumnType, ColumnsType } from 'antd/es/table';
 import type { FilterConfirmProps } from 'antd/es/table/interface';
 import React, { useContext, useEffect, useRef, useState } from 'react';
@@ -18,8 +28,9 @@ interface DataType {
 
 type DataIndex = keyof DataType;
 
-const Balance: React.FC = ({}) => {
+const Dashboard: React.FC = ({ activeTab, customersList }) => {
   const appContext = useContext(context);
+  console.log(appContext.customersList);
 
   const [allInvoices, setAllInvoices] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -27,7 +38,12 @@ const Balance: React.FC = ({}) => {
   const [searchCustoemrText, setCustomerSearchText] = useState('');
   const [searchedCustomerColumn, setSearchedCustomerColumn] = useState('');
   const [customerData, setCustomerData] = useState<DataType[]>([]);
-  const [balanceSheetData, setBalanceSheetData] = useState({});
+  const [balanceSheetData, setBalanceSheetData] = useState({
+    vendor: 0,
+    customer: 0,
+    current_worth: 0,
+    stock_worth: 0,
+  });
   const searchCustomerInput = useRef<InputRef>(null);
 
   const [searchVendorText, setVendorSearchText] = useState('');
@@ -38,88 +54,8 @@ const Balance: React.FC = ({}) => {
   useEffect(() => {
     getAllRecords();
   }, []);
-  // useEffect(() => {
-  //   const id = setInterval(() => {
-  //     console.log(`getAllRecords()`);
-  //     getAllRecords();
-  //   }, 10000);
-
-  //   return () => {
-  //     clearInterval(id);
-  //   };
-  // }, []);
 
   useEffect(() => {
-    // const vendorStock = {};
-    // const customerStock = {};
-
-    // allInvoices.map((item) => {
-    //   const { type, product } = item;
-    //   if (type === TYPE.vendor) {
-    //     if (
-    //       product !== RECORD_TYPE.previous_balance &&
-    //       product !== RECORD_TYPE.none
-    //     ) {
-    //       if (vendorStock[product]) {
-    //         const currentStockItem = vendorStock[product];
-    //         const newStockItem = { ...item };
-    //         const newCarton = currentStockItem.carton + newStockItem.carton;
-    //         const newTotalQty =
-    //           currentStockItem.total_qty + newStockItem.total_qty;
-    //         newStockItem.total_qty = newTotalQty;
-    //         newStockItem.carton = newCarton;
-    //         vendorStock[product] = { ...newStockItem };
-    //       } else {
-    //         vendorStock[product] = { ...item };
-    //       }
-    //     }
-    //   }
-
-    //   if (type === TYPE.customer) {
-    //     if (
-    //       product !== RECORD_TYPE.previous_balance &&
-    //       product !== RECORD_TYPE.none
-    //     ) {
-    //       if (customerStock[product]) {
-    //         const currentStockItem = customerStock[product];
-    //         const newStockItem = { ...item };
-    //         const newCarton = currentStockItem.carton + newStockItem.carton;
-    //         const newTotalQty =
-    //           currentStockItem.total_qty + newStockItem.total_qty;
-    //         newStockItem.total_qty = newTotalQty;
-    //         newStockItem.carton = newCarton;
-    //         customerStock[product] = { ...newStockItem };
-    //       } else {
-    //         customerStock[product] = { ...item };
-    //       }
-    //     }
-    //   }
-    // });
-    // console.log(vendorStock);
-    // console.log(customerStock);
-    // const newStock = [];
-
-    // try {
-    //   Object.keys(vendorStock).forEach(function (key, index) {
-    //     if (customerStock[key]) {
-    //       const itemInCurrentStock = vendorStock[key];
-    //       const itemInNewStock = customerStock[key];
-
-    //       const newCarton = itemInCurrentStock.carton - itemInNewStock.carton;
-    //       const newTotalQty =
-    //         itemInCurrentStock.total_qty - itemInNewStock.total_qty;
-    //       itemInNewStock.carton = newCarton;
-    //       itemInNewStock.total_qty = newTotalQty;
-
-    //       newStock.push(itemInNewStock);
-    //     } else {
-    //       newStock.push(vendorStock[key]);
-    //     }
-    //   });
-    // } catch (error) {
-    //   console.error(error);
-    // }
-    // setCustomerData(newStock);
     const customerBalanceMap = {};
     const vendorBalanceMap = {};
 
@@ -358,142 +294,6 @@ const Balance: React.FC = ({}) => {
     window.electron.ipcRenderer.getAllCustomersInvoice({});
   }
 
-  const handleSearch = (
-    selectedKeys: string[],
-    confirm: (param?: FilterConfirmProps) => void,
-    dataIndex: DataIndex,
-  ) => {
-    confirm();
-    setCustomerSearchText(selectedKeys[0]);
-    setSearchedCustomerColumn(dataIndex);
-  };
-
-  const handleReset = (clearFilters: () => void) => {
-    clearFilters();
-    setCustomerSearchText('');
-  };
-
-  const getColumnSearchProps = (
-    dataIndex: DataIndex,
-  ): ColumnType<DataType> => ({
-    filterDropdown: ({
-      setSelectedKeys,
-      selectedKeys,
-      confirm,
-      clearFilters,
-      close,
-    }) => (
-      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
-        <Input
-          ref={searchCustomerInput}
-          placeholder={`Search ${dataIndex}`}
-          value={selectedKeys[0]}
-          onChange={(e) =>
-            setSelectedKeys(e.target.value ? [e.target.value] : [])
-          }
-          onPressEnter={() =>
-            handleSearch(selectedKeys as string[], confirm, dataIndex)
-          }
-          style={{ marginBottom: 8, display: 'block' }}
-        />
-        <Space>
-          <Button
-            type="primary"
-            onClick={() =>
-              handleSearch(selectedKeys as string[], confirm, dataIndex)
-            }
-            icon={<SearchOutlined />}
-            size="small"
-            style={{ width: 90 }}
-          >
-            Search
-          </Button>
-          <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
-            size="small"
-            style={{ width: 90 }}
-          >
-            Reset
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              confirm({ closeDropdown: false });
-              setCustomerSearchText((selectedKeys as string[])[0]);
-              setSearchedCustomerColumn(dataIndex);
-            }}
-          >
-            Filter
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              close();
-            }}
-          >
-            close
-          </Button>
-        </Space>
-      </div>
-    ),
-    filterIcon: (filtered: boolean) => (
-      <SearchOutlined style={{ color: filtered ? '#1677ff' : undefined }} />
-    ),
-    onFilter: (value, record) =>
-      record[dataIndex]
-        .toString()
-        .toLowerCase()
-        .includes((value as string).toLowerCase()),
-    onFilterDropdownOpenChange: (visible) => {
-      if (visible) {
-        setTimeout(() => searchCustomerInput.current?.select(), 100);
-      }
-    },
-    render: (text) =>
-      searchedCustomerColumn === dataIndex ? (
-        <Highlighter
-          highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
-          searchWords={[searchCustoemrText]}
-          autoEscape
-          textToHighlight={text ? text.toString() : ''}
-        />
-      ) : (
-        text
-      ),
-  });
-
-  const columns: ColumnsType<DataType> = [
-    {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-      defaultSortOrder: 'ascend',
-      sorter: (a, b) => a.name.localeCompare(b.name),
-      sortDirections: ['descend', 'ascend'],
-      ...getColumnSearchProps('name'),
-    },
-    {
-      title: 'Balance',
-      dataIndex: 'balance',
-      key: 'balance',
-      ...getColumnSearchProps('balance'),
-      sorter: (a, b) => a.balance - b.balance,
-      sortDirections: ['descend', 'ascend'],
-      align: 'right',
-      render: (_, { balance }) => (
-        <Text type={`${balance > 0 ? '' : 'danger'}`} key={balance}>
-          {/* {balance} */}
-          {balance.toLocaleString(undefined, {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}
-        </Text>
-      ),
-    },
-  ];
-
   window.electron.ipcRenderer.on(
     'get:all:customer-invoices-response',
     (response) => {
@@ -519,64 +319,131 @@ const Balance: React.FC = ({}) => {
       }}
     >
       <Button type="primary" onClick={start} loading={loading}>
-        Refresh Balance
+        Refresh Statistics
       </Button>
 
-      <Row>
-        <Col span={12}>
-          <Table
-            style={{
-              margin: 5,
-            }}
-            pagination={{ hideOnSinglePage: true, pageSize: 1000 }}
-            columns={columns}
-            scroll={{ y: 400 }}
-            dataSource={customerData}
-            bordered
-            title={() => <b>Customer's Balance Sheet</b>}
-            footer={() => (
-              <TotalBalance currentStockWorth={balanceSheetData.customer} />
-            )}
-          />
+      <Row gutter={16}>
+        <Col span={6}>
+          <Card bordered>
+            <Statistic
+              title="Customer's Balance"
+              value={balanceSheetData.customer}
+              precision={2}
+              valueStyle={{
+                color: `${
+                  balanceSheetData.customer > 0 ? '#3f8600' : '#cf1322'
+                }`,
+              }}
+              prefix={
+                balanceSheetData.customer > 0 ? (
+                  <ArrowUpOutlined />
+                ) : (
+                  <ArrowDownOutlined />
+                )
+              }
+              suffix={
+                <span
+                  style={{
+                    fontSize: 'small',
+                  }}
+                >
+                  PKR
+                </span>
+              }
+            />
+          </Card>
         </Col>
-        <Col span={12}>
-          <Table
-            style={{
-              margin: 5,
-            }}
-            pagination={{ hideOnSinglePage: true, pageSize: 1000 }}
-            columns={columns}
-            dataSource={vendorData}
-            scroll={{ y: 400 }}
-            bordered
-            title={() => <b>Vendor's Balance Sheet</b>}
-            footer={() => (
-              <TotalBalance currentStockWorth={balanceSheetData.vendor} />
-            )}
-          />
+        <Col span={6}>
+          <Card bordered>
+            <Statistic
+              title="Vendor's Balance"
+              value={balanceSheetData.vendor}
+              precision={2}
+              valueStyle={{
+                color: `${balanceSheetData.vendor > 0 ? '#3f8600' : '#cf1322'}`,
+              }}
+              prefix={
+                balanceSheetData.vendor > 0 ? (
+                  <ArrowUpOutlined />
+                ) : (
+                  <ArrowDownOutlined />
+                )
+              }
+              suffix={
+                <span
+                  style={{
+                    fontSize: 'small',
+                  }}
+                >
+                  PKR
+                </span>
+              }
+            />
+          </Card>
+        </Col>
+        <Col span={6}>
+          <Card bordered>
+            <Statistic
+              title="Current Worth"
+              value={balanceSheetData.current_worth}
+              precision={2}
+              valueStyle={{
+                color: `${
+                  balanceSheetData.current_worth > 0 ? '#3f8600' : '#cf1322'
+                }`,
+              }}
+              prefix={
+                balanceSheetData.current_worth > 0 ? (
+                  <ArrowUpOutlined />
+                ) : (
+                  <ArrowDownOutlined />
+                )
+              }
+              suffix={
+                <span
+                  style={{
+                    fontSize: 'small',
+                  }}
+                >
+                  PKR
+                </span>
+              }
+            />
+          </Card>
+        </Col>
+        <Col span={6}>
+          <Card bordered>
+            <Statistic
+              title="Stock Worth"
+              value={balanceSheetData.stock_worth}
+              precision={2}
+              valueStyle={{
+                color: `${
+                  balanceSheetData.stock_worth > 0 ? '#3f8600' : '#cf1322'
+                }`,
+              }}
+              prefix={
+                balanceSheetData.stock_worth > 0 ? (
+                  <ArrowUpOutlined />
+                ) : (
+                  <ArrowDownOutlined />
+                )
+              }
+              suffix={
+                <span
+                  style={{
+                    fontSize: 'small',
+                  }}
+                >
+                  PKR
+                </span>
+              }
+            />
+          </Card>
         </Col>
       </Row>
     </div>
   );
 };
 
-function TotalBalance({ currentStockWorth = 0 }) {
-  return (
-    <span
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'end',
-        paddingRight: '20px',
-      }}
-    >
-      <b>Total Balance : </b>&nbsp;
-      {currentStockWorth.toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      })}
-    </span>
-  );
-}
-
-export default Balance;
+export default Dashboard;
