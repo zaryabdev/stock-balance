@@ -390,7 +390,7 @@ const Stock: React.FC = ({ activeTab }) => {
         margin: 10,
       }}
     >
-      <Button type="primary" onClick={start} loading={loading}>
+      <Button type="default" onClick={start} loading={loading}>
         Refresh Stock
       </Button>
       <Table

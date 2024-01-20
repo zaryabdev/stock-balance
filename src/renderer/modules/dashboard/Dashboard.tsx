@@ -318,7 +318,7 @@ const Dashboard: React.FC = ({ activeTab, customersList }) => {
         margin: 10,
       }}
     >
-      <Button type="primary" onClick={start} loading={loading}>
+      <Button type="default" onClick={start} loading={loading}>
         Refresh Statistics
       </Button>
 
