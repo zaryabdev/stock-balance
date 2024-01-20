@@ -149,6 +149,12 @@ const electronHandler = {
     once(channel: MEDIA_CHANNELS, func: (...args: unknown[]) => void) {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
     },
+    removeAllListeners(
+      channel: MEDIA_CHANNELS,
+      func: (...args: unknown[]) => void,
+    ) {
+      ipcRenderer.removeAllListeners(channel);
+    },
   },
   store: {
     get(key: any) {

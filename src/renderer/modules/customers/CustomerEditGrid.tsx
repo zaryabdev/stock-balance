@@ -4,8 +4,6 @@ import {
   SaveOutlined,
   UndoOutlined,
 } from '@ant-design/icons';
-import dayjs from 'dayjs';
-
 import type { DatePickerProps } from 'antd';
 import {
   Avatar,
@@ -17,6 +15,10 @@ import {
   Row,
 } from 'antd';
 import { format } from 'date-fns';
+import dayjs from 'dayjs';
+import isBetween from 'dayjs/plugin/isBetween';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import Fuse from 'fuse.js';
 import jsPDF from 'jspdf';
 
@@ -48,6 +50,10 @@ import Select, { GroupBase, SelectInstance } from 'react-select';
 import { v4 as uuidv4 } from 'uuid';
 import appContext from '../../AppContext';
 import { RECORD_TYPE, SOURCE, STATE, STATUS, TYPE } from '../../contants';
+
+dayjs.extend(isBetween);
+dayjs.extend(isSameOrBefore);
+dayjs.extend(isSameOrAfter);
 
 const { RangePicker } = DatePicker;
 
@@ -172,12 +178,17 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
   const [currentBalance, setCurrentBalance] = useState(0);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [printDate, setPrintDate] = useState(currentDate);
+  const [printDate, setPrintDate] = useState([currentDate, currentDate]);
   const datasheetGridRef = useRef<DataSheetGridRef>(null);
 
   const [data, setData] = useState<Row[]>([
     //   // { ...initialState, id: uuidv4(), customer_id: customerId },
   ]);
+
+  const [minMaxRecordDates, setMinMaxRecordDates] = useState({
+    minDate: '',
+    maxDate: '',
+  });
   const [prevData, setPrevData] = useState(data);
 
   const initialState = {
@@ -235,8 +246,22 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
   };
 
   const onDateChange: DatePickerProps['onChange'] = (date, dateString) => {
-    console.log(date, dateString);
     setPrintDate(date);
+  };
+
+  const disabledDate = (current) => {
+    if (current) {
+      const between = current.isBetween(
+        minMaxRecordDates.minDate,
+        minMaxRecordDates.maxDate,
+        'day',
+        '[]',
+      );
+
+      return !between;
+    }
+
+    return false;
   };
 
   let productsToShow = [
@@ -979,12 +1004,15 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
     ];
     // define an empty array of rows
     const tableRows = [];
-
     // for each ticket pass all its data into an array
-    const _date = dayjs(printDate).format('YYYY-MM-DD');
+    const startDate = dayjs(printDate[0]).format('YYYY-MM-DD');
+    const endDate = dayjs(printDate[1]).format('YYYY-MM-DD');
 
     const filteredData = data.filter((item) => {
-      if (item.date === _date) {
+      // dayjs('2010-10-20').isBetween('2010-10-19', dayjs('2010-10-25'), 'year');
+
+      const _date = item.date;
+      if (dayjs(_date).isBetween(startDate, endDate, 'day', '[]')) {
         return true;
       }
     });
@@ -1099,7 +1127,12 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
     // const uuid = uuidv4();
 
-    doc.save(`${_date}-${name}.pdf`);
+    const docTitle =
+      startDate === endDate
+        ? `${startDate}-${name}.pdf`
+        : `${startDate}${endDate}-${name}.pdf`;
+
+    doc.save(docTitle);
     // doc.save(`${uuid} invoice`);
   };
 
@@ -1153,7 +1186,35 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
         // console.log(response);
         // ;
         if (response.meta.id === customerId) {
-          setData(response.data);
+          const _data = response.data;
+          let maxDate = '1947-08-14';
+          let minDate = '3000-01-01';
+
+          _data.map((item) => {
+            if (dayjs(item.date).isSameOrBefore(maxDate)) {
+              console.log('isSameOrBefore');
+            } else {
+              maxDate = item.date;
+            }
+
+            if (dayjs(item.date).isSameOrAfter(minDate)) {
+              console.log('isSameOrAfter');
+            } else {
+              minDate = item.date;
+            }
+          });
+
+          if (_data.length > 0) {
+            setMinMaxRecordDates({ minDate, maxDate });
+
+            // const formatedDate = format(maxDate, 'yyyy-MM-dd');
+
+            const dateToSelectByDefault = dayjs(maxDate, 'YYYY-MM-DD');
+
+            console.log([dateToSelectByDefault, dateToSelectByDefault]);
+            setPrintDate([dateToSelectByDefault, dateToSelectByDefault]);
+            setData(_data);
+          }
         }
       }
     },
@@ -1207,9 +1268,9 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
   return (
     <div className="">
-      {/* <center>
-        <code>{currentBalance}</code>
-      </center> */}
+      <center>
+        <code>{JSON.stringify(minMaxRecordDates)}</code>
+      </center>
       <DataSheetGrid
         className=""
         ref={datasheetGridRef}
@@ -1257,16 +1318,16 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       />
 
       <Modal
-        title="Basic Modal"
+        title="Print Reports"
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
       >
-        <DatePicker defaultValue={printDate} onChange={onDateChange} />
-        <hr />
         <RangePicker
-          defaultValue={[printDate, printDate]}
+          defaultValue={printDate}
           format={dateFormat}
+          onChange={onDateChange}
+          disabledDate={disabledDate}
         />
       </Modal>
     </div>

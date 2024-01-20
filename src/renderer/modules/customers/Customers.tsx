@@ -1057,10 +1057,6 @@ function Customers({
 
   return (
     <div>
-      <center>
-        {' '}
-        <p>Render Count: {renderCount}</p>
-      </center>
       <Row gutter={[8, 8]}>
         <Col
           className={`${

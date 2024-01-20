@@ -27,6 +27,7 @@
 - Show All stock sheet on print
 - Show date
 - Show Checkboxes
+- Al Madina Traders
 - Add this information to Balnce Sheet and Invoice
   - G#29 , 7 Star Plaza Abkari Road, New Anarkali, Lahore.
   - 042-7112172

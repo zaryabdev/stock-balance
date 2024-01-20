@@ -16,19 +16,19 @@ import React, { useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import Balance from '../balance/Balance';
 import Stock from '../stock/Stock';
-// import CustomerEditGrid from './CustomerEditGrid';
+import CustomerEditGrid from './CustomerEditGrid';
 
-const CustomerEditGrid: FC = ({ customerId, type }) => {
-  return (
-    <div>
-      <center>
-        <h1>
-          {customerId} - {type}
-        </h1>
-      </center>
-    </div>
-  );
-};
+// const CustomerEditGrid: FC = ({ customerId, type }) => {
+//   return (
+//     <div>
+//       <center>
+//         <h1>
+//           {customerId} - {type}
+//         </h1>
+//       </center>
+//     </div>
+//   );
+// };
 const { confirm } = Modal;
 
 function MultiCustomerTabs({
