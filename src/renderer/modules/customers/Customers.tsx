@@ -41,7 +41,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { useRenderCount } from '@uidotdev/usehooks';
 import context from '../../AppContext';
-import { STATE, STATUS, TYPE } from '../../contants';
+import { STATE, STATUS, TYPE, TYPE_COLOR_PALLETE } from '../../contants';
 import CustomersList from './CustomersList';
 import MultiCustomersTabs from './MultiCustomersTabs';
 
@@ -55,7 +55,7 @@ const options = [
   {
     label: (
       <Space>
-        <Badge color="cyan" />
+        <Badge color={`${TYPE_COLOR_PALLETE[TYPE.customer]}`} />
         Regular
       </Space>
     ),
@@ -64,7 +64,7 @@ const options = [
   {
     label: (
       <Space>
-        <Badge color="gold" />
+        <Badge color={`${TYPE_COLOR_PALLETE[TYPE.walkingCustomer]}`} />
         Walking
       </Space>
     ),
@@ -86,7 +86,7 @@ const options = [
   {
     label: (
       <Space>
-        <Badge status="default" />
+        <Badge color="rgb(128, 128, 128)" />
         <InboxOutlined />
       </Space>
     ),

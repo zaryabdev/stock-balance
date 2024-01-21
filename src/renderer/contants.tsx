@@ -35,3 +35,11 @@ export const RECORD_TYPE = {
   payment: 'Payment',
   previous_balance: 'Previous Balance',
 };
+
+export const TYPE_COLOR_PALLETE = {
+  CUSTOMER: 'cyan',
+  WALKING_CUSTOMER: 'gold',
+  VENDOR: '',
+  DELETED: '',
+  ARCHIVED: '',
+};
