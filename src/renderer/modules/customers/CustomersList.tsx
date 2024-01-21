@@ -123,7 +123,7 @@ const CustomersList: React.FC = ({
           textToHighlight={text ? text.toString() : ''}
         />
       ) : (
-        <Badge color="rgb(45, 183, 245)" text={text} />
+        <Badge color="cyan" text={text} />
       ),
   });
 

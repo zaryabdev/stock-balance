@@ -10,6 +10,7 @@ import {
 import type { RadioChangeEvent } from 'antd';
 import {
   Avatar,
+  Badge,
   Button,
   Col,
   Descriptions,
@@ -51,11 +52,55 @@ type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 // { label: 'Customers & Vendors', value: TYPE.both },
 
 const options = [
-  { label: 'Customers', value: TYPE.customer },
-  { label: 'Venders', value: TYPE.vendor },
-  { label: 'All', value: TYPE.both },
-  { label: <InboxOutlined />, value: TYPE.archived },
-  { label: <DeleteOutlined />, value: TYPE.deleted },
+  {
+    label: (
+      <Space>
+        <Badge color="cyan" />
+        Regular
+      </Space>
+    ),
+    value: TYPE.customer,
+  },
+  {
+    label: (
+      <Space>
+        <Badge color="gold" />
+        Walking
+      </Space>
+    ),
+    value: TYPE.walkingCustomer,
+  },
+  {
+    label: (
+      <Space>
+        <Badge color="green" />
+        Vendor
+      </Space>
+    ),
+    value: TYPE.vendor,
+  },
+  {
+    label: <Space>All</Space>,
+    value: TYPE.both,
+  },
+  {
+    label: (
+      <Space>
+        <Badge status="default" />
+        <InboxOutlined />
+      </Space>
+    ),
+    value: TYPE.archived,
+  },
+  {
+    label: (
+      <Space>
+        <Badge color="red" />
+        <DeleteOutlined />
+      </Space>
+    ),
+    value: TYPE.deleted,
+  },
 ];
 
 const initialCustomerState = {
