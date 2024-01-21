@@ -273,18 +273,23 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       status: 'NONE',
       value: RECORD_TYPE.none,
     },
-    {
+  ];
+
+  if (type === TYPE.customer || type === TYPE.vendor) {
+    productsToShow.push({
       customer_id: '',
       id: '',
       label: 'Previous Balance',
       qty_ctn: 0,
       status: 'NONE',
       value: RECORD_TYPE.previous_balance,
-    },
-  ];
+    });
+  } else {
+  }
+
   const currentVendorProducts = {};
 
-  if (type === TYPE.customer) {
+  if (type === TYPE.customer || type === TYPE.walkingCustomer) {
     productsToShow = [...productsToShow, ...context.currentProducts];
     if (productsToShow.length > 0) {
       productsToShow.map((product) => {
@@ -318,7 +323,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
     }
   }
 
-  const columns: Column<Row>[] = [
+  const balanceSheetColumn: Column<Row>[] = [
     {
       ...keyColumn('date', isoDateColumn),
       title: 'Date',
@@ -338,6 +343,62 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       ),
       title: 'Product',
       width: 200,
+    },
+    {
+      ...keyColumn('carton', intColumn),
+      title: 'Carton',
+    },
+    {
+      ...keyColumn('qty_ctn', intColumn),
+      title: 'Qty / Ctn',
+    },
+    {
+      ...keyColumn('total_qty', intColumn),
+      title: 'Total Qty',
+    },
+    {
+      ...keyColumn('rate_each', floatColumn),
+      title: 'Rate Each',
+    },
+    {
+      ...keyColumn('debit', floatColumn),
+      title: 'Debit',
+    },
+    {
+      ...keyColumn('credit', floatColumn),
+      title: 'Credit',
+    },
+    {
+      ...keyColumn('balance', floatColumn),
+      title: 'Balance',
+    },
+    // {
+    //   ...keyColumn('current_balance', floatColumn),
+    //   title: 'Current Balance',
+    // },
+    // {
+    //   ...keyColumn('source', textColumn),
+    //   title: 'Source',
+    // },
+    // {
+    //   ...keyColumn('state', textColumn),
+    //   title: 'State',
+    // },
+    // {
+    //   ...keyColumn('id', textColumn),
+    //   title: 'ID',
+    // },
+  ];
+
+  const invoiceColumn: Column<Row>[] = [
+    {
+      ...keyColumn(
+        'product',
+        selectColumn({
+          choices: productsToShow,
+        }),
+      ),
+      title: 'Product',
     },
     {
       ...keyColumn('carton', intColumn),
@@ -677,7 +738,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       setData(withState);
       setPrevData(withState);
 
-      if (type === TYPE.customer) {
+      if (type === TYPE.customer || type === TYPE.walkingCustomer) {
         const newStock = {};
         withState.map((record) => {
           if (newStock[record.product]) {
@@ -1276,7 +1337,11 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
         ref={datasheetGridRef}
         // style={{ height: '400px' }}
         value={data}
-        columns={columns}
+        columns={
+          type === TYPE.customer || type === TYPE.vendor
+            ? balanceSheetColumn
+            : invoiceColumn
+        }
         createRow={() => ({
           ...initialState,
           id: uuidv4(),

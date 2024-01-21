@@ -381,7 +381,11 @@ function Customers({
       filteredList = [...nonArchivedOrDeleted];
     }
 
-    if (selectedOption === TYPE.customer || selectedOption === TYPE.vendor) {
+    if (
+      selectedOption === TYPE.customer ||
+      selectedOption === TYPE.walkingCustomer ||
+      selectedOption === TYPE.vendor
+    ) {
       const nonArchivedOrDeleted = appContext.customersList.filter((item) => {
         let bool = true;
 
@@ -1248,7 +1252,10 @@ function Customers({
       <Modal
         open={openCreateModal}
         title={`${
-          selectedOption === TYPE.customer ? 'Create Customer' : 'Create Vendor'
+          selectedOption === TYPE.customer ||
+          selectedOption === TYPE.walkingCustomer
+            ? 'Create Customer'
+            : 'Create Vendor'
         }`}
         width={selectedOption === TYPE.vendor ? 1000 : 500}
         onOk={handleCreateModalOk}
@@ -1263,6 +1270,17 @@ function Customers({
       >
         <div>
           {selectedOption === TYPE.customer && (
+            <CustomerForm
+              form={form}
+              initialValues={{
+                name: '',
+                address: '',
+                phone: '',
+                type: selectedOption,
+              }}
+            />
+          )}
+          {selectedOption === TYPE.walkingCustomer && (
             <CustomerForm
               form={form}
               initialValues={{
@@ -1356,7 +1374,10 @@ function Customers({
       <Modal
         open={openEditModal}
         title={`${
-          selectedOption === TYPE.customer ? 'Edit Customer' : 'Edit Vendor'
+          selectedOption === TYPE.customer ||
+          selectedOption === TYPE.walkingCustomer
+            ? 'Edit Customer'
+            : 'Edit Vendor'
         }`}
         width={selectedOption === TYPE.vendor ? 1000 : 500}
         onOk={handleEditModalOk}
@@ -1370,6 +1391,17 @@ function Customers({
         // )}
       >
         {selectedOption === TYPE.customer && (
+          <CustomerForm
+            form={form}
+            initialValues={{
+              name: selectedCutomer.name,
+              address: selectedCutomer.address,
+              phone: selectedCutomer.phone,
+              type: selectedOption,
+            }}
+          />
+        )}
+        {selectedOption === TYPE.walkingCustomer && (
           <CustomerForm
             form={form}
             initialValues={{

@@ -12,6 +12,7 @@
 # Isssues :
 
 - When saving an empty record sql throws error [FIXED]
+- Add validations to customer creation
 - Floating number in print [DONE]
 - Customers List Filters
   - All filter not working [FIXED]
@@ -21,6 +22,10 @@
 - Convert pagination to infinite scroll [DONE]
 - Why payment is empty ?
 - Convert Dollar Sign to PKR in Report
+- Add Walking Customer
+  - Add walking customer data grid
+  - Add walking customer balance sheet
+  - Check change in stock for walking customer
 
 # Features :
 
