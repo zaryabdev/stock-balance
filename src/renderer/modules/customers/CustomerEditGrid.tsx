@@ -237,7 +237,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
   };
 
   const handleOk = () => {
-    print();
+    exportReport();
     setIsModalOpen(false);
   };
 
@@ -983,12 +983,14 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
     //   }
   };
 
-  const print = () => {
+  const exportReport = () => {
     const doc = new jsPDF({
       format: 'a4',
       orientation: 'landscape',
       unit: 'mm',
     });
+
+    doc.setFontSize(10);
 
     let name = '';
 
@@ -1185,6 +1187,20 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
     //   ],
     //   theme: 'plain',
     // });
+    debugger;
+    const pages = doc.internal.pages.length - 1;
+    const pageWidth = doc.internal.pageSize.width;
+    const pageHeight = doc.internal.pageSize.height;
+    // doc.setFontSize(20);
+
+    for (let j = 1; j < pages + 1; j++) {
+      let horizontalPos = pageWidth - 15; //Can be fixed number
+      let verticalPos = pageHeight - 10; //Can be fixed number
+      doc.setPage(j);
+      doc.text(`${j} of ${pages}`, horizontalPos, verticalPos, {
+        align: 'right',
+      });
+    }
 
     // const uuid = uuidv4();
 
@@ -1192,7 +1208,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       startDate === endDate
         ? `${startDate}-${name}.pdf`
         : `${startDate}-${endDate}-${name}.pdf`;
-
+    debugger;
     doc.save(docTitle);
     // doc.save(`${uuid} invoice`);
   };
