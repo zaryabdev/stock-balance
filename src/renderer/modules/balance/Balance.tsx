@@ -126,7 +126,7 @@ const Balance: React.FC = ({}) => {
     allInvoices.map((item, index) => {
       const customerId = item.customer_id;
 
-      if (item.type === TYPE.customer) {
+      if (item.type === TYPE.customer || item.type === TYPE.walkingCustomer) {
         if (customerBalanceMap[customerId]) {
           customerBalanceMap[customerId].push({ ...item });
         } else {
@@ -273,7 +273,7 @@ const Balance: React.FC = ({}) => {
         }
       }
 
-      if (type === TYPE.customer) {
+      if (type === TYPE.customer || type === TYPE.walkingCustomer) {
         if (
           product !== RECORD_TYPE.previous_balance &&
           product !== RECORD_TYPE.none
@@ -518,9 +518,11 @@ const Balance: React.FC = ({}) => {
         margin: 10,
       }}
     >
-      <Button type="default" onClick={start} loading={loading}>
-        Refresh Balance
-      </Button>
+      <Space>
+        <Button type="default" onClick={start} loading={loading}>
+          Refresh Balance
+        </Button>
+      </Space>
 
       <Row>
         <Col span={12}>

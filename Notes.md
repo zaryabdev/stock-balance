@@ -16,7 +16,7 @@
 - Floating number in print [DONE]
 - Customers List Filters
   - All filter not working [FIXED]
-  - Un-archive not working [ISSUE] [triggers too many events]
+  - Un-archive not working [ISSUE] (triggers too many events)
   - Add delete customers
 - Change action buttons position [DONE]
 - Convert pagination to infinite scroll [DONE]
