@@ -1366,9 +1366,11 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
   );
 
   window.electron.ipcRenderer.on(
-    'delete:customer-invoice-response',
+    'delete:duplicated-customer-invoice-response',
     (response) => {
-      console.log('delete:customer-invoice-response reponse came back');
+      console.log(
+        'delete:duplicated-customer-invoice-response reponse came back',
+      );
       // console.log(response);
 
       if (response.status === STATUS.FAILED) {
@@ -1377,7 +1379,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
       if (response.status === STATUS.SUCCESS) {
         getAllRecordsById(customerId);
-        console.log('response of delete:customer-invoice-response ');
+        console.log('response of delete:duplicated-customer-invoice-response ');
         // console.log(response);
       }
     },

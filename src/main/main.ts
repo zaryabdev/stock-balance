@@ -523,7 +523,7 @@ ipcMain.on('delete:duplicated-customer-invoice', (event, data) => {
     if (response.status === STATUS.SUCCESS) {
       console.log('respose was success');
       // console.log(win);
-      event.reply('delete:duplicated-customer-invoice', response);
+      event.reply('delete:duplicated-customer-invoice-response', response);
 
       // win.webContents.send('create:customer', response);
     } else {
