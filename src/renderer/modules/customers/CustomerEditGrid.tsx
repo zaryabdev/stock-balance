@@ -736,7 +736,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       okType: 'danger',
 
       onOk() {
-        let recordsToDelete = [];
+        const recordsToDelete = [];
         if (duplicateRows) {
           duplicateRows.map((item) => {
             recordsToDelete.push(item.record);
@@ -1246,8 +1246,8 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
     // doc.setFontSize(20);
 
     for (let j = 1; j < pages + 1; j++) {
-      let horizontalPos = pageWidth - 15; //Can be fixed number
-      let verticalPos = pageHeight - 10; //Can be fixed number
+      const horizontalPos = pageWidth - 15; // Can be fixed number
+      const verticalPos = pageHeight - 10; // Can be fixed number
       doc.setPage(j);
       doc.text(`${j} of ${pages}`, horizontalPos, verticalPos, {
         align: 'right',
@@ -1446,13 +1446,13 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
       <FloatButton
         // tooltip="Print"
-        style={{ right: 55, bottom: 15 }}
+        style={{ right: 60, bottom: 15 }}
         onClick={showPrintModal}
         icon={<FilePdfOutlined />}
       />
       <FloatButton
         // tooltip={`Save ${customerId}`}
-        style={{ right: 15, bottom: 15 }}
+        style={{ right: 20, bottom: 15 }}
         onClick={commit}
         type="primary"
         icon={<SaveOutlined />}
@@ -1475,11 +1475,11 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
   );
 }
 
-const DuplicateRowsTable = ({ data = [] }) => {
+function DuplicateRowsTable({ data = [] }) {
   const [dataSource, setDataSource] = useState([]);
 
   useEffect(() => {
-    let _data = [];
+    const _data = [];
     if (data) {
       data.map((item) => {
         _data.push({
@@ -1528,6 +1528,6 @@ const DuplicateRowsTable = ({ data = [] }) => {
       scroll={{ y: 400 }}
     />
   );
-};
+}
 
 export default CustomerEditGrid;

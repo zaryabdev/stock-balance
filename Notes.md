@@ -5,6 +5,8 @@
 - Current worth is not 0 even all stock is at 0 [FIXED]
   - Total Worth is 0 but stock is still available [FIXED]
 - Double ID gerations ( Add & Delete both )
+  - Add validations for DID
+  - Add universal validator button for already duplicated records
 - Reverse Current Balance formula
 - Defalut Value not changing for payment & previous balance
   - Payment make it free entry
