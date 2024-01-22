@@ -180,7 +180,7 @@ const Dashboard: React.FC = ({ activeTab, customersList }) => {
       vendorBalance += element.balance;
     });
 
-    const worth = vendorBalance - customerBalance;
+    const worth = customerBalance - vendorBalance;
 
     // For Stock
 

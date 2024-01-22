@@ -176,6 +176,171 @@ class CustomerInvoicRepository {
     }
   }
 
+  deleteDuplicated(data = [], callbackFunction) {
+    const currentThis = this;
+    // const timestamp = Date.now();
+    console.log('deleteDuplicated called for CustomerInvoicRepository');
+    console.log(`Data length : ${data.length}`);
+
+    if (data.length === 0) {
+      const res = {
+        status: 'SUCCESS',
+        data: [],
+        message: 'No records were updated',
+      };
+      callbackFunction(res);
+      return;
+    }
+
+    let toCreate = [];
+    let toDelete = [];
+
+    for (let index = 0; index < data.length; index++) {
+      const record = data[index];
+
+      if (record.source === SOURCE.memory) {
+        if (record.state === STATE.created || record.state === STATE.updated) {
+          toCreate.push({
+            ...record,
+            source: SOURCE.database,
+            state: STATE.none,
+          });
+        }
+        if (record.state === STATE.deleted) {
+          console.log(
+            `Ignored record ${record.id}, state : ${record.state}, source : ${record.source}`,
+          );
+        }
+        if (record.state === STATE.none) {
+          console.log(
+            `Ignored record ${record.id}, state : ${record.state}, source : ${record.source}`,
+          );
+        }
+      } else if (record.source === SOURCE.database) {
+        if (record.state === STATE.none) {
+          console.log(
+            `Ignored record ${record.id}, state : ${record.state}, source : ${record.source}`,
+          );
+        }
+
+        if (record.state === STATE.created) {
+          // This can never happen
+          console.log(
+            `Ignored record ${record.id}, state : ${record.state}, source : ${record.source}`,
+          );
+        }
+
+        if (record.state === STATE.updated) {
+          toDelete.push({
+            ...record,
+            source: SOURCE.database,
+            state: STATE.none,
+          });
+        }
+
+        if (record.state === STATE.deleted) {
+          toDelete.push({
+            ...record,
+            source: SOURCE.database,
+            state: STATE.deleted,
+          });
+        }
+      }
+    }
+    console.log('--------------DATA-------------------');
+    console.log('toCreate');
+    console.log(toCreate.length);
+    console.log('toDelete');
+    console.log(toDelete.length);
+    console.log('--------------DATA-------------------');
+
+    // create records
+    if (toCreate.length > 0) {
+      console.log(`Length of toCreate${toCreate.length}`);
+
+      const formatedSqlValuesArr = toCreate.map((el) => {
+        return `('${el.id}','${el.customer_id}','${el.source}','${el.state}','${el.date}','${el.product}','${el.payment}','${el.carton}','${el.qty_ctn}','${el.total_qty}','${el.rate_each}','${el.debit}','${el.credit}','${el.balance}','${el.current_balance}')`;
+      });
+
+      // console.log(valuesArr);
+      const formatedSqlValuesStr = formatedSqlValuesArr.join(',');
+      // console.log(valuesStr);
+
+      const insertQuery = `INSERT INTO customer_invoice (id, customer_id, source, state, date, product, payment, carton, qty_ctn, total_qty, rate_each, debit, credit, balance, current_balance) VALUES ${formatedSqlValuesStr};`;
+
+      // console.log('Test in DBeaver');
+      // console.log(insertQuery);
+
+      // this.dao.run(insertQuery, [], data, toUpdateCbFunc);
+    } else {
+      console.log(`Length of toCreate${toCreate.length}`);
+      console.log('Going to call updateRecords() because nothing to create...');
+      // updateRecords({ status: 'SUCCESS' });
+    }
+
+    function toUpdateCbFunc(res) {
+      console.log('Inside toUpdateCbFunc');
+      console.log(res.status);
+
+      if (res.status === 'SUCCESS') {
+        // updateRecords();
+      } else {
+        // Failed case
+        console.log(res);
+      }
+    }
+
+    function updateRecords() {
+      console.log('Inside updateRecords');
+      if (toDelete.length > 0) {
+        console.log('Going to update records');
+
+        let updatedRecords = toDelete.length;
+
+        for (let index = 0; index < toDelete.length; index++) {
+          const record = toDelete[index];
+          const query = `
+          UPDATE customer_invoice SET state='${record.state}', date='${record.date}', product='${record.product}', payment='${record.payment}', carton='${record.carton}', qty_ctn='${record.qty_ctn}', total_qty='${record.total_qty}', rate_each='${record.rate_each}', debit='${record.debit}', credit='${record.credit}', balance='${record.balance}', current_balance='${record.current_balance}' WHERE id='${record.id}';
+        `;
+
+          currentThis.dao.run(query, [], data, (res) => {
+            if (res.status === 'SUCCESS') {
+              console.log('Update was success');
+              console.log(res);
+            }
+          });
+          updatedRecords -= 1;
+        }
+
+        console.log('All records updated');
+
+        if (updatedRecords === 0) {
+          setTimeout(() => {
+            callbackFunction({
+              status: 'SUCCESS',
+              data: [...toCreate, ...toDelete],
+              message: 'All records updated successfulyy',
+            });
+            toCreate = [];
+            toDelete = [];
+          }, 500);
+        }
+      } else {
+        console.log(`Length of toUpdate${toDelete.length}`);
+        console.log(
+          'Going to call callbackFunction() because nothing to update...',
+        );
+        callbackFunction({
+          status: 'SUCCESS',
+          data: [...toCreate, ...toDelete],
+          message: 'All records updated successfulyy',
+        });
+        toCreate.length = 0;
+        toDelete.length = 0;
+      }
+    }
+  }
+
   createTable() {
     console.log('createTable called for customer_invoice');
     const sql = `
@@ -272,20 +437,20 @@ class CustomerInvoicRepository {
   }
 
   deleteRecords(data = [], callbackFunction) {
-    // console.log(`delete called`);
-    // if (data.length === 0) {
-    //   const res = {
-    //     status: 'SUCCESS',
-    //     data: { ...data },
-    //     message: 'No records were deleted',
-    //   };
-    //   callbackFunction(res);
-    //   return;
-    // }
-    // const newIds = data.join("','");
-    // const withQuote = `'${newIds}'`;
-    // const sql = `DELETE FROM customer_invoice WHERE id IN (${withQuote})`;
-    // return this.dao.run(sql, [], data, callbackFunction);
+    console.log(`delete called`);
+    if (data.length === 0) {
+      const res = {
+        status: 'SUCCESS',
+        data: { ...data },
+        message: 'No records were deleted',
+      };
+      callbackFunction(res);
+      return;
+    }
+    const newIds = data.join("','");
+    const withQuote = `'${newIds}'`;
+    const sql = `DELETE FROM customer_invoice WHERE id IN (${withQuote})`;
+    return this.dao.run(sql, [], data, callbackFunction);
   }
 
   // getById(id) {

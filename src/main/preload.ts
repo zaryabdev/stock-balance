@@ -49,6 +49,16 @@ const electronHandler = {
       console.log(data);
       ipcRenderer.send('update:customer-invoice', data);
     },
+    deleteCustomerInvoice(data) {
+      console.log('Inside preload delete:customer-invoice');
+      console.log(data);
+      ipcRenderer.send('delete:customer-invoice', data);
+    },
+    deleteDuplicatedCustomerInvoice(data) {
+      console.log('Inside preload delete:duplicated-customer-invoice');
+      console.log(data);
+      ipcRenderer.send('delete:duplicated-customer-invoice', data);
+    },
     getAllCustomersInvoice(data) {
       console.log('Inside preload get:all:customer-invoices');
       console.log(data);

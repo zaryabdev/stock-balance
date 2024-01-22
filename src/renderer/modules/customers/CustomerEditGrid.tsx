@@ -13,6 +13,7 @@ import {
   FloatButton,
   Modal,
   Row,
+  Table,
 } from 'antd';
 import { format } from 'date-fns';
 import dayjs from 'dayjs';
@@ -605,9 +606,12 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
   const validateData = (data) => {
     const invalidRows = [];
+    const uniqueRows = {};
+    const duplicateRows = [];
 
     data.map((item, index) => {
       const {
+        id,
         date,
         product,
         carton,
@@ -620,75 +624,85 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
         current_balance,
       } = item;
 
-      let msg = '';
-      let valid = true;
-
-      if (!date || date === 'null') {
-        msg += 'Date, ';
-        valid = false;
-      }
-
-      // if (!product || product === 'null') {
-      //   ;
-      //   msg += 'product, ';
-      //   valid = false;
-      // }
-
-      if (!carton || carton === 'null') {
-        if (carton !== 0) {
-          msg += 'Carton, ';
-          valid = false;
-        }
-      }
-
-      if (!qty_ctn || qty_ctn === 'null') {
-        if (qty_ctn !== 0) {
-          msg += 'Qty / Ctn, ';
-          valid = false;
-        }
-      }
-
-      if (!total_qty || total_qty === 'null') {
-        if (total_qty !== 0) {
-          msg += 'Total Qty, ';
-          valid = false;
-        }
-      }
-
-      if (!rate_each || rate_each === 'null') {
-        if (rate_each !== 0) {
-          msg += 'Rate Each, ';
-          valid = false;
-        }
-      }
-
-      if (!debit) {
-        if (debit !== 0 || debit === 'null') {
-          msg += 'Debit, ';
-          valid = false;
-        }
-      }
-
-      if (!credit || credit === 'null') {
-        if (credit !== 0) {
-          msg += 'Credit, ';
-          valid = false;
-        }
-      }
-
-      if (!current_balance || current_balance === 'null') {
-        if (current_balance !== 0) {
-          msg += 'Balance, ';
-          valid = false;
-        }
-      }
-
-      if (!valid) {
-        invalidRows.push({
+      if (uniqueRows[id]) {
+        duplicateRows.push({
           rowId: index,
-          message: msg,
+          message: 'Duplicate entry',
           record: item,
         });
+      } else {
+        let msg = '';
+        let valid = true;
+
+        if (!date || date === 'null') {
+          msg += 'Date, ';
+          valid = false;
+        }
+
+        // if (!product || product === 'null') {
+        //   ;
+        //   msg += 'product, ';
+        //   valid = false;
+        // }
+
+        if (!carton || carton === 'null') {
+          if (carton !== 0) {
+            msg += 'Carton, ';
+            valid = false;
+          }
+        }
+
+        if (!qty_ctn || qty_ctn === 'null') {
+          if (qty_ctn !== 0) {
+            msg += 'Qty / Ctn, ';
+            valid = false;
+          }
+        }
+
+        if (!total_qty || total_qty === 'null') {
+          if (total_qty !== 0) {
+            msg += 'Total Qty, ';
+            valid = false;
+          }
+        }
+
+        if (!rate_each || rate_each === 'null') {
+          if (rate_each !== 0) {
+            msg += 'Rate Each, ';
+            valid = false;
+          }
+        }
+
+        if (!debit) {
+          if (debit !== 0 || debit === 'null') {
+            msg += 'Debit, ';
+            valid = false;
+          }
+        }
+
+        if (!credit || credit === 'null') {
+          if (credit !== 0) {
+            msg += 'Credit, ';
+            valid = false;
+          }
+        }
+
+        if (!current_balance || current_balance === 'null') {
+          if (current_balance !== 0) {
+            msg += 'Balance, ';
+            valid = false;
+          }
+        }
+
+        if (!valid) {
+          invalidRows.push({
+            rowId: index,
+            message: msg,
+            record: item,
+          });
+        }
+
+        uniqueRows[id] = { rowId: index, message: '', record: item };
       }
     });
 
@@ -696,6 +710,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       isValid: true,
       message: '',
       invalidRows: [],
+      duplicateRows: [],
     };
 
     if (invalidRows.length > 0) {
@@ -704,7 +719,40 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       validation.message = 'Invalid Data';
     }
 
+    if (duplicateRows.length > 0) {
+      validation.isValid = false;
+      validation.message = 'Invalid Data';
+      validation.duplicateRows = duplicateRows;
+    }
+
     return validation;
+  };
+
+  const duplicateRowsModal = (duplicateRows) => {
+    Modal.error({
+      title: 'Duplicate rows found',
+      content: <DuplicateRowsTable data={duplicateRows} />,
+      width: 600,
+      okType: 'danger',
+
+      onOk() {
+        let recordsToDelete = [];
+        if (duplicateRows) {
+          duplicateRows.map((item) => {
+            recordsToDelete.push(item.record);
+          });
+        }
+        debugger;
+        window.electron.ipcRenderer.deleteDuplicatedCustomerInvoice(
+          recordsToDelete,
+        );
+      },
+      okText: 'Delete Duplicated Rows',
+      onCancel() {
+        context.error(`Duplicate data can cause uncertain calculations.`);
+      },
+      closable: true,
+    });
   };
 
   const commit = () => {
@@ -936,19 +984,23 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
       let name = '';
 
-      if (context.customersList) {
-        context.customersList.map((c) => {
-          if (c.id === customerId) {
-            name = c.name;
-          }
+      if (validation.duplicateRows.length > 0) {
+        duplicateRowsModal(validation.duplicateRows);
+      } else {
+        if (context.customersList) {
+          context.customersList.map((c) => {
+            if (c.id === customerId) {
+              name = c.name;
+            }
+          });
+        }
+
+        validation.invalidRows.map((row) => {
+          context.error(
+            `Invalid fields ${row.message} of ${name} at Id ${row.rowId + 1}.`,
+          );
         });
       }
-
-      validation.invalidRows.map((row) => {
-        context.error(
-          `Invalid fields ${row.message} of ${name} at Id ${row.rowId + 1}.`,
-        );
-      });
     }
 
     //  const isInCurrentStock = currentStock.filter(stock=> stock.product === record.product);
@@ -1187,7 +1239,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
     //   ],
     //   theme: 'plain',
     // });
-    debugger;
+
     const pages = doc.internal.pages.length - 1;
     const pageWidth = doc.internal.pageSize.width;
     const pageHeight = doc.internal.pageSize.height;
@@ -1208,7 +1260,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       startDate === endDate
         ? `${startDate}-${name}.pdf`
         : `${startDate}-${endDate}-${name}.pdf`;
-    debugger;
+
     doc.save(docTitle);
     // doc.save(`${uuid} invoice`);
   };
@@ -1242,6 +1294,22 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
     if (response.status === STATUS.SUCCESS) {
       console.log('response of update:customer-invoice ');
+      // console.log(response);
+
+      getAllRecordsById(customerId);
+    }
+  });
+
+  window.electron.ipcRenderer.on('delete:customer-invoice', (response) => {
+    console.log('delete:customer-invoice reponse came back');
+    // console.log(response);
+
+    if (response.status === STATUS.FAILED) {
+      console.log(response.message);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('response of delete:customer-invoice ');
       // console.log(response);
 
       getAllRecordsById(customerId);
@@ -1308,19 +1376,9 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       }
 
       if (response.status === STATUS.SUCCESS) {
-        // setSelectedRowKeys([]);
+        getAllRecordsById(customerId);
         console.log('response of delete:customer-invoice-response ');
         // console.log(response);
-
-        if (response.status === STATUS.FAILED) {
-          console.log(response.message);
-        }
-
-        if (response.status === STATUS.SUCCESS) {
-          console.log('response of delete:customer-invoice-response  ');
-          // console.log(response);
-          // window.electron.ipcRenderer.getAllCustomers({});
-        }
       }
     },
   );
@@ -1414,5 +1472,60 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
     </div>
   );
 }
+
+const DuplicateRowsTable = ({ data = [] }) => {
+  const [dataSource, setDataSource] = useState([]);
+
+  useEffect(() => {
+    let _data = [];
+    if (data) {
+      data.map((item) => {
+        _data.push({
+          rowId: item.rowId,
+          date: item.record.date,
+          payment: item.record.payment,
+          product: item.record.product,
+        });
+      });
+      setDataSource(_data);
+    }
+  }, [data]);
+
+  const columns = [
+    {
+      title: 'ID',
+      dataIndex: 'rowId',
+      key: 'rowId',
+      width: '10%',
+    },
+    {
+      title: 'Date',
+      dataIndex: 'date',
+      key: 'date',
+    },
+    {
+      title: 'Payment',
+      dataIndex: 'payment',
+      key: 'payment',
+      ellipsis: true,
+    },
+    {
+      title: 'Product',
+      dataIndex: 'product',
+      key: 'product',
+      ellipsis: true,
+    },
+  ];
+
+  return (
+    <Table
+      size="small"
+      dataSource={dataSource}
+      columns={columns}
+      pagination={{ hideOnSinglePage: true, pageSize: 100 }}
+      scroll={{ y: 400 }}
+    />
+  );
+};
 
 export default CustomerEditGrid;

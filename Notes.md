@@ -5,6 +5,7 @@
 - Current worth is not 0 even all stock is at 0 [FIXED]
   - Total Worth is 0 but stock is still available [FIXED]
 - Double ID gerations ( Add & Delete both )
+- Reverse Current Balance formula
 - Defalut Value not changing for payment & previous balance
   - Payment make it free entry
   - Payment const change it from none to payment
@@ -82,6 +83,8 @@ https://dev.to/maxwelladn/build-a-pdf-invoice-template-using-only-typescript-and
 https://marketsplash.com/tutorials/node-js/node-js-printing/
 
 https://blog.logrocket.com/advanced-electron-js-architecture/
+
+https://stackoverflow.com/questions/599837/how-to-generate-and-validate-a-software-license-key
 
 # Unsorted
 

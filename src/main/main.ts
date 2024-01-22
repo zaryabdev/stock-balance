@@ -509,6 +509,30 @@ ipcMain.on('update:customer-invoice', (event, data) => {
 
   customerInvoiceRepo.update(data, callbackFunction);
 });
+ipcMain.on('delete:duplicated-customer-invoice', (event, data) => {
+  console.log('Inside Main delete:duplicated-customer-invoice');
+  // console.log(data);
+  const callbackFunction = (response, err) => {
+    // const webContents = event.sender;
+    // const win = BrowserWindow.fromWebContents(webContents);
+    console.log('callback function called!!');
+    if (err) {
+      console.log(err);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('respose was success');
+      // console.log(win);
+      event.reply('delete:duplicated-customer-invoice', response);
+
+      // win.webContents.send('create:customer', response);
+    } else {
+      console.log(response.message);
+    }
+  };
+
+  customerInvoiceRepo.deleteDuplicated(data, callbackFunction);
+});
 
 ipcMain.on('get:all:customer-invoices', (event, data) => {
   console.log('Inside Main get:all:customer-invoices');
