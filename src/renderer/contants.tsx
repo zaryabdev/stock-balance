@@ -42,4 +42,5 @@ export const TYPE_COLOR_PALLETE = {
   VENDOR: 'green',
   ARCHIVED: 'rgb(128, 128, 128)',
   DELETED: 'red',
+  unarchived: 'yellow',
 };

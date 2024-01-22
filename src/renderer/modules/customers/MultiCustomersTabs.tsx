@@ -1,4 +1,5 @@
 import {
+  Badge,
   Button,
   Form,
   Input,
@@ -14,6 +15,7 @@ import { ExclamationCircleFilled } from '@ant-design/icons';
 
 import React, { useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { TYPE_COLOR_PALLETE } from '../../contants';
 import Balance from '../balance/Balance';
 import Dashboard from '../dashboard/Dashboard';
 import Stock from '../stock/Stock';
@@ -74,14 +76,19 @@ function MultiCustomerTabs({
 
     if (currentTabs.length === 0) {
       keys.forEach((key) => {
-        list.some((el) => {
-          if (el.key === key)
+        list.some((item) => {
+          if (item.key === key)
             arr.push({
-              label: el.name,
+              label: (
+                <Space>
+                  <Badge color={`${TYPE_COLOR_PALLETE[item.type]}`} />
+                  {item.name}
+                </Space>
+              ),
               children: (
                 <CustomerEditGrid
-                  customerId={el.id}
-                  type={el.type}
+                  customerId={item.id}
+                  type={item.type}
                   getCurrentStock={getCurrentStock}
                 />
               ),
@@ -96,14 +103,19 @@ function MultiCustomerTabs({
         const keyAlreadyExists = currentTabs.find((tab) => tab.key === key);
 
         if (keyAlreadyExists === undefined) {
-          list.some((el) => {
-            if (el.key === key)
+          list.some((item) => {
+            if (item.key === key)
               arr.push({
-                label: el.name,
+                label: (
+                  <Space>
+                    <Badge color={`${TYPE_COLOR_PALLETE[item.type]}`} />
+                    {item.name}
+                  </Space>
+                ),
                 children: (
                   <CustomerEditGrid
-                    customerId={el.id}
-                    type={el.type}
+                    customerId={item.id}
+                    type={item.type}
                     getCurrentStock={getCurrentStock}
                   />
                 ),

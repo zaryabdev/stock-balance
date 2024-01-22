@@ -160,6 +160,7 @@ const CustomersList: React.FC = ({
       dataIndex: 'name',
       key: 'name',
       ellipsis: true,
+      showSorterTooltip: false,
       // defaultSortOrder: 'ascend',
       sorter: (a, b) => a.name.localeCompare(b.name),
       sortDirections: ['descend', 'ascend'],
