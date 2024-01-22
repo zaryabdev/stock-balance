@@ -11,7 +11,12 @@ import {
   Typography,
 } from 'antd';
 
-import { ExclamationCircleFilled } from '@ant-design/icons';
+import {
+  DollarOutlined,
+  ExclamationCircleFilled,
+  InboxOutlined,
+  LineChartOutlined,
+} from '@ant-design/icons';
 
 import React, { useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
@@ -42,19 +47,31 @@ function MultiCustomerTabs({
   const [activeTabKey, setActiveTabKey] = useState('DASHBOARD');
   const [tabs, setTabs] = useState([
     {
-      label: 'Dashboard',
+      label: (
+        <>
+          <LineChartOutlined /> Statistics
+        </>
+      ),
       children: <Dashboard activeTab={activeTabKey} />,
       key: 'DASHBOARD',
       closable: false,
     },
     {
-      label: 'Stock',
+      label: (
+        <>
+          <InboxOutlined /> Stock
+        </>
+      ),
       children: <Stock activeTab={activeTabKey} />,
       key: 'STOCK',
       closable: false,
     },
     {
-      label: 'Balance',
+      label: (
+        <>
+          <DollarOutlined /> Balance
+        </>
+      ),
       children: <Balance activeTab={activeTabKey} />,
       key: 'BALANCE',
       closable: false,
