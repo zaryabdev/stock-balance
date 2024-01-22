@@ -39,7 +39,7 @@ export const RECORD_TYPE = {
 export const TYPE_COLOR_PALLETE = {
   CUSTOMER: 'cyan',
   WALKING_CUSTOMER: 'gold',
-  VENDOR: '',
-  DELETED: '',
-  ARCHIVED: '',
+  VENDOR: 'green',
+  ARCHIVED: 'rgb(128, 128, 128)',
+  DELETED: 'red',
 };

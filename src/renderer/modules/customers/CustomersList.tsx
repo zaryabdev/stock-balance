@@ -5,7 +5,7 @@ import type { ColumnType, ColumnsType } from 'antd/es/table';
 import type { FilterConfirmProps } from 'antd/es/table/interface';
 import React, { useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
-import { STATUS, TYPE } from '../../contants';
+import { STATUS, TYPE, TYPE_COLOR_PALLETE } from '../../contants';
 
 interface DataType {
   id: string;
@@ -123,7 +123,7 @@ const CustomersList: React.FC = ({
           textToHighlight={text ? text.toString() : ''}
         />
       ) : (
-        <Badge color="cyan" text={text} />
+        <>{text}</>
       ),
   });
 
@@ -131,6 +131,8 @@ const CustomersList: React.FC = ({
     switch (option) {
       case TYPE.customer:
         return 'Customers';
+      case TYPE.walkingCustomer:
+        return 'Walking Customers';
       case TYPE.both:
         return 'Customers | Vendors';
       case TYPE.vendor:
@@ -147,14 +149,21 @@ const CustomersList: React.FC = ({
 
   const columns: ColumnsType<DataType> = [
     {
+      title: ``,
+      dataIndex: 'type',
+      key: 'type',
+      width: '5%',
+      render: (type) => <Badge color={`${TYPE_COLOR_PALLETE[type]}`} />,
+    },
+    {
       title: `${getTitle(option)}`,
       dataIndex: 'name',
       key: 'name',
       ellipsis: true,
-      defaultSortOrder: 'ascend',
+      // defaultSortOrder: 'ascend',
       sorter: (a, b) => a.name.localeCompare(b.name),
       sortDirections: ['descend', 'ascend'],
-      width: '100%',
+      width: '95%',
       ...getColumnSearchProps('name'),
     },
   ];

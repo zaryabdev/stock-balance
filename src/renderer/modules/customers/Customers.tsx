@@ -73,7 +73,7 @@ const options = [
   {
     label: (
       <Space>
-        <Badge color="green" />
+        <Badge color={`${TYPE_COLOR_PALLETE[TYPE.vendor]}`} />
         Vendor
       </Space>
     ),
@@ -86,7 +86,7 @@ const options = [
   {
     label: (
       <Space>
-        <Badge color="rgb(128, 128, 128)" />
+        <Badge color={`${TYPE_COLOR_PALLETE[TYPE.archived]}`} />
         <InboxOutlined />
       </Space>
     ),
@@ -95,7 +95,7 @@ const options = [
   {
     label: (
       <Space>
-        <Badge color="red" />
+        <Badge color={`${TYPE_COLOR_PALLETE[TYPE.deleted]}`} />
         <DeleteOutlined />
       </Space>
     ),
