@@ -209,27 +209,31 @@ ipcMain.on('update:customer', (event, data) => {
 
 ipcMain.on('get:all:customer', (event, data) => {
   console.log('Inside Main get:all:customer');
-  console.log(data);
+  console.log('Length of customers' + data.length);
+  console.log(event);
+  // event.returnValue = 'pong';
+
   const callbackFunction = (response, err) => {
     // const webContents = event.sender;
     // const win = BrowserWindow.fromWebContents(webContents);
     console.log('callback function called!!');
+
     if (err) {
       console.log(err);
     }
 
     if (response.status === STATUS.SUCCESS) {
       console.log('respose was success');
-      // console.log(win);
-      event.reply('get:all:customer-response', response);
 
+      event.returnValue = response;
+      // event.reply('get:all:customer-response', response);
       // win.webContents.send('create:customer', response);
     } else {
       console.log(response.message);
     }
   };
-
-  customerRepo.getAll(data, callbackFunction);
+  console.log('get:all:customer before callbackFunction');
+  customerRepo.getAll(data, callbackFunction, event);
 });
 
 ipcMain.on('delete:customer', (event, data) => {

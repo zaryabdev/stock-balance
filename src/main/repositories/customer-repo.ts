@@ -44,9 +44,9 @@ class CustomerRepository {
     );
   }
 
-  getAll(data, callbackFunction) {
+  getAll(data, callbackFunction, event) {
     logger.debug(`getAll called`);
-    this.dao.all(`SELECT * FROM customer`, [], data, callbackFunction);
+    this.dao.all(`SELECT * FROM customer`, [], data, callbackFunction, event);
   }
 
   deleteRecords(data = [], callbackFunction) {

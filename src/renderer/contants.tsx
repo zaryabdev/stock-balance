@@ -36,7 +36,7 @@ export const RECORD_TYPE = {
   previous_balance: 'Previous Balance',
 };
 
-export const TYPE_COLOR_PALLETE = {
+export const TYPE_COLOR_PALLETE: TYPE_COLOR_PALLETE_I = {
   CUSTOMER: 'cyan',
   WALKING_CUSTOMER: 'gold',
   VENDOR: 'green',
@@ -44,3 +44,12 @@ export const TYPE_COLOR_PALLETE = {
   DELETED: 'red',
   unarchived: 'yellow',
 };
+
+interface TYPE_COLOR_PALLETE_I {
+  CUSTOMER: string;
+  WALKING_CUSTOMER: string;
+  VENDOR: string;
+  ARCHIVED: string;
+  DELETED: string;
+  unarchived: string;
+}

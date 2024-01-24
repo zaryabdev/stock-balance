@@ -43,7 +43,7 @@ import { useRenderCount } from '@uidotdev/usehooks';
 import context from '../../AppContext';
 import { STATE, STATUS, TYPE, TYPE_COLOR_PALLETE } from '../../contants';
 import CustomersList from './CustomersList';
-import MultiCustomersTabs from './MultiCustomersTabs';
+// import MultiCustomersTabs from './MultiCustomersTabs';
 
 const { confirm } = Modal;
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
@@ -196,6 +196,7 @@ function Customers({
   const renderCount = useRenderCount();
 
   useEffect(() => {
+    getAllCustomers({});
     getAllProductList();
   }, []);
 
@@ -355,10 +356,6 @@ function Customers({
     address: string;
     phone: string;
   }>();
-
-  useEffect(() => {
-    getAllCustomers({});
-  }, []);
 
   useEffect(() => {
     let filteredList = [];
@@ -857,8 +854,10 @@ function Customers({
     setSelectedRowKeys(keys);
   };
 
-  function getAllCustomers(params: type) {
-    window.electron.ipcRenderer.getAllCustomers({});
+  async function getAllCustomers(params: type) {
+    const response = await window.electron.ipcRenderer.getAllCustomers({});
+    debugger;
+    console.log(response);
   }
 
   window.electron.ipcRenderer.on('create:customer-response', (response) => {
@@ -910,48 +909,39 @@ function Customers({
     }
   });
 
-  window.electron.ipcRenderer.on('get:all:customer-response', (response) => {
-    console.log('get:all:customer-response reponse came back');
-    console.log(response);
+  // window.electron.ipcRenderer.on('get:all:customer-response', (response) => {
+  //   console.log('get:all:customer-response reponse came back');
+  //   console.log(response);
 
-    if (response.status === STATUS.FAILED) {
-      console.log(response.message);
-    }
+  //   if (response.status === STATUS.FAILED) {
+  //     console.log(response.message);
+  //   }
 
-    if (response.status === STATUS.SUCCESS) {
-      console.log('response of get:all:customer-response ');
-      console.log(response);
+  //   if (response.status === STATUS.SUCCESS) {
+  //     console.log('response of get:all:customer-response ');
+  //     console.log(response);
 
-      const list = response.data;
+  //     const list = response.data;
 
-      if (selectedOption !== TYPE.archived) {
-        const nonArchived = list.filter(
-          (item) => item.status !== TYPE.archived,
-        );
+  //     if (selectedOption !== TYPE.archived) {
+  //       const nonArchived = list.filter(
+  //         (item) => item.status !== TYPE.archived,
+  //       );
 
-        const filteredList = nonArchived.filter(
-          (item) => item.type === selectedOption,
-        );
+  //       const filteredList = nonArchived.filter(
+  //         (item) => item.type === selectedOption,
+  //       );
 
-        appContext.setCustomersList(list);
-        appContext.setFilteredCustomersList(filteredList);
-      } else {
-        const archived = list.filter((item) => item.status === TYPE.archived);
-        appContext.setCustomersList(list);
-        appContext.setFilteredCustomersList(archived);
-      }
+  //       appContext.setCustomersList(list);
+  //       appContext.setFilteredCustomersList(filteredList);
+  //     } else {
+  //       const archived = list.filter((item) => item.status === TYPE.archived);
+  //       appContext.setCustomersList(list);
+  //       appContext.setFilteredCustomersList(archived);
+  //     }
 
-      // const newActiveKey = uuidv4();
-      // const newPanes = [...tabs];
-      // newPanes.push({
-      //   label: 'New Tab',
-      //   children: <CustomerEditGrid label={`Tab ID =  ${newActiveKey}`} />,
-      //   key: newActiveKey,
-      // });
-      // setTabs(newPanes);
-      // setActiveTabKey(newActiveKey);
-    }
-  });
+  //   }
+  // });
 
   window.electron.ipcRenderer.on('delete:customer-response', (response) => {
     console.log('delete:customer-response reponse came back');
@@ -1242,11 +1232,12 @@ function Customers({
           </>
         </Col>
         <Col span={appContext.toggleSideBar ? 18 : 24}>
-          <MultiCustomersTabs
+          {/* <MultiCustomersTabs
             customersList={appContext.customersList}
             getCurrentStock={getCurrentStock}
             selectedCutomersToLoad={selectedCutomersToLoad}
-          />
+          /> */}
+          MultiCustomersTabs
         </Col>
       </Row>
       <Modal

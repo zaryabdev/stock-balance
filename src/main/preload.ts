@@ -7,135 +7,115 @@ export type MEDIA_CHANNELS = String;
 const electronHandler = {
   ipcRenderer: {
     sendMessage(channel: MEDIA_CHANNELS, ...args: unknown[]) {
-      ipcRenderer.send(channel, ...args);
-    },
-    createCustomer(data) {
-      console.log('Inside preload create:customer');
-      console.log(data);
-      ipcRenderer.send('create:customer', data);
-    },
-    updateCustomer(data) {
-      console.log('Inside preload update:customer');
-      console.log(data);
-      ipcRenderer.send('update:customer', data);
+      // ipcRenderer.send(channel, ...args);
     },
     getAllCustomers(data) {
       console.log('Inside preload get:all:customer');
       console.log(data);
-      ipcRenderer.send('get:all:customer', data);
+      return ipcRenderer.sendSync('get:all:customer', data);
     },
+    createCustomer(data) {
+      console.log('Inside preload create:customer');
+      console.log(data);
+      // ipcRenderer.send('create:customer', data);
+    },
+    updateCustomer(data) {
+      console.log('Inside preload update:customer');
+      console.log(data);
+      // ipcRenderer.send('update:customer', data);
+    },
+
     deleteCustomers(data) {
       console.log('Inside preload delete:customer');
       console.log(data);
-      ipcRenderer.send('delete:customer', data);
+      // ipcRenderer.send('delete:customer', data);
     },
     archiveCustomers(data) {
       console.log('Inside preload archive:customer');
       console.log(data);
-      ipcRenderer.send('archive:customer', data);
+      // ipcRenderer.send('archive:customer', data);
     },
     unarchiveCustomers(data) {
       console.log('Inside preload unarchive:customer');
       console.log(data);
-      ipcRenderer.send('unarchive:customer', data);
+      // ipcRenderer.send('unarchive:customer', data);
     },
     createCustomerInvoice(data) {
       console.log('Inside preload create:customer-invoice');
       console.log(data);
-      ipcRenderer.send('create:customer-invoice', data);
+      // ipcRenderer.send('create:customer-invoice', data);
     },
     updateCustomerInvoice(data) {
       console.log('Inside preload update:customer-invoice');
       console.log(data);
-      ipcRenderer.send('update:customer-invoice', data);
+      // ipcRenderer.send('update:customer-invoice', data);
     },
     deleteCustomerInvoice(data) {
       console.log('Inside preload delete:customer-invoice');
       console.log(data);
-      ipcRenderer.send('delete:customer-invoice', data);
+      // ipcRenderer.send('delete:customer-invoice', data);
     },
     deleteDuplicatedCustomerInvoice(data) {
       console.log('Inside preload delete:duplicated-customer-invoice');
       console.log(data);
-      ipcRenderer.send('delete:duplicated-customer-invoice', data);
+      // ipcRenderer.send('delete:duplicated-customer-invoice', data);
     },
     getAllCustomersInvoice(data) {
       console.log('Inside preload get:all:customer-invoices');
       console.log(data);
-      ipcRenderer.send('get:all:customer-invoices', data);
+      // ipcRenderer.send('get:all:customer-invoices', data);
     },
     getAllCustomerInvoicesById(data) {
       console.log('Inside preload get:all:customer-invoices:id');
       console.log(data);
-      ipcRenderer.send('get:all:customer-invoices:id', data);
+      // ipcRenderer.send('get:all:customer-invoices:id', data);
     },
     deleteCustomersInvoice(data) {
       console.log('Inside preload delete:customer-invoice');
       console.log(data);
-      ipcRenderer.send('delete:customer-invoice', data);
+      // ipcRenderer.send('delete:customer-invoice', data);
     },
-
-    // createStock(data) {
-    //   console.log('Inside preload create:stock');
-    //   console.log(data);
-    //   ipcRenderer.send('create:stock', data);
-    // },
-    // updateStock(data) {
-    //   console.log('Inside preload update:stock');
-    //   console.log(data);
-    //   ipcRenderer.send('update:stock', data);
-    // },
-    // getAllStock(data) {
-    //   console.log('Inside preload get:all:stock');
-    //   console.log(data);
-    //   ipcRenderer.send('get:all:stock', data);
-    // },
-    // deleteStock(data) {
-    //   console.log('Inside preload delete:stock');
-    //   console.log(data);
-    //   ipcRenderer.send('delete:stock', data);
-    // },
 
     createBalance(data) {
       console.log('Inside preload create:balance');
       console.log(data);
-      ipcRenderer.send('create:balance', data);
+      // ipcRenderer.send('create:balance', data);
     },
     updateBalance(data) {
       console.log('Inside preload update:balance');
       console.log(data);
-      ipcRenderer.send('update:balance', data);
+      // ipcRenderer.send('update:balance', data);
     },
     getAllBalance(data) {
       console.log('Inside preload get:all:balance');
       console.log(data);
-      ipcRenderer.send('get:all:balance', data);
+      // ipcRenderer.send('get:all:balance', data);
     },
     deleteBalance(data) {
       console.log('Inside preload delete:balance');
       console.log(data);
-      ipcRenderer.send('delete:balance', data);
+      // ipcRenderer.send('delete:balance', data);
     },
 
     createProduct(data) {
       console.log('Inside preload create:product');
       console.log(data);
-      ipcRenderer.send('create:product', data);
+      // ipcRenderer.send('create:product', data);
     },
     updateProduct(data) {
       console.log('Inside preload update:product');
       console.log(data);
-      ipcRenderer.send('update:product', data);
+      // ipcRenderer.send('update:product', data);
     },
     getAllProduct(data) {
       console.log('Inside preload get:all:product');
       console.log(data);
-      ipcRenderer.send('get:all:product', data);
+      // ipcRenderer.send('get:all:product', data);
     },
     deleteProduct(data) {
       console.log('Inside preload delete:product');
       console.log(data);
-      ipcRenderer.send('delete:product', data);
+      // ipcRenderer.send('delete:product', data);
     },
 
     // on(channel, func) {
@@ -168,10 +148,10 @@ const electronHandler = {
   },
   store: {
     get(key: any) {
-      return ipcRenderer.sendSync('electron-store-get', key);
+      // return ipcRenderer.sendSync('electron-store-get', key);
     },
     set(property: any, val: any) {
-      ipcRenderer.send('electron-store-set', property, val);
+      // ipcRenderer.send('electron-store-set', property, val);
     },
     // Other method you want to add like has(), reset(), etc.
   },

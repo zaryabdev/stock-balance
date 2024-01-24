@@ -43,8 +43,10 @@ class AppDAO {
     });
   }
 
-  all(sql, params = [], data, callbackFunction) {
+  all(sql, params = [], data, callbackFunction, event) {
     console.log('DAO : all');
+    console.log(event);
+    // event.returnValue = 'Pong';
     const query = this.db.prepare(sql);
     const res = {
       status: '',
@@ -57,20 +59,24 @@ class AppDAO {
         res.status = STATUS.FAILED;
         res.message = 'Error occured in query all command.';
         console.error(err);
-        if (callbackFunction) callbackFunction(res, err);
+        console.log(event);
+        if (callbackFunction) callbackFunction(res, err, event);
       } else {
-        console.log('Get all by ID query ran ✔');
+        console.log('Get all by ID query ran. Total rows' + rows.length);
 
         rows.forEach((row) => {
-          console.log(row);
+          // print each row
+          // console.log(row);
         });
 
         res.status = STATUS.SUCCESS;
         res.message = 'Records fetched successfully.';
         res.data = rows;
         res.meta = data;
-
-        if (callbackFunction) callbackFunction(res);
+        console.log(event);
+        // event.returnValue(res);
+        // event.returnValue = res;
+        if (callbackFunction) callbackFunction(res, undefined, event);
       }
     });
   }
