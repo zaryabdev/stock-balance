@@ -34,8 +34,8 @@ class CustomerRepository {
     console.log('create called for CustomerRepository');
     const { id, key, name, address, phone, type } = data;
 
-    console.log({ id, key, name, address, phone, type });
-    console.log(callbackFunction);
+    // console.log({ id, key, name, address, phone, type });
+
     this.dao.run(
       'INSERT INTO customer (id, key, name, address, phone, type, timestamp) VALUES (?,?,?,?,?,?,?)',
       [id, key, name, address, phone, type, timestamp],
@@ -44,13 +44,14 @@ class CustomerRepository {
     );
   }
 
-  getAll(data, callbackFunction, event) {
+  getAll(data, callbackFunction) {
+    console.log('getAll called for CustomerRepository');
     logger.debug(`getAll called`);
-    this.dao.all(`SELECT * FROM customer`, [], data, callbackFunction, event);
+    this.dao.all(`SELECT * FROM customer;`, [], data, callbackFunction);
   }
 
   deleteRecords(data = [], callbackFunction) {
-    console.log(`delete called`);
+    console.log(`deleteRecords called for CustomerRepository`);
 
     if (data.length === 0) {
       const res = {
@@ -58,6 +59,7 @@ class CustomerRepository {
         data: { ...data },
         message: 'No records were deleted',
       };
+      console.log(res.message);
       callbackFunction(res);
       return;
     }
@@ -70,9 +72,10 @@ class CustomerRepository {
   }
 
   update(data, callbackFunction) {
-    const { id, key, name, address, phone } = data;
     console.log('update called for CustomerRepository');
-    console.log({ id, key, name, address, phone });
+
+    const { id, key, name, address, phone } = data;
+    // console.log({ id, key, name, address, phone });
 
     this.dao.run(
       'UPDATE customer SET  name = ?, address = ?, phone = ? WHERE id = ?',
@@ -83,11 +86,10 @@ class CustomerRepository {
   }
 
   archiveRecords(data = [], callbackFunction) {
-    console.log(`archive called`);
+    console.log('archive called for CustomerRepository');
 
     const currentThis = this;
     // const timestamp = Date.now();
-    console.log('archive called for CustomerRepository');
     console.log(`Data length : ${data.length}`);
 
     if (data.length === 0) {
@@ -96,15 +98,12 @@ class CustomerRepository {
         data: [],
         message: 'No records were updated',
       };
+      console.log(message);
       callbackFunction(res);
       return;
     }
 
-    console.log('Inside updateRecords');
-
     if (data.length > 0) {
-      console.log('Going to update records');
-
       let updatedRecords = data.length;
 
       for (let index = 0; index < data.length; index++) {
@@ -116,7 +115,7 @@ class CustomerRepository {
         currentThis.dao.run(query, [], data, (res) => {
           if (res.status === 'SUCCESS') {
             console.log('Update was success');
-            console.log(res);
+            // console.log(res);
           }
         });
         updatedRecords -= 1;
@@ -134,10 +133,8 @@ class CustomerRepository {
         }, 500);
       }
     } else {
-      console.log(`Length of toUpdate${data.length}`);
-      console.log(
-        'Going to call callbackFunction() because nothing to update...',
-      );
+      console.log(`Length of toUpdate : ${data.length}`);
+
       callbackFunction({
         status: 'SUCCESS',
         data: [...data],

@@ -173,13 +173,14 @@ function Customers({
   getCurrentStock,
   getCurrentProducts,
   getCurrentCustomers,
+  setSelectedOption,
+  selectedOption,
 }) {
   const appContext = useContext(context);
 
   const [selectedCutomer, setSelectedCutomer] = useState(initialCustomerState);
   const [selectedCutomersToLoad, setSelectedCutomersToLoad] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-  const [selectedOption, setSelectedOption] = useState(TYPE.customer);
 
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
@@ -196,8 +197,8 @@ function Customers({
   const renderCount = useRenderCount();
 
   useEffect(() => {
-    getAllCustomers({});
-    getAllProductList();
+    getAllCustomers();
+    getAllProducts();
   }, []);
 
   const handleShowCreateModal = () => {
@@ -205,7 +206,188 @@ function Customers({
     setOpenCreateModal(true);
   };
 
-  const handleCreateModalOk = () => {
+  const createProduct = (products) => {
+    const response = window.electron.ipcRenderer.createProduct(products);
+
+    if (response.status === STATUS.FAILED) {
+      console.log(response.message);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('response of create:product-response ');
+      console.log(response);
+      getCurrentProducts({});
+    }
+  };
+
+  const getAllProducts = async () => {
+    const response = await window.electron.ipcRenderer.getAllProducts([]);
+    debugger;
+    console.log('get:all:product-response reponse came back');
+    console.log(response);
+
+    if (response.status === STATUS.FAILED) {
+      console.log(response.message);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('response of get:all:product-response ');
+      console.log(response);
+      setListProducts(response.data);
+    }
+  };
+
+  const createCustomer = async (customerData) => {
+    const response = window.electron.ipcRenderer.createCustomer(customerData);
+    debugger;
+    console.log('create:customer-response reponse came back');
+    console.log(response);
+
+    if (response.status === STATUS.FAILED) {
+      console.log(response.message);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('response of create:customer-response ');
+      console.log(response);
+      getAllCustomers({});
+    }
+  };
+
+  const updateCustomer = async (customerData) => {
+    const response = window.electron.ipcRenderer.updateCustomer(customerData);
+    debugger;
+    console.log('update:customer-response reponse came back');
+    console.log(response);
+
+    if (response.status === STATUS.FAILED) {
+      console.log(response.message);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('response of update:customer-response ');
+      console.log(response);
+      getAllCustomers({});
+    }
+  };
+
+  const updateProduct = async (productsToUpdate) => {
+    const response =
+      window.electron.ipcRenderer.updateProduct(productsToUpdate);
+    debugger;
+    console.log('update:product-response reponse came back');
+    console.log(response);
+
+    if (response.status === STATUS.FAILED) {
+      console.log(response.message);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('response of update:product-response ');
+      console.log(response);
+      getCurrentProducts({});
+    }
+  };
+
+  const getAllCustomers = async () => {
+    const response = await window.electron.ipcRenderer.getAllCustomers({});
+    debugger;
+    if (response.status === STATUS.FAILED) {
+      console.log(response.message);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('response of get:all:customer-response');
+      console.log(response);
+
+      const list = response.data;
+
+      if (selectedOption !== TYPE.archived) {
+        const nonArchived = list.filter(
+          (item) => item.status !== TYPE.archived,
+        );
+
+        const filteredList = nonArchived.filter(
+          (item) => item.type === selectedOption,
+        );
+
+        appContext.setCustomersList(list);
+        appContext.setFilteredCustomersList(filteredList);
+      } else {
+        const archived = list.filter((item) => item.status === TYPE.archived);
+        appContext.setCustomersList(list);
+        appContext.setFilteredCustomersList(archived);
+      }
+    }
+  };
+
+  const deleteCustomers = (data) => {
+    const response = window.electron.ipcRenderer.deleteCustomers(data);
+    console.log('delete:customer-response reponse came back');
+    console.log(response);
+
+    debugger;
+
+    if (response.status === STATUS.FAILED) {
+      console.log(response.message);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      setSelectedRowKeys([]);
+      console.log('response of delete:customer-response ');
+      console.log(response);
+      if (response.status === STATUS.FAILED) {
+        console.log(response.message);
+      }
+
+      if (response.status === STATUS.SUCCESS) {
+        console.log('response of delete:customer-response  ');
+        console.log(response);
+      }
+    }
+  };
+
+  const archiveCustomers = (data) => {
+    const response = window.electron.ipcRenderer.archiveCustomers(data);
+
+    console.log('archive:customer-response reponse came back');
+    console.log(response);
+    debugger;
+    appContext.success('Archived Successfully.');
+
+    if (response.status === STATUS.FAILED) {
+      console.log(response.message);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('response of archive:customer-response ');
+      console.log(response);
+      getCurrentCustomers({});
+    }
+  };
+
+  const unarchiveCustomers = (data) => {
+    const response = window.electron.ipcRenderer.unarchiveCustomers(data);
+
+    console.log('unarchive:customer-response reponse came back');
+    console.log(response);
+    debugger;
+    appContext.success('Unarchived Successfully.');
+
+    if (response.status === STATUS.FAILED) {
+      console.log(response.message);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('response of unarchive:customer-response ');
+      console.log(response);
+      getCurrentCustomers({});
+    }
+  };
+
+  const createUpdateCustomerProduct = () => {};
+
+  const handleCreateModalOk = async () => {
     const customerId = customerUUID;
     const name = form.getFieldValue('name');
     const address = form.getFieldValue('address');
@@ -242,12 +424,7 @@ function Customers({
       }
     }
 
-    appContext.success('Saved Successfully.');
-
-    window.electron.ipcRenderer.createCustomer(customerData);
-    window.electron.ipcRenderer.createProduct(products);
-
-    console.log(products);
+    createCustomer(customerData);
 
     form.resetFields();
     setProducts(initialProducts);
@@ -277,10 +454,6 @@ function Customers({
     setProducts(_products);
     setOpenEditModal(true);
   };
-
-  function getAllProductList() {
-    window.electron.ipcRenderer.getAllProduct({});
-  }
 
   const handleEditModalOk = () => {
     const { id } = selectedCutomer;
@@ -325,6 +498,7 @@ function Customers({
 
     const productsToCreate = [];
     const productsToUpdate = [];
+
     products.map((product) => {
       const hasItem = appContext.currentProducts.filter(
         (p) => product.id === p.id,
@@ -336,9 +510,11 @@ function Customers({
       }
     });
 
-    window.electron.ipcRenderer.updateCustomer(customerData);
-    window.electron.ipcRenderer.updateProduct(productsToUpdate);
-    window.electron.ipcRenderer.createProduct(productsToCreate);
+    // createUpdateCustomerProduct(customerData,productsToCreate, productsToUpdate)
+
+    updateCustomer(customerData);
+    updateProduct(productsToUpdate);
+    createProduct(productsToCreate);
 
     form.resetFields();
     setProducts(initialProducts);
@@ -432,118 +608,6 @@ function Customers({
     setSelectedOption(value);
     setSelectedRowKeys([]);
   };
-
-  // const createNewCustomer = () => {
-  //   confirm({
-  //     title: `Add New ${
-  //       selectedOption === TYPE.customer ? 'Customer' : 'Vendor'
-  //     }`,
-  //     width: selectedOption === TYPE.vendor ? 1000 : 500,
-  //     icon: <UserAddOutlined />,
-  //     content: (
-  //       <>
-  //         {selectedOption === TYPE.customer ? (
-  //           <CustomerForm
-  //             form={form}
-  //             initialValues={{
-  //               name: '',
-  //               address: '',
-  //               phone: '',
-  //               type: selectedOption,
-  //             }}
-  //           />
-  //         ) : (
-  //           <VendorForm
-  //             form={form}
-  //             initialValues={{
-  //               name: '',
-  //               address: '',
-  //               phone: '',
-  //               type: selectedOption,
-  //             }}
-  //           />
-  //         )}
-  //       </>
-  //     ),
-  //     onOk() {
-  //       let id = uuidv4();
-  //       let name = form.getFieldValue('name');
-  //       let address = form.getFieldValue('address');
-  //       let phone = form.getFieldValue('phone');
-
-  //       let data = {
-  //         id,
-  //         key: id,
-  //         name,
-  //         address,
-  //         phone,
-  //         type: selectedOption,
-  //       };
-
-  //       window.electron.ipcRenderer.createCustomer(data);
-  //       form.resetFields();
-  //     },
-  //     onCancel() {
-  //       form.resetFields();
-  //     },
-  //   });
-  // };
-
-  // const editSelectedCustomer = () => {
-  //   confirm({
-  //     title: `Edit ${selectedOption === TYPE.customer ? 'Customer' : 'Vendor'}`,
-  //     width: selectedOption === TYPE.vendor ? 1000 : 500,
-  //     icon: <UserAddOutlined />,
-  //     content: (
-  //       <>
-  //         {selectedOption === TYPE.customer ? (
-  //           <CustomerForm
-  //             form={form}
-  //             initialValues={{
-  //               name: selectedCutomer.name,
-  //               address: selectedCutomer.address,
-  //               phone: selectedCutomer.phone,
-  //               type: selectedOption,
-  //             }}
-  //           />
-  //         ) : (
-  //           <VendorForm
-  //             form={form}
-  //             initialValues={{
-  //               name: selectedCutomer.name,
-  //               address: selectedCutomer.address,
-  //               phone: selectedCutomer.phone,
-  //               type: selectedOption,
-  //             }}
-  //           />
-  //         )}
-  //       </>
-  //     ),
-  //     onOk() {
-  //       let id = selectedCutomer.id;
-  //       let key = selectedCutomer.key;
-
-  //       let name = form.getFieldValue('name');
-  //       let address = form.getFieldValue('address');
-  //       let phone = form.getFieldValue('phone');
-
-  //       let data = {
-  //         id,
-  //         key,
-  //         name,
-  //         address,
-  //         phone,
-  //         typw: selectedOption,
-  //       };
-
-  //       window.electron.ipcRenderer.updateCustomer(data);
-  //       form.resetFields();
-  //     },
-  //     onCancel() {
-  //       form.resetFields();
-  //     },
-  //   });
-  // };
 
   const edit = (record: Partial<Item> & { key: React.Key }) => {
     productsForm.setFieldsValue({
@@ -765,7 +829,7 @@ function Customers({
       cancelText: 'No',
       onOk() {
         const data = [...selectedRowKeys];
-        window.electron.ipcRenderer.deleteCustomers(data);
+        deleteCustomers(data);
       },
       onCancel() {
         console.log('Cancel');
@@ -793,7 +857,7 @@ function Customers({
       cancelText: 'No',
       onOk() {
         const data = [...selectedRowKeys];
-        window.electron.ipcRenderer.archiveCustomers(data);
+        archiveCustomers(data);
         setSelectedRowKeys([]);
         // window.electron.ipcRenderer.deleteCustomers(data);
       },
@@ -828,7 +892,7 @@ function Customers({
       cancelText: 'No',
       onOk() {
         const data = [...selectedRowKeys];
-        window.electron.ipcRenderer.unarchiveCustomers(data);
+        unarchiveCustomers(data);
         setSelectedRowKeys([]);
         // window.electron.ipcRenderer.deleteCustomers(data);
       },
@@ -853,246 +917,6 @@ function Customers({
 
     setSelectedRowKeys(keys);
   };
-
-  async function getAllCustomers(params: type) {
-    const response = await window.electron.ipcRenderer.getAllCustomers({});
-    debugger;
-    console.log(response);
-  }
-
-  window.electron.ipcRenderer.on('create:customer-response', (response) => {
-    console.log('create:customer-response reponse came back');
-    console.log(response);
-
-    if (response.status === STATUS.FAILED) {
-      console.log(response.message);
-    }
-
-    if (response.status === STATUS.SUCCESS) {
-      console.log('response of create:customer-response ');
-      console.log(response);
-      getAllCustomers({});
-
-      // const newActiveKey = uuidv4();
-      // const newPanes = [...tabs];
-      // newPanes.push({
-      //   label: 'New Tab',
-      //   children: <CustomerEditGrid label={`Tab ID =  ${newActiveKey}`} />,
-      //   key: newActiveKey,
-      // });
-      // setTabs(newPanes);
-      // setActiveTabKey(newActiveKey);
-    }
-  });
-  window.electron.ipcRenderer.on('update:customer-response', (response) => {
-    console.log('update:customer-response reponse came back');
-    console.log(response);
-
-    if (response.status === STATUS.FAILED) {
-      console.log(response.message);
-    }
-
-    if (response.status === STATUS.SUCCESS) {
-      console.log('response of update:customer-response ');
-      console.log(response);
-      getAllCustomers({});
-
-      // const newActiveKey = uuidv4();
-      // const newPanes = [...tabs];
-      // newPanes.push({
-      //   label: 'New Tab',
-      //   children: <CustomerEditGrid label={`Tab ID =  ${newActiveKey}`} />,
-      //   key: newActiveKey,
-      // });
-      // setTabs(newPanes);
-      // setActiveTabKey(newActiveKey);
-    }
-  });
-
-  // window.electron.ipcRenderer.on('get:all:customer-response', (response) => {
-  //   console.log('get:all:customer-response reponse came back');
-  //   console.log(response);
-
-  //   if (response.status === STATUS.FAILED) {
-  //     console.log(response.message);
-  //   }
-
-  //   if (response.status === STATUS.SUCCESS) {
-  //     console.log('response of get:all:customer-response ');
-  //     console.log(response);
-
-  //     const list = response.data;
-
-  //     if (selectedOption !== TYPE.archived) {
-  //       const nonArchived = list.filter(
-  //         (item) => item.status !== TYPE.archived,
-  //       );
-
-  //       const filteredList = nonArchived.filter(
-  //         (item) => item.type === selectedOption,
-  //       );
-
-  //       appContext.setCustomersList(list);
-  //       appContext.setFilteredCustomersList(filteredList);
-  //     } else {
-  //       const archived = list.filter((item) => item.status === TYPE.archived);
-  //       appContext.setCustomersList(list);
-  //       appContext.setFilteredCustomersList(archived);
-  //     }
-
-  //   }
-  // });
-
-  window.electron.ipcRenderer.on('delete:customer-response', (response) => {
-    console.log('delete:customer-response reponse came back');
-    console.log(response);
-
-    if (response.status === STATUS.FAILED) {
-      console.log(response.message);
-    }
-
-    if (response.status === STATUS.SUCCESS) {
-      setSelectedRowKeys([]);
-      console.log('response of delete:customer-response ');
-      console.log(response);
-      if (response.status === STATUS.FAILED) {
-        console.log(response.message);
-      }
-
-      if (response.status === STATUS.SUCCESS) {
-        console.log('response of delete:customer-response  ');
-        console.log(response);
-        window.electron.ipcRenderer.getAllCustomers({});
-      }
-
-      // const newActiveKey = uuidv4();
-      // const newPanes = [...tabs];
-      // newPanes.push({
-      //   label: 'New Tab',
-      //   children: <CustomerEditGrid label={`Tab ID =  ${newActiveKey}`} />,
-      //   key: newActiveKey,
-      // });
-      // setTabs(newPanes);
-      // setActiveTabKey(newActiveKey);
-    }
-  });
-
-  window.electron.ipcRenderer.on('create:product-response', (response) => {
-    console.log('create:product-response reponse came back');
-    console.log(response);
-
-    if (response.status === STATUS.FAILED) {
-      console.log(response.message);
-    }
-
-    if (response.status === STATUS.SUCCESS) {
-      console.log('response of create:product-response ');
-      console.log(response);
-      getCurrentProducts({});
-
-      // const newActiveKey = uuidv4();
-      // const newPanes = [...tabs];
-      // newPanes.push({
-      //   label: 'New Tab',
-      //   children: <CustomerEditGrid label={`Tab ID =  ${newActiveKey}`} />,
-      //   key: newActiveKey,
-      // });
-      // setTabs(newPanes);
-      // setActiveTabKey(newActiveKey);
-    }
-  });
-
-  window.electron.ipcRenderer.on('update:product-response', (response) => {
-    console.log('update:product-response reponse came back');
-    console.log(response);
-
-    if (response.status === STATUS.FAILED) {
-      console.log(response.message);
-    }
-
-    if (response.status === STATUS.SUCCESS) {
-      console.log('response of update:product-response ');
-      console.log(response);
-      getCurrentProducts({});
-
-      // const newActiveKey = uuidv4();
-      // const newPanes = [...tabs];
-      // newPanes.push({
-      //   label: 'New Tab',
-      //   children: <CustomerEditGrid label={`Tab ID =  ${newActiveKey}`} />,
-      //   key: newActiveKey,
-      // });
-      // setTabs(newPanes);
-      // setActiveTabKey(newActiveKey);
-    }
-  });
-
-  window.electron.ipcRenderer.on('archive:customer-response', (response) => {
-    console.log('archive:customer-response reponse came back');
-    console.log(response);
-    appContext.success('Archived Successfully.');
-
-    if (response.status === STATUS.FAILED) {
-      console.log(response.message);
-    }
-
-    if (response.status === STATUS.SUCCESS) {
-      console.log('response of archive:customer-response ');
-      console.log(response);
-      getCurrentCustomers({});
-
-      // const newActiveKey = uuidv4();
-      // const newPanes = [...tabs];
-      // newPanes.push({
-      //   label: 'New Tab',
-      //   children: <CustomerEditGrid label={`Tab ID =  ${newActiveKey}`} />,
-      //   key: newActiveKey,
-      // });
-      // setTabs(newPanes);
-      // setActiveTabKey(newActiveKey);
-    }
-  });
-
-  window.electron.ipcRenderer.on('unarchive:customer-response', (response) => {
-    console.log('unarchive:customer-response reponse came back');
-    console.log(response);
-    appContext.success('Unarchived Successfully.');
-
-    if (response.status === STATUS.FAILED) {
-      console.log(response.message);
-    }
-
-    if (response.status === STATUS.SUCCESS) {
-      console.log('response of unarchive:customer-response ');
-      console.log(response);
-      getCurrentCustomers({});
-
-      // const newActiveKey = uuidv4();
-      // const newPanes = [...tabs];
-      // newPanes.push({
-      //   label: 'New Tab',
-      //   children: <CustomerEditGrid label={`Tab ID =  ${newActiveKey}`} />,
-      //   key: newActiveKey,
-      // });
-      // setTabs(newPanes);
-      // setActiveTabKey(newActiveKey);
-    }
-  });
-
-  window.electron.ipcRenderer.on('get:all:product-response', (response) => {
-    console.log('get:all:product-response reponse came back');
-    console.log(response);
-
-    if (response.status === STATUS.FAILED) {
-      console.log(response.message);
-    }
-
-    if (response.status === STATUS.SUCCESS) {
-      console.log('response of get:all:product-response ');
-      console.log(response);
-      setListProducts(response.data);
-    }
-  });
 
   return (
     <div>

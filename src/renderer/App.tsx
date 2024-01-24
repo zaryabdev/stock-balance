@@ -27,7 +27,7 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import Context from './AppContext';
 import SampleList from './SampleList';
-import { STATUS } from './contants';
+import { STATUS, TYPE } from './contants';
 import Customers from './modules/customers/Customers';
 
 export default function App() {
@@ -41,6 +41,8 @@ export default function App() {
   const [filteredCustomersList, setFilteredCustomersList] = useState([]);
   const [validationsModal, setValidationsModal] = useState(false);
   const [invalidRows, setInvalidRows] = useState([]);
+  const [selectedOption, setSelectedOption] = useState(TYPE.customer);
+
   const [duplicateRows, setDuplicateRows] = useState([]);
 
   useEffect(() => {
@@ -48,6 +50,93 @@ export default function App() {
     getCurrentProducts();
     getAllRecords();
   }, []);
+
+  const getAllProducts = async () => {
+    const response = window.electron.ipcRenderer.getAllProducts({});
+    console.log('get:all:product-response reponse came back');
+    console.log(response);
+    if (response.status === STATUS.FAILED) {
+      console.log(response.message);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('response of get:all:product-response ');
+      console.log(response);
+      const list = response.data;
+
+      setCurrentProducts(list);
+    }
+  };
+  const getAllCustomers = async () => {
+    const response = window.electron.ipcRenderer.getAllCustomers({});
+    console.log('get:all:customer-response reponse came back');
+    console.log(response);
+    debugger;
+    if (response.status === STATUS.FAILED) {
+      console.log(response.message);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('response of get:all:customer-response ');
+      console.log(response);
+      const list = response.data;
+
+      if (selectedOption !== TYPE.archived) {
+        const nonArchived = list.filter(
+          (item) => item.status !== TYPE.archived,
+        );
+
+        const filteredList = nonArchived.filter(
+          (item) => item.type === selectedOption,
+        );
+
+        setCustomersList(list);
+        setFilteredCustomersList(filteredList);
+      } else {
+        const archived = list.filter((item) => item.status === TYPE.archived);
+        setCustomersList(list);
+        setFilteredCustomersList(archived);
+      }
+    }
+  };
+
+  window.electron.ipcRenderer.on(
+    'get:all:customer-invoices-response',
+    (response) => {
+      console.log('get:all:customer-invoices-response reponse came back');
+      // console.log(response);
+
+      if (response.status === STATUS.FAILED) {
+        console.log(response.message);
+      }
+
+      if (response.status === STATUS.SUCCESS) {
+        console.log('response of get:all:customer-invoices-response ');
+        // console.log(response);
+        setAllInvoices(response.data);
+      }
+    },
+  );
+
+  window.electron.ipcRenderer.on(
+    'delete:duplicated-customer-invoice-response',
+    (response) => {
+      console.log(
+        'delete:duplicated-customer-invoice-response reponse came back',
+      );
+      // console.log(response);
+
+      if (response.status === STATUS.FAILED) {
+        console.log(response.message);
+      }
+
+      if (response.status === STATUS.SUCCESS) {
+        setDuplicateRows([]);
+        console.log('response of delete:duplicated-customer-invoice-response ');
+        // console.log(response);
+      }
+    },
+  );
 
   const {
     token: { colorBgContainer },
@@ -233,12 +322,12 @@ export default function App() {
   }
   function getCurrentProducts(params: type) {
     console.log('getCurrentProducts()');
-    window.electron.ipcRenderer.getAllProduct({});
+    getAllProducts({});
   }
 
   function getCurrentCustomers(params: type) {
     console.log('getAllCustomers()');
-    window.electron.ipcRenderer.getAllCustomers({});
+    getAllCustomers({});
   }
 
   function getAllRecords() {
@@ -280,60 +369,6 @@ export default function App() {
     message.warning('Duplicate data can cause uncertain calculations.');
   };
 
-  window.electron.ipcRenderer.on(
-    'get:all:customer-invoices-response',
-    (response) => {
-      console.log('get:all:customer-invoices-response reponse came back');
-      // console.log(response);
-
-      if (response.status === STATUS.FAILED) {
-        console.log(response.message);
-      }
-
-      if (response.status === STATUS.SUCCESS) {
-        console.log('response of get:all:customer-invoices-response ');
-        // console.log(response);
-        setAllInvoices(response.data);
-      }
-    },
-  );
-
-  window.electron.ipcRenderer.on('get:all:product-response', (response) => {
-    console.log('get:all:product-response reponse came back');
-    console.log(response);
-    if (response.status === STATUS.FAILED) {
-      console.log(response.message);
-    }
-
-    if (response.status === STATUS.SUCCESS) {
-      console.log('response of get:all:product-response ');
-      console.log(response);
-      const list = response.data;
-
-      setCurrentProducts(list);
-    }
-  });
-
-  window.electron.ipcRenderer.on(
-    'delete:duplicated-customer-invoice-response',
-    (response) => {
-      console.log(
-        'delete:duplicated-customer-invoice-response reponse came back',
-      );
-      // console.log(response);
-
-      if (response.status === STATUS.FAILED) {
-        console.log(response.message);
-      }
-
-      if (response.status === STATUS.SUCCESS) {
-        setDuplicateRows([]);
-        console.log('response of delete:duplicated-customer-invoice-response ');
-        // console.log(response);
-      }
-    },
-  );
-
   return (
     <Context.Provider
       value={{
@@ -360,6 +395,8 @@ export default function App() {
           getCurrentStock={getCurrentStock}
           getCurrentProducts={getCurrentProducts}
           getCurrentCustomers={getCurrentCustomers}
+          selectedOption={selectedOption}
+          setSelectedOption={setSelectedOption}
         />
         {/* {toggleSideBar ? (
           <FloatButton

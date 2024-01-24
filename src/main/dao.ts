@@ -16,10 +16,10 @@ class AppDAO {
   }
 
   run(sql, params = [], data, callbackFunction) {
-    console.log('This SQL will run ');
-    console.log('-------------SQL START----------------');
-    console.log(sql);
-    console.log('-------------SQL END----------------');
+    console.log('DAO : run');
+    console.log(
+      `This SQL will run \n\n-------------SQL START----------------\n${sql}\n-------------SQL END----------------\n`,
+    );
 
     const query = this.db.prepare(sql);
 
@@ -33,20 +33,24 @@ class AppDAO {
       if (err) {
         res.status = STATUS.FAILED;
         res.message = 'Error occured in query run command.';
+        console.error(res.message);
         console.error(err);
         if (callbackFunction) callbackFunction(res, err);
       } else {
         res.status = STATUS.SUCCESS;
         res.message = 'Query ran successfully.';
+        console.log('Query ran successfully.');
         if (callbackFunction) callbackFunction(res);
       }
     });
   }
 
-  all(sql, params = [], data, callbackFunction, event) {
+  all(sql, params = [], data, callbackFunction) {
     console.log('DAO : all');
-    console.log(event);
-    // event.returnValue = 'Pong';
+    console.log(
+      `This SQL will run \n\n-------------SQL START----------------\n${sql}\n-------------SQL END----------------\n`,
+    );
+
     const query = this.db.prepare(sql);
     const res = {
       status: '',
@@ -58,25 +62,23 @@ class AppDAO {
       if (err) {
         res.status = STATUS.FAILED;
         res.message = 'Error occured in query all command.';
+        console.log(res.message);
         console.error(err);
-        console.log(event);
-        if (callbackFunction) callbackFunction(res, err, event);
+        if (callbackFunction) callbackFunction(res, err);
       } else {
-        console.log('Get all by ID query ran. Total rows' + rows.length);
-
-        rows.forEach((row) => {
-          // print each row
-          // console.log(row);
-        });
+        // rows.forEach((row) => {
+        // console.log(row);
+        // });
 
         res.status = STATUS.SUCCESS;
         res.message = 'Records fetched successfully.';
         res.data = rows;
-        res.meta = data;
-        console.log(event);
-        // event.returnValue(res);
-        // event.returnValue = res;
-        if (callbackFunction) callbackFunction(res, undefined, event);
+
+        console.log(
+          'Total | ' + rows.length + ' | Records fetched successfully.',
+        );
+
+        if (callbackFunction) callbackFunction(res);
       }
     });
   }

@@ -10,117 +10,181 @@ const electronHandler = {
       // ipcRenderer.send(channel, ...args);
     },
     getAllCustomers(data) {
-      console.log('Inside preload get:all:customer');
+      console.log(
+        '%c Inside preload get:all:customer',
+        'background: #222; color: #bada55',
+      );
       console.log(data);
       return ipcRenderer.sendSync('get:all:customer', data);
     },
     createCustomer(data) {
-      console.log('Inside preload create:customer');
+      console.log(
+        '%c Inside preload create:customer',
+        'background: #222; color: #bada55',
+      );
       console.log(data);
-      // ipcRenderer.send('create:customer', data);
+      return ipcRenderer.sendSync('create:customer', data);
     },
     updateCustomer(data) {
-      console.log('Inside preload update:customer');
+      console.log(
+        '%c Inside preload update:customer',
+        'background: #222; color: #bada55',
+      );
       console.log(data);
-      // ipcRenderer.send('update:customer', data);
+      return ipcRenderer.sendSync('update:customer', data);
     },
 
     deleteCustomers(data) {
-      console.log('Inside preload delete:customer');
+      console.log(
+        '%c Inside preload delete:customer',
+        'background: #222; color: #bada55',
+      );
       console.log(data);
-      // ipcRenderer.send('delete:customer', data);
+      return ipcRenderer.sendSync('delete:customer', data);
     },
     archiveCustomers(data) {
-      console.log('Inside preload archive:customer');
+      console.log(
+        '%c Inside preload archive:customer',
+        'background: #222; color: #bada55',
+      );
       console.log(data);
-      // ipcRenderer.send('archive:customer', data);
+      return ipcRenderer.sendSync('archive:customer', data);
     },
     unarchiveCustomers(data) {
-      console.log('Inside preload unarchive:customer');
+      console.log(
+        '%c Inside preload unarchive:customer',
+        'background: #222; color: #bada55',
+      );
       console.log(data);
-      // ipcRenderer.send('unarchive:customer', data);
+      return ipcRenderer.sendSync('unarchive:customer', data);
     },
     createCustomerInvoice(data) {
-      console.log('Inside preload create:customer-invoice');
+      console.log(
+        '%c Inside preload create:customer-invoice',
+        'background: #222; color: #bada55',
+      );
       console.log(data);
       // ipcRenderer.send('create:customer-invoice', data);
     },
     updateCustomerInvoice(data) {
-      console.log('Inside preload update:customer-invoice');
+      console.log(
+        '%c Inside preload update:customer-invoice',
+        'background: #222; color: #bada55',
+      );
       console.log(data);
       // ipcRenderer.send('update:customer-invoice', data);
     },
     deleteCustomerInvoice(data) {
-      console.log('Inside preload delete:customer-invoice');
+      console.log(
+        '%c Inside preload delete:customer-invoice',
+        'background: #222; color: #bada55',
+      );
       console.log(data);
       // ipcRenderer.send('delete:customer-invoice', data);
     },
     deleteDuplicatedCustomerInvoice(data) {
-      console.log('Inside preload delete:duplicated-customer-invoice');
+      console.log(
+        '%c Inside preload delete:duplicated-customer-invoice',
+        'background: #222; color: #bada55',
+      );
       console.log(data);
       // ipcRenderer.send('delete:duplicated-customer-invoice', data);
     },
     getAllCustomersInvoice(data) {
-      console.log('Inside preload get:all:customer-invoices');
+      console.log(
+        '%c Inside preload get:all:customer-invoices',
+        'background: #222; color: #bada55',
+      );
       console.log(data);
       // ipcRenderer.send('get:all:customer-invoices', data);
     },
     getAllCustomerInvoicesById(data) {
-      console.log('Inside preload get:all:customer-invoices:id');
+      console.log(
+        '%c Inside preload get:all:customer-invoices:id',
+        'background: #222; color: #bada55',
+      );
       console.log(data);
       // ipcRenderer.send('get:all:customer-invoices:id', data);
     },
     deleteCustomersInvoice(data) {
-      console.log('Inside preload delete:customer-invoice');
+      console.log(
+        '%c Inside preload delete:customer-invoice',
+        'background: #222; color: #bada55',
+      );
       console.log(data);
       // ipcRenderer.send('delete:customer-invoice', data);
     },
 
     createBalance(data) {
-      console.log('Inside preload create:balance');
+      console.log(
+        '%c Inside preload create:balance',
+        'background: #222; color: #bada55',
+      );
       console.log(data);
       // ipcRenderer.send('create:balance', data);
     },
     updateBalance(data) {
-      console.log('Inside preload update:balance');
+      console.log(
+        '%c Inside preload update:balance',
+        'background: #222; color: #bada55',
+      );
       console.log(data);
       // ipcRenderer.send('update:balance', data);
     },
     getAllBalance(data) {
-      console.log('Inside preload get:all:balance');
+      console.log(
+        '%c Inside preload get:all:balance',
+        'background: #222; color: #bada55',
+      );
+
       console.log(data);
       // ipcRenderer.send('get:all:balance', data);
     },
     deleteBalance(data) {
-      console.log('Inside preload delete:balance');
+      console.log(
+        '%c Inside preload delete:balance',
+        'background: #222; color: #bada55',
+      );
       console.log(data);
       // ipcRenderer.send('delete:balance', data);
     },
 
     createProduct(data) {
-      console.log('Inside preload create:product');
+      console.log(
+        '%c Inside preload create:product',
+        'background: #222; color: #bada55',
+      );
       console.log(data);
-      // ipcRenderer.send('create:product', data);
+      return ipcRenderer.sendSync('create:product', data);
     },
     updateProduct(data) {
-      console.log('Inside preload update:product');
+      console.log(
+        '%c Inside preload update:product',
+        'background: #222; color: #bada55',
+      );
       console.log(data);
-      // ipcRenderer.send('update:product', data);
+      return ipcRenderer.sendSync('update:product', data);
     },
-    getAllProduct(data) {
-      console.log('Inside preload get:all:product');
+    getAllProducts(data) {
+      console.log(
+        '%c Inside preload get:all:product',
+        'background: #222; color: #bada55',
+      );
       console.log(data);
-      // ipcRenderer.send('get:all:product', data);
+      return ipcRenderer.sendSync('get:all:product', data);
     },
     deleteProduct(data) {
-      console.log('Inside preload delete:product');
+      console.log(
+        '%c Inside preload delete:product',
+        'background: #222; color: #bada55',
+      );
       console.log(data);
-      // ipcRenderer.send('delete:product', data);
+      return ipcRenderer.sendSync('delete:product', data);
     },
 
     // on(channel, func) {
     //   const validChannels = ['create:customer-response'];
-    //   console.log('Inside on Channel check');
+    //   console.log('Inside on Channel check', 'background: #222; color: #bada55');
     //   if (validChannels.includes(channel)) {
     //     ;
     //     console.log('Yooo channel' + channel);

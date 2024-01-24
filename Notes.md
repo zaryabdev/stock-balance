@@ -11,6 +11,7 @@
 - Defalut Value not changing for payment & previous balance
   - Payment make it free entry
   - Payment const change it from none to payment
+- When archiving all customer app crashes sometimes
 
 # Isssues :
 
