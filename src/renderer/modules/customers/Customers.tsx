@@ -918,6 +918,20 @@ function Customers({
     setSelectedRowKeys(keys);
   };
 
+  const showArchiveAction = (showArchiveAction) => {
+    switch (showArchiveAction) {
+      case TYPE.customer:
+        return true;
+      case TYPE.walkingCustomer:
+        return true;
+      case TYPE.vendor:
+        return true;
+
+      default:
+        return false;
+    }
+  };
+
   return (
     <div>
       <Row gutter={[8, 8]}>
@@ -978,19 +992,18 @@ function Customers({
                 Load
               </Button>
 
-              {/* <Button
-                type="default"
-                size="middle"
-                style={{ margin: 2 }}
-                onClick={showDeleteConfirm}
-                // loading={loading}
-                // disabled={
-                //   selectedRowKeys.length < 1 || selectedOption === TYPE.both
-                // }
-                disabled
-              >
-                Delete
-              </Button> */}
+              {selectedOption === TYPE.archived && (
+                <Button
+                  type="default"
+                  size="middle"
+                  style={{ margin: 2 }}
+                  onClick={showDeleteConfirm}
+                  // loading={loading}
+                  disabled
+                >
+                  Delete
+                </Button>
+              )}
               {selectedOption === TYPE.archived && (
                 <Button
                   type="default"
@@ -1005,7 +1018,7 @@ function Customers({
                   Unarchive
                 </Button>
               )}
-              {selectedOption === TYPE.customer && (
+              {showArchiveAction(selectedOption) ? (
                 <Button
                   type="default"
                   size="middle"
@@ -1019,14 +1032,13 @@ function Customers({
                 >
                   Archive
                 </Button>
-              )}
-              {selectedOption === TYPE.vendor && (
+              ) : null}
+              {/* {selectedOption === TYPE.vendor && (
                 <Button
                   type="default"
                   size="middle"
                   style={{ margin: 2 }}
                   onClick={showArchiveConfirm}
-                  // loading={loading}
                   disabled={
                     selectedRowKeys.length < 1 || selectedOption === TYPE.both
                   }
@@ -1034,18 +1046,16 @@ function Customers({
                 >
                   Archive
                 </Button>
-              )}
+              )} */}
 
-              <Button
+              {/* <Button
                 type="default"
                 size="middle"
                 style={{ margin: 2 }}
                 onClick={() => appContext.setToggleSideBar((prev) => !prev)}
-                // loading={loading}
-                // disabled={}
               >
                 Hide List
-              </Button>
+              </Button> */}
             </div>
             <CustomersList
               data={appContext.filteredCustomersList}
