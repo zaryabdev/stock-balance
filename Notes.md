@@ -88,6 +88,10 @@ https://blog.logrocket.com/advanced-electron-js-architecture/
 
 https://stackoverflow.com/questions/599837/how-to-generate-and-validate-a-software-license-key
 
+https://stackoverflow.com/questions/63392147/electron-renderer-process-when-should-i-clean-ipc-listeners
+
+https://blog.logrocket.com/electron-ipc-response-request-architecture-with-typescript/
+
 # Unsorted
 
 - Sort by alphabetical order [DONE]
