@@ -104,7 +104,6 @@ const SelectComponent = React.memo(
         ref.current?.blur();
       }
     }, [focus]);
-    console.log('Inside SelectComponent');
     return (
       <Select
         ref={ref}

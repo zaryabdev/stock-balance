@@ -28,9 +28,8 @@ interface DataType {
 
 type DataIndex = keyof DataType;
 
-const Dashboard: React.FC = ({ activeTab, customersList }) => {
+const Dashboard: React.FC = ({}) => {
   const appContext = useContext(context);
-  console.log(appContext.customersList);
 
   const [allInvoices, setAllInvoices] = useState([]);
   const [loading, setLoading] = useState(false);

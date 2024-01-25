@@ -961,7 +961,11 @@ function Customers({
                 onClick={handleShowCreateModal}
                 // loading={loading}
                 disabled={
-                  selectedRowKeys.length > 0 || selectedOption === TYPE.both
+                  selectedRowKeys.length > 0 ||
+                  selectedOption === TYPE.both ||
+                  selectedOption === TYPE.walkingCustomer ||
+                  selectedOption === TYPE.archived ||
+                  selectedOption === TYPE.deleted
                 }
               >
                 Add
