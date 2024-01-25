@@ -43,7 +43,7 @@ import { useRenderCount } from '@uidotdev/usehooks';
 import context from '../../AppContext';
 import { STATE, STATUS, TYPE, TYPE_COLOR_PALLETE } from '../../contants';
 import CustomersList from './CustomersList';
-// import MultiCustomersTabs from './MultiCustomersTabs';
+import MultiCustomersTabs from './MultiCustomersTabs';
 
 const { confirm } = Modal;
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
@@ -1066,12 +1066,11 @@ function Customers({
           </>
         </Col>
         <Col span={appContext.toggleSideBar ? 18 : 24}>
-          {/* <MultiCustomersTabs
+          <MultiCustomersTabs
             customersList={appContext.customersList}
             getCurrentStock={getCurrentStock}
             selectedCutomersToLoad={selectedCutomersToLoad}
-          /> */}
-          MultiCustomersTabs
+          />
         </Col>
       </Row>
       <Modal
