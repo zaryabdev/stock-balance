@@ -35,7 +35,7 @@ const Stock: React.FC = ({ activeTab }) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    getAllRecords();
+    getAllCustomersInvoice();
   }, []);
 
   // useEffect(() => {
@@ -144,15 +144,30 @@ const Stock: React.FC = ({ activeTab }) => {
   }, [allInvoices]);
 
   const start = () => {
-    getAllRecords();
+    getAllCustomersInvoice();
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
     }, 1000);
   };
 
-  function getAllRecords() {
-    window.electron.ipcRenderer.getAllCustomersInvoice({});
+  async function getAllCustomersInvoice() {
+    const response = await window.electron.ipcRenderer.getAllCustomersInvoice(
+      {},
+    );
+
+    console.log('get:all:customer-invoices-response reponse came back');
+    console.log(response);
+    debugger;
+    if (response.status === STATUS.FAILED) {
+      console.log(response.message);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('response of get:all:customer-invoices-response ');
+      // console.log(response);
+      setAllInvoices(response.data);
+    }
   }
 
   const handleSearch = (
@@ -365,24 +380,6 @@ const Stock: React.FC = ({ activeTab }) => {
       ),
     },
   ];
-
-  window.electron.ipcRenderer.on(
-    'get:all:customer-invoices-response',
-    (response) => {
-      console.log('get:all:customer-invoices-response reponse came back');
-      // console.log(response);
-
-      if (response.status === STATUS.FAILED) {
-        console.log(response.message);
-      }
-
-      if (response.status === STATUS.SUCCESS) {
-        console.log('response of get:all:customer-invoices-response ');
-        // console.log(response);
-        setAllInvoices(response.data);
-      }
-    },
-  );
 
   return (
     <div

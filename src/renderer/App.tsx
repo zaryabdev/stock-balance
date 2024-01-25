@@ -48,7 +48,7 @@ export default function App() {
   useEffect(() => {
     getCurrentStock();
     getCurrentProducts();
-    getAllRecords();
+    getAllCustomersInvoice();
   }, []);
 
   const getAllProducts = async () => {
@@ -99,24 +99,6 @@ export default function App() {
       }
     }
   };
-
-  window.electron.ipcRenderer.on(
-    'get:all:customer-invoices-response',
-    (response) => {
-      console.log('get:all:customer-invoices-response reponse came back');
-      // console.log(response);
-
-      if (response.status === STATUS.FAILED) {
-        console.log(response.message);
-      }
-
-      if (response.status === STATUS.SUCCESS) {
-        console.log('response of get:all:customer-invoices-response ');
-        // console.log(response);
-        setAllInvoices(response.data);
-      }
-    },
-  );
 
   window.electron.ipcRenderer.on(
     'delete:duplicated-customer-invoice-response',
@@ -330,8 +312,19 @@ export default function App() {
     getAllCustomers({});
   }
 
-  function getAllRecords() {
-    window.electron.ipcRenderer.getAllCustomersInvoice({});
+  function getAllCustomersInvoice() {
+    const response = window.electron.ipcRenderer.getAllCustomersInvoice({});
+    console.log('get:all:customer-invoices-response reponse came back');
+
+    console.log(response);
+    debugger;
+    if (response.status === STATUS.FAILED) {
+      console.log(response.message);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      setAllInvoices(response.data);
+    }
   }
 
   // window.electron.ipcRenderer.on('get:all:stock-response', (response) => {
@@ -350,6 +343,16 @@ export default function App() {
   //   }
   // });
 
+  const deleteDuplicatedCustomerInvoice = (recordsToDelete) => {
+    const response =
+      window.electron.ipcRenderer.deleteDuplicatedCustomerInvoice(
+        recordsToDelete,
+      );
+
+    console.log(response);
+    debugger;
+  };
+
   const confirm = (e: React.MouseEvent<HTMLElement>) => {
     const recordsToDelete = [];
     if (duplicateRows) {
@@ -358,9 +361,7 @@ export default function App() {
       });
     }
 
-    window.electron.ipcRenderer.deleteDuplicatedCustomerInvoice(
-      recordsToDelete,
-    );
+    deleteDuplicatedCustomerInvoice(recordsToDelete);
   };
 
   const cancel = (e: React.MouseEvent<HTMLElement>) => {
@@ -444,7 +445,7 @@ export default function App() {
           onOk={() => setValidationsModal(false)}
           onCancel={() => setValidationsModal(false)}
           footer={[
-            <Button onClick={getAllRecords}>Refresh Data</Button>,
+            <Button onClick={getAllCustomersInvoice}>Refresh Data</Button>,
             <Button onClick={validateInvoices}>Check Validation</Button>,
             <Popconfirm
               title="Delete Duplicate Records"

@@ -1,6 +1,11 @@
 // Disable no-unused-vars, broken for spread args
 /* eslint no-unused-vars: off */
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
+const log = (message) =>
+  console.log(
+    `%c Inside preload : ${message} `,
+    'background: #222; color: #bada55',
+  );
 
 export type MEDIA_CHANNELS = String;
 
@@ -10,174 +15,93 @@ const electronHandler = {
       // ipcRenderer.send(channel, ...args);
     },
     getAllCustomers(data) {
-      console.log(
-        '%c Inside preload get:all:customer',
-        'background: #222; color: #bada55',
-      );
+      log('getAllCustomers');
       console.log(data);
       return ipcRenderer.sendSync('get:all:customer', data);
     },
     createCustomer(data) {
-      console.log(
-        '%c Inside preload create:customer',
-        'background: #222; color: #bada55',
-      );
+      log('createCustomer');
+
       console.log(data);
       return ipcRenderer.sendSync('create:customer', data);
     },
     updateCustomer(data) {
-      console.log(
-        '%c Inside preload update:customer',
-        'background: #222; color: #bada55',
-      );
+      log('updateCustomer');
+
       console.log(data);
       return ipcRenderer.sendSync('update:customer', data);
     },
 
     deleteCustomers(data) {
-      console.log(
-        '%c Inside preload delete:customer',
-        'background: #222; color: #bada55',
-      );
+      log('deleteCustomers');
       console.log(data);
       return ipcRenderer.sendSync('delete:customer', data);
     },
     archiveCustomers(data) {
-      console.log(
-        '%c Inside preload archive:customer',
-        'background: #222; color: #bada55',
-      );
+      log('archiveCustomers');
+
       console.log(data);
       return ipcRenderer.sendSync('archive:customer', data);
     },
     unarchiveCustomers(data) {
-      console.log(
-        '%c Inside preload unarchive:customer',
-        'background: #222; color: #bada55',
-      );
+      log('unarchiveCustomers');
       console.log(data);
       return ipcRenderer.sendSync('unarchive:customer', data);
     },
     createCustomerInvoice(data) {
-      console.log(
-        '%c Inside preload create:customer-invoice',
-        'background: #222; color: #bada55',
-      );
+      log('createCustomerInvoice');
       console.log(data);
-      // ipcRenderer.send('create:customer-invoice', data);
+      return ipcRenderer.send('create:customer-invoice', data);
     },
     updateCustomerInvoice(data) {
-      console.log(
-        '%c Inside preload update:customer-invoice',
-        'background: #222; color: #bada55',
-      );
+      log('updateCustomerInvoice');
+
       console.log(data);
-      // ipcRenderer.send('update:customer-invoice', data);
+      return ipcRenderer.send('update:customer-invoice', data);
     },
     deleteCustomerInvoice(data) {
-      console.log(
-        '%c Inside preload delete:customer-invoice',
-        'background: #222; color: #bada55',
-      );
+      log('deleteCustomerInvoice');
       console.log(data);
-      // ipcRenderer.send('delete:customer-invoice', data);
+      return ipcRenderer.sendSync('delete:customer-invoice', data);
     },
     deleteDuplicatedCustomerInvoice(data) {
-      console.log(
-        '%c Inside preload delete:duplicated-customer-invoice',
-        'background: #222; color: #bada55',
-      );
+      log('deleteDuplicatedCustomerInvoice');
       console.log(data);
-      // ipcRenderer.send('delete:duplicated-customer-invoice', data);
+      return ipcRenderer.sendSync('delete:duplicated-customer-invoice', data);
     },
     getAllCustomersInvoice(data) {
-      console.log(
-        '%c Inside preload get:all:customer-invoices',
-        'background: #222; color: #bada55',
-      );
+      log('getAllCustomersInvoice');
       console.log(data);
-      // ipcRenderer.send('get:all:customer-invoices', data);
+      return ipcRenderer.sendSync('get:all:customer-invoices', data);
     },
     getAllCustomerInvoicesById(data) {
-      console.log(
-        '%c Inside preload get:all:customer-invoices:id',
-        'background: #222; color: #bada55',
-      );
+      log('getAllCustomerInvoicesById');
       console.log(data);
-      // ipcRenderer.send('get:all:customer-invoices:id', data);
+      return ipcRenderer.sendSync('get:all:customer-invoices:id', data);
     },
+    // TODO
     deleteCustomersInvoice(data) {
-      console.log(
-        '%c Inside preload delete:customer-invoice',
-        'background: #222; color: #bada55',
-      );
+      log('deleteCustomersInvoice');
       console.log(data);
-      // ipcRenderer.send('delete:customer-invoice', data);
+      return ipcRenderer.sendSync('delete:customer-invoice', data);
     },
-
-    createBalance(data) {
-      console.log(
-        '%c Inside preload create:balance',
-        'background: #222; color: #bada55',
-      );
-      console.log(data);
-      // ipcRenderer.send('create:balance', data);
-    },
-    updateBalance(data) {
-      console.log(
-        '%c Inside preload update:balance',
-        'background: #222; color: #bada55',
-      );
-      console.log(data);
-      // ipcRenderer.send('update:balance', data);
-    },
-    getAllBalance(data) {
-      console.log(
-        '%c Inside preload get:all:balance',
-        'background: #222; color: #bada55',
-      );
-
-      console.log(data);
-      // ipcRenderer.send('get:all:balance', data);
-    },
-    deleteBalance(data) {
-      console.log(
-        '%c Inside preload delete:balance',
-        'background: #222; color: #bada55',
-      );
-      console.log(data);
-      // ipcRenderer.send('delete:balance', data);
-    },
-
     createProduct(data) {
-      console.log(
-        '%c Inside preload create:product',
-        'background: #222; color: #bada55',
-      );
+      log('createProduct');
       console.log(data);
       return ipcRenderer.sendSync('create:product', data);
     },
     updateProduct(data) {
-      console.log(
-        '%c Inside preload update:product',
-        'background: #222; color: #bada55',
-      );
+      log('updateProduct');
       console.log(data);
       return ipcRenderer.sendSync('update:product', data);
     },
     getAllProducts(data) {
-      console.log(
-        '%c Inside preload get:all:product',
-        'background: #222; color: #bada55',
-      );
+      log('getAllProducts');
       console.log(data);
       return ipcRenderer.sendSync('get:all:product', data);
     },
     deleteProduct(data) {
-      console.log(
-        '%c Inside preload delete:product',
-        'background: #222; color: #bada55',
-      );
+      log('deleteProduct');
       console.log(data);
       return ipcRenderer.sendSync('delete:product', data);
     },
@@ -212,10 +136,13 @@ const electronHandler = {
   },
   store: {
     get(key: any) {
-      // return ipcRenderer.sendSync('electron-store-get', key);
+      return ipcRenderer.sendSync('electron-store-get', key);
+    },
+    getAll() {
+      return ipcRenderer.sendSync('electron-store-get-all');
     },
     set(property: any, val: any) {
-      // ipcRenderer.send('electron-store-set', property, val);
+      return ipcRenderer.sendSync('electron-store-set', property, val);
     },
     // Other method you want to add like has(), reset(), etc.
   },

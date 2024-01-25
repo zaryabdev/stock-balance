@@ -147,6 +147,9 @@ const createWindow = async () => {
 ipcMain.on('electron-store-get', async (event, val) => {
   event.returnValue = store.get(val);
 });
+ipcMain.on('electron-store-get-all', async (event, val) => {
+  // event.returnValue = store.
+});
 
 ipcMain.on('electron-store-set', async (event, key, val) => {
   store.set(key, val);
@@ -289,23 +292,20 @@ ipcMain.on('unarchive:customer', async (event, data) => {
 // IPC listener - customer-invoice
 ipcMain.on('create:customer-invoice', (event, data) => {
   console.log('main.ts create:customer-invoice');
-  console.log(data);
+  console.log(data.length);
   const callbackFunction = (response, err) => {
-    // const webContents = event.sender;
-    // const win = BrowserWindow.fromWebContents(webContents);
-    console.log('callback function called!!');
-    if (err) {
-      console.log(err);
-    }
-
-    if (response.status === STATUS.SUCCESS) {
-      console.log('respose was success');
-      // console.log(win);
-      event.reply('create:customer-invoice-response', response);
-
-      // win.webContents.send('create:customer', response);
-    } else {
-      console.log(response.message);
+    try {
+      if (err) {
+        console.log(err);
+      }
+      if (response.status === STATUS.SUCCESS) {
+        event.returnValue = response;
+      } else {
+        event.returnValue = response;
+        console.log(response.message);
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -314,23 +314,20 @@ ipcMain.on('create:customer-invoice', (event, data) => {
 
 ipcMain.on('update:customer-invoice', (event, data) => {
   console.log('main.ts update:customer-invoice');
-  // console.log(data);
+  console.log(data.length);
   const callbackFunction = (response, err) => {
-    // const webContents = event.sender;
-    // const win = BrowserWindow.fromWebContents(webContents);
-    console.log('callback function called!!');
-    if (err) {
-      console.log(err);
-    }
-
-    if (response.status === STATUS.SUCCESS) {
-      console.log('respose was success');
-      // console.log(win);
-      event.reply('update:customer-invoice', response);
-
-      // win.webContents.send('create:customer', response);
-    } else {
-      console.log(response.message);
+    try {
+      if (err) {
+        console.log(err);
+      }
+      if (response.status === STATUS.SUCCESS) {
+        event.returnValue = response;
+      } else {
+        event.returnValue = response;
+        console.log(response.message);
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -338,23 +335,20 @@ ipcMain.on('update:customer-invoice', (event, data) => {
 });
 ipcMain.on('delete:duplicated-customer-invoice', (event, data) => {
   console.log('main.ts delete:duplicated-customer-invoice');
-  // console.log(data);
+  console.log(data.length);
   const callbackFunction = (response, err) => {
-    // const webContents = event.sender;
-    // const win = BrowserWindow.fromWebContents(webContents);
-    console.log('callback function called!!');
-    if (err) {
-      console.log(err);
-    }
-
-    if (response.status === STATUS.SUCCESS) {
-      console.log('respose was success');
-      // console.log(win);
-      event.reply('delete:duplicated-customer-invoice-response', response);
-
-      // win.webContents.send('create:customer', response);
-    } else {
-      console.log(response.message);
+    try {
+      if (err) {
+        console.log(err);
+      }
+      if (response.status === STATUS.SUCCESS) {
+        event.returnValue = response;
+      } else {
+        event.returnValue = response;
+        console.log(response.message);
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -363,49 +357,41 @@ ipcMain.on('delete:duplicated-customer-invoice', (event, data) => {
 
 ipcMain.on('get:all:customer-invoices', (event, data) => {
   console.log('main.ts get:all:customer-invoices');
-  // console.log(data);
+  console.log(data.length);
   const callbackFunction = (response, err) => {
-    // const webContents = event.sender;
-    // const win = BrowserWindow.fromWebContents(webContents);
-    console.log('callback function called!!');
-    if (err) {
-      console.log(err);
-    }
-
-    if (response.status === STATUS.SUCCESS) {
-      console.log('respose was success');
-      // console.log(win);
-      event.reply('get:all:customer-invoices-response', response);
-
-      // win.webContents.send('create:customer', response);
-    } else {
-      console.log(response.message);
+    try {
+      if (err) {
+        console.log(err);
+      }
+      if (response.status === STATUS.SUCCESS) {
+        event.returnValue = response;
+      } else {
+        event.returnValue = response;
+        console.log(response.message);
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
-
   customerInvoiceRepo.getAll(data, callbackFunction);
 });
 
 ipcMain.on('get:all:customer-invoices:id', (event, data) => {
   console.log('main.ts get:all:customer-invoices:id');
-  // console.log(data);
-
+  console.log(data.length);
   const callbackFunction = (response, err) => {
-    // const webContents = event.sender;
-    // const win = BrowserWindow.fromWebContents(webContents);
-    console.log('callback function called!!');
-    if (err) {
-      console.log(err);
-    }
-
-    if (response.status === STATUS.SUCCESS) {
-      console.log('respose was success');
-      // console.log(win);
-      event.reply('get:all:customer-invoices:id-response', response);
-
-      // win.webContents.send('create:customer', response);
-    } else {
-      console.log(response.message);
+    try {
+      if (err) {
+        console.log(err);
+      }
+      if (response.status === STATUS.SUCCESS) {
+        event.returnValue = response;
+      } else {
+        event.returnValue = response;
+        console.log(response.message);
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -414,23 +400,20 @@ ipcMain.on('get:all:customer-invoices:id', (event, data) => {
 
 ipcMain.on('delete:customer-invoice', (event, data) => {
   console.log('main.ts delete:customer-invoice');
-  console.log(data);
+  console.log(data.length);
   const callbackFunction = (response, err) => {
-    // const webContents = event.sender;
-    // const win = BrowserWindow.fromWebContents(webContents);
-    console.log('callback function called!! for delete');
-    if (err) {
-      console.log(err);
-    }
-
-    if (response.status === STATUS.SUCCESS) {
-      console.log('respose was success');
-      // console.log(win);
-      event.reply('delete:customer-invoice-response', response);
-
-      // win.webContents.send('create:customer', response);
-    } else {
-      console.log(response.message);
+    try {
+      if (err) {
+        console.log(err);
+      }
+      if (response.status === STATUS.SUCCESS) {
+        event.returnValue = response;
+      } else {
+        event.returnValue = response;
+        console.log(response.message);
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 

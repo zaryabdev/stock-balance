@@ -36,7 +36,7 @@ const Balance: React.FC = ({}) => {
   const searchVendorInput = useRef<InputRef>(null);
 
   useEffect(() => {
-    getAllRecords();
+    getAllCustomersInvoice();
   }, []);
   // useEffect(() => {
   //   const id = setInterval(() => {
@@ -347,15 +347,28 @@ const Balance: React.FC = ({}) => {
   }, [allInvoices, appContext.customersList]);
 
   const start = () => {
-    getAllRecords();
+    getAllCustomersInvoice();
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
     }, 1000);
   };
 
-  function getAllRecords() {
-    window.electron.ipcRenderer.getAllCustomersInvoice({});
+  function getAllCustomersInvoice() {
+    const response = window.electron.ipcRenderer.getAllCustomersInvoice({});
+
+    console.log('get:all:customer-invoices-response reponse came back');
+    console.log(response);
+    debugger;
+    if (response.status === STATUS.FAILED) {
+      console.log(response.message);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('response of get:all:customer-invoices-response ');
+      // console.log(response);
+      setAllInvoices(response.data);
+    }
   }
 
   const handleSearch = (
@@ -493,24 +506,6 @@ const Balance: React.FC = ({}) => {
       ),
     },
   ];
-
-  window.electron.ipcRenderer.on(
-    'get:all:customer-invoices-response',
-    (response) => {
-      console.log('get:all:customer-invoices-response reponse came back');
-      // console.log(response);
-
-      if (response.status === STATUS.FAILED) {
-        console.log(response.message);
-      }
-
-      if (response.status === STATUS.SUCCESS) {
-        console.log('response of get:all:customer-invoices-response ');
-        // console.log(response);
-        setAllInvoices(response.data);
-      }
-    },
-  );
 
   return (
     <div

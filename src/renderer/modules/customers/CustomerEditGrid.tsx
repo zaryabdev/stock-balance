@@ -226,12 +226,101 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
   }, [data]);
 
   useEffect(() => {
-    getAllRecordsById(customerId);
+    getAllCustomerInvoicesById(customerId);
   }, [customerId]);
 
   if (!context.currentProducts) {
     return null;
   }
+
+  // IPC Main listeners Customer Invoice
+  window.electron.ipcRenderer.on(
+    'create:customer-invoice-response',
+    (response) => {
+      console.log('create:customer-invoice-response reponse came back');
+      // console.log(response);
+
+      if (response.status === STATUS.FAILED) {
+        console.log(response.message);
+      }
+
+      if (response.status === STATUS.SUCCESS) {
+        console.log('response of create:customer-invoice-response ');
+        // console.log(response);
+        // getAllCustomers({});
+      }
+    },
+  );
+
+  window.electron.ipcRenderer.on('update:customer-invoice', (response) => {
+    console.log('update:customer-invoice reponse came back');
+    // console.log(response);
+
+    if (response.status === STATUS.FAILED) {
+      console.log(response.message);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('response of update:customer-invoice ');
+      // console.log(response);
+
+      getAllCustomerInvoicesById(customerId);
+    }
+  });
+
+  window.electron.ipcRenderer.on('delete:customer-invoice', (response) => {
+    console.log('delete:customer-invoice reponse came back');
+    // console.log(response);
+
+    if (response.status === STATUS.FAILED) {
+      console.log(response.message);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('response of delete:customer-invoice ');
+      // console.log(response);
+
+      getAllCustomerInvoicesById(customerId);
+    }
+  });
+
+  window.electron.ipcRenderer.on(
+    'delete:duplicated-customer-invoice-response',
+    (response) => {
+      console.log(
+        'delete:duplicated-customer-invoice-response reponse came back',
+      );
+      // console.log(response);
+
+      if (response.status === STATUS.FAILED) {
+        console.log(response.message);
+      }
+
+      if (response.status === STATUS.SUCCESS) {
+        getAllCustomerInvoicesById(customerId);
+        console.log('response of delete:duplicated-customer-invoice-response ');
+        // console.log(response);
+      }
+    },
+  );
+
+  // IPC Main listeners Stock
+  window.electron.ipcRenderer.on('update:stock-response', (response) => {
+    console.log('update:stock-response reponse came back');
+    // console.log(response);
+
+    if (response.status === STATUS.FAILED) {
+      console.log(response.message);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      console.log('response of update:stock-response ');
+      // console.log(response);
+      getCurrentStock();
+      // setTimeout(() =>
+      // , 500);
+    }
+  });
 
   const showPrintModal = () => {
     setIsModalOpen(true);
@@ -451,10 +540,50 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
   const deletedRowIds = useMemo(() => new Set(), []);
   const updatedRowIds = useMemo(() => new Set(), []);
 
-  function getAllRecordsById(customerId) {
-    window.electron.ipcRenderer.getAllCustomerInvoicesById({
+  function getAllCustomerInvoicesById(customerId) {
+    const response = window.electron.ipcRenderer.getAllCustomerInvoicesById({
       id: customerId,
     });
+
+    console.log('get:all:customer-invoices:id-response reponse came back');
+    console.log(response);
+    debugger;
+
+    if (response.status === STATUS.FAILED) {
+      console.log(response.message);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      const _data = response.data;
+      let maxDate = '1947-08-14';
+      let minDate = '3000-01-01';
+
+      _data.map((item) => {
+        if (dayjs(item.date).isSameOrBefore(maxDate)) {
+          // console.log('isSameOrBefore');
+        } else {
+          maxDate = item.date;
+        }
+
+        if (dayjs(item.date).isSameOrAfter(minDate)) {
+          // console.log('isSameOrAfter');
+        } else {
+          minDate = item.date;
+        }
+      });
+
+      if (_data.length > 0) {
+        setMinMaxRecordDates({ minDate, maxDate });
+
+        // const formatedDate = format(maxDate, 'yyyy-MM-dd');
+
+        const dateToSelectByDefault = dayjs(maxDate, 'YYYY-MM-DD');
+
+        console.log([dateToSelectByDefault, dateToSelectByDefault]);
+        setPrintDate([dateToSelectByDefault, dateToSelectByDefault]);
+        setData(_data);
+      }
+    }
   }
 
   const cancel = () => {
@@ -728,6 +857,16 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
     return validation;
   };
 
+  const deleteDuplicatedCustomerInvoice = (recordsToDelete) => {
+    const response =
+      window.electron.ipcRenderer.deleteDuplicatedCustomerInvoice(
+        recordsToDelete,
+      );
+
+    console.log(response);
+    debugger;
+  };
+
   const duplicateRowsModal = (duplicateRows) => {
     Modal.error({
       title: 'Duplicate rows found',
@@ -743,9 +882,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
           });
         }
         debugger;
-        window.electron.ipcRenderer.deleteDuplicatedCustomerInvoice(
-          recordsToDelete,
-        );
+        deleteDuplicatedCustomerInvoice(recordsToDelete);
       },
       okText: 'Delete Duplicated Rows',
       onCancel() {
@@ -1264,144 +1401,6 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
     doc.save(docTitle);
     // doc.save(`${uuid} invoice`);
   };
-
-  // IPC Main listeners Customer Invoice
-  window.electron.ipcRenderer.on(
-    'create:customer-invoice-response',
-    (response) => {
-      console.log('create:customer-invoice-response reponse came back');
-      // console.log(response);
-
-      if (response.status === STATUS.FAILED) {
-        console.log(response.message);
-      }
-
-      if (response.status === STATUS.SUCCESS) {
-        console.log('response of create:customer-invoice-response ');
-        // console.log(response);
-        // getAllCustomers({});
-      }
-    },
-  );
-
-  window.electron.ipcRenderer.on('update:customer-invoice', (response) => {
-    console.log('update:customer-invoice reponse came back');
-    // console.log(response);
-
-    if (response.status === STATUS.FAILED) {
-      console.log(response.message);
-    }
-
-    if (response.status === STATUS.SUCCESS) {
-      console.log('response of update:customer-invoice ');
-      // console.log(response);
-
-      getAllRecordsById(customerId);
-    }
-  });
-
-  window.electron.ipcRenderer.on('delete:customer-invoice', (response) => {
-    console.log('delete:customer-invoice reponse came back');
-    // console.log(response);
-
-    if (response.status === STATUS.FAILED) {
-      console.log(response.message);
-    }
-
-    if (response.status === STATUS.SUCCESS) {
-      console.log('response of delete:customer-invoice ');
-      // console.log(response);
-
-      getAllRecordsById(customerId);
-    }
-  });
-
-  window.electron.ipcRenderer.on(
-    'get:all:customer-invoices:id-response',
-    (response) => {
-      console.log('get:all:customer-invoices:id-response reponse came back');
-      // console.log(response);
-
-      if (response.status === STATUS.FAILED) {
-        console.log(response.message);
-      }
-
-      if (response.status === STATUS.SUCCESS) {
-        console.log('response of get:all:customer-invoices:id-response ');
-        // console.log(response);
-        // ;
-        if (response.meta.id === customerId) {
-          const _data = response.data;
-          let maxDate = '1947-08-14';
-          let minDate = '3000-01-01';
-
-          _data.map((item) => {
-            if (dayjs(item.date).isSameOrBefore(maxDate)) {
-              console.log('isSameOrBefore');
-            } else {
-              maxDate = item.date;
-            }
-
-            if (dayjs(item.date).isSameOrAfter(minDate)) {
-              console.log('isSameOrAfter');
-            } else {
-              minDate = item.date;
-            }
-          });
-
-          if (_data.length > 0) {
-            setMinMaxRecordDates({ minDate, maxDate });
-
-            // const formatedDate = format(maxDate, 'yyyy-MM-dd');
-
-            const dateToSelectByDefault = dayjs(maxDate, 'YYYY-MM-DD');
-
-            console.log([dateToSelectByDefault, dateToSelectByDefault]);
-            setPrintDate([dateToSelectByDefault, dateToSelectByDefault]);
-            setData(_data);
-          }
-        }
-      }
-    },
-  );
-
-  window.electron.ipcRenderer.on(
-    'delete:duplicated-customer-invoice-response',
-    (response) => {
-      console.log(
-        'delete:duplicated-customer-invoice-response reponse came back',
-      );
-      // console.log(response);
-
-      if (response.status === STATUS.FAILED) {
-        console.log(response.message);
-      }
-
-      if (response.status === STATUS.SUCCESS) {
-        getAllRecordsById(customerId);
-        console.log('response of delete:duplicated-customer-invoice-response ');
-        // console.log(response);
-      }
-    },
-  );
-
-  // IPC Main listeners Stock
-  window.electron.ipcRenderer.on('update:stock-response', (response) => {
-    console.log('update:stock-response reponse came back');
-    // console.log(response);
-
-    if (response.status === STATUS.FAILED) {
-      console.log(response.message);
-    }
-
-    if (response.status === STATUS.SUCCESS) {
-      console.log('response of update:stock-response ');
-      // console.log(response);
-      getCurrentStock();
-      // setTimeout(() =>
-      // , 500);
-    }
-  });
 
   return (
     <div className="">
