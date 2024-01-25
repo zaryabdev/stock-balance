@@ -295,6 +295,8 @@ export default function App() {
 
     if (!validations.isValid) {
       setValidationsModal(true);
+    } else {
+      success('All records passed validations.');
     }
   }
 
