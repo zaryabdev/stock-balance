@@ -391,7 +391,7 @@ export default function App() {
       {contextHolder}
       <ConfigProvider
         theme={{
-          algorithm: [theme.compactAlgorithm, theme.darkAlgorithm],
+          algorithm: [theme.darkAlgorithm],
         }}
       >
         <Customers
