@@ -51,6 +51,64 @@ class CustomerRepository {
   }
 
   deleteRecords(data = [], callbackFunction) {
+    console.log('delete called for CustomerRepository');
+
+    const currentThis = this;
+    // const timestamp = Date.now();
+    console.log(`Data length : ${data.length}`);
+
+    if (data.length === 0) {
+      const res = {
+        status: 'SUCCESS',
+        data: [],
+        message: 'No records were updated',
+      };
+      console.log(message);
+      callbackFunction(res);
+      return;
+    }
+
+    if (data.length > 0) {
+      let updatedRecords = data.length;
+
+      for (let index = 0; index < data.length; index++) {
+        const id = data[index];
+        const query = `
+          UPDATE customer SET status='${TYPE.deleted}' WHERE id='${id}';
+        `;
+
+        currentThis.dao.run(query, [], data, (res) => {
+          if (res.status === 'SUCCESS') {
+            console.log('Update was success');
+            // console.log(res);
+          }
+        });
+        updatedRecords -= 1;
+      }
+
+      console.log('All records updated');
+
+      if (updatedRecords === 0) {
+        setTimeout(() => {
+          callbackFunction({
+            status: 'SUCCESS',
+            data: [...data],
+            message: 'All records updated successfulyy',
+          });
+        }, 500);
+      }
+    } else {
+      console.log(`Length of toUpdate : ${data.length}`);
+
+      callbackFunction({
+        status: 'SUCCESS',
+        data: [...data],
+        message: 'All records updated successfulyy',
+      });
+    }
+  }
+
+  permanentDeleteRecords(data = [], callbackFunction) {
     console.log(`deleteRecords called for CustomerRepository`);
 
     if (data.length === 0) {

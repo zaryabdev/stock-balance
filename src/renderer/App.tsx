@@ -27,7 +27,7 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import Context from './AppContext';
 import SampleList from './SampleList';
-import { STATUS, TYPE } from './contants';
+import { STATE, STATUS, TYPE } from './contants';
 import Customers from './modules/customers/Customers';
 
 export default function App() {
@@ -41,7 +41,12 @@ export default function App() {
   const [filteredCustomersList, setFilteredCustomersList] = useState([]);
   const [validationsModal, setValidationsModal] = useState(false);
   const [invalidRows, setInvalidRows] = useState([]);
-  const [selectedOption, setSelectedOption] = useState(TYPE.customer);
+  const [selectedCustomerType, setSelectedCustomerType] = useState(
+    TYPE.customer,
+  );
+  const [selectedCustomerState, setSelectedCustomerState] = useState(
+    STATE.none,
+  );
 
   const [duplicateRows, setDuplicateRows] = useState([]);
 
@@ -81,13 +86,13 @@ export default function App() {
       console.log(response);
       const list = response.data;
 
-      if (selectedOption !== TYPE.archived) {
+      if (selectedCustomerType !== TYPE.archived) {
         const nonArchived = list.filter(
           (item) => item.status !== TYPE.archived,
         );
 
         const filteredList = nonArchived.filter(
-          (item) => item.type === selectedOption,
+          (item) => item.type === selectedCustomerType,
         );
 
         setCustomersList(list);
@@ -398,8 +403,10 @@ export default function App() {
           getCurrentStock={getCurrentStock}
           getCurrentProducts={getCurrentProducts}
           getCurrentCustomers={getCurrentCustomers}
-          selectedOption={selectedOption}
-          setSelectedOption={setSelectedOption}
+          selectedCustomerType={selectedCustomerType}
+          setSelectedCustomerType={setSelectedCustomerType}
+          selectedCustomerState={selectedCustomerState}
+          setSelectedCustomerState={setSelectedCustomerState}
         />
         {/* {toggleSideBar ? (
           <FloatButton

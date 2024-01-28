@@ -13,6 +13,8 @@ export const STATE = {
   created: 'CREATED',
   updated: 'UPDATED',
   deleted: 'DELETED',
+  archived: 'ARCHIVED',
+  unarchived: 'UNARCHIVED',
 };
 
 export const TYPE = {

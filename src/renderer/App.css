@@ -9,6 +9,7 @@
 body {
   margin: 0 !important;
   overflow-x: hidden;
+  background-color: black;
 }
 
 .dsg-container {
@@ -43,6 +44,7 @@ body {
   /* background: #fff7e6; */
   /* background: orange; */
 }
-body {
-  background-color: black;
+
+.ant-statistic-content-value-decimal {
+  font-size: 14px;
 }

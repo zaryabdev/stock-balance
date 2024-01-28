@@ -22,7 +22,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { TYPE_COLOR_PALLETE } from '../../contants';
 import Balance from '../balance/Balance';
-import Dashboard from '../dashboard/Dashboard';
+import Statistics from '../statistics/Statistics';
 import Stock from '../stock/Stock';
 import CustomerEditGrid from './CustomerEditGrid';
 
@@ -52,7 +52,7 @@ function MultiCustomerTabs({
           <LineChartOutlined /> Statistics
         </>
       ),
-      children: <Dashboard activeTab={activeTabKey} />,
+      children: <Statistics activeTab={activeTabKey} />,
       key: 'DASHBOARD',
       closable: false,
     },

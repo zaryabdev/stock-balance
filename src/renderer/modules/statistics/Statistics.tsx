@@ -28,7 +28,7 @@ interface DataType {
 
 type DataIndex = keyof DataType;
 
-const Dashboard: React.FC = ({}) => {
+const Statistics: React.FC = ({}) => {
   const appContext = useContext(context);
 
   const [allInvoices, setAllInvoices] = useState([]);
@@ -440,4 +440,4 @@ const Dashboard: React.FC = ({}) => {
   );
 };
 
-export default Dashboard;
+export default Statistics;

@@ -12,6 +12,8 @@
   - Payment make it free entry
   - Payment const change it from none to payment
 - When archiving all customer app crashes sometimes
+- Add option to migrate customer type
+- Fix delete archive unchrive state and type issue
 
 # Isssues :
 

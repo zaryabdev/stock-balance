@@ -4,7 +4,10 @@ import {
   DoubleLeftOutlined,
   DoubleRightOutlined,
   ExclamationCircleFilled,
+  EyeInvisibleOutlined,
+  EyeOutlined,
   InboxOutlined,
+  MenuOutlined,
   UserAddOutlined,
 } from '@ant-design/icons';
 import type { RadioChangeEvent } from 'antd';
@@ -43,7 +46,7 @@ import { useRenderCount } from '@uidotdev/usehooks';
 import context from '../../AppContext';
 import { STATE, STATUS, TYPE, TYPE_COLOR_PALLETE } from '../../contants';
 import CustomersList from './CustomersList';
-import MultiCustomersTabs from './MultiCustomersTabs';
+// import MultiCustomersTabs from './MultiCustomersTabs';
 
 const { confirm } = Modal;
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
@@ -51,7 +54,11 @@ type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 // { label: 'Walking', value: TYPE.walkingCustomer },
 // { label: 'Customers & Vendors', value: TYPE.both },
 
-const options = [
+const customerTypeOptions = [
+  {
+    label: <Space>All</Space>,
+    value: TYPE.both,
+  },
   {
     label: (
       <Space>
@@ -79,27 +86,33 @@ const options = [
     ),
     value: TYPE.vendor,
   },
+];
+const customerStatusOptions = [
   {
-    label: <Space>All</Space>,
-    value: TYPE.both,
+    label: (
+      <Space>
+        <MenuOutlined />
+      </Space>
+    ),
+    value: STATE.none,
   },
   {
     label: (
       <Space>
-        <Badge color={`${TYPE_COLOR_PALLETE[TYPE.archived]}`} />
+        <Badge color={`${TYPE_COLOR_PALLETE[STATE.archived]}`} />
         <InboxOutlined />
       </Space>
     ),
-    value: TYPE.archived,
+    value: STATE.archived,
   },
   {
     label: (
       <Space>
-        <Badge color={`${TYPE_COLOR_PALLETE[TYPE.deleted]}`} />
+        <Badge color={`${TYPE_COLOR_PALLETE[STATE.deleted]}`} />
         <DeleteOutlined />
       </Space>
     ),
-    value: TYPE.deleted,
+    value: STATE.deleted,
   },
 ];
 
@@ -110,7 +123,7 @@ const initialCustomerState = {
   phone: '',
   address: '',
   type: TYPE.customer,
-  status: TYPE.unarchived,
+  status: STATE.unarchived,
 };
 
 // Editable Table
@@ -173,8 +186,10 @@ function Customers({
   getCurrentStock,
   getCurrentProducts,
   getCurrentCustomers,
-  setSelectedOption,
-  selectedOption,
+  setSelectedCustomerType,
+  selectedCustomerType,
+  selectedCustomerState,
+  setSelectedCustomerState,
 }) {
   const appContext = useContext(context);
 
@@ -302,13 +317,13 @@ function Customers({
 
       const list = response.data;
 
-      if (selectedOption !== TYPE.archived) {
+      if (selectedCustomerType !== TYPE.archived) {
         const nonArchived = list.filter(
           (item) => item.status !== TYPE.archived,
         );
 
         const filteredList = nonArchived.filter(
-          (item) => item.type === selectedOption,
+          (item) => item.type === selectedCustomerType,
         );
 
         appContext.setCustomersList(list);
@@ -343,6 +358,7 @@ function Customers({
       if (response.status === STATUS.SUCCESS) {
         console.log('response of delete:customer-response  ');
         console.log(response);
+        getCurrentCustomers({});
       }
     }
   };
@@ -399,7 +415,7 @@ function Customers({
       name,
       address,
       phone,
-      type: selectedOption,
+      type: selectedCustomerType,
     };
 
     if (customerData.name === '') {
@@ -407,7 +423,7 @@ function Customers({
       return;
     }
 
-    if (selectedOption === TYPE.vendor && products.length > 0) {
+    if (selectedCustomerType === TYPE.vendor && products.length > 0) {
       let isValid = true;
 
       products.map((item) => {
@@ -469,7 +485,7 @@ function Customers({
       name,
       address,
       phone,
-      type: selectedOption,
+      type: selectedCustomerType,
     };
 
     if (customerData.name === '') {
@@ -477,7 +493,7 @@ function Customers({
       return;
     }
 
-    if (selectedOption === TYPE.vendor && products.length > 0) {
+    if (selectedCustomerType === TYPE.vendor && products.length > 0) {
       let isValid = true;
 
       products.map((item) => {
@@ -536,7 +552,7 @@ function Customers({
   useEffect(() => {
     let filteredList = [];
 
-    if (selectedOption === TYPE.both) {
+    if (selectedCustomerType === TYPE.both) {
       const nonArchivedOrDeleted = appContext.customersList.filter((item) => {
         let bool = true;
 
@@ -555,9 +571,9 @@ function Customers({
     }
 
     if (
-      selectedOption === TYPE.customer ||
-      selectedOption === TYPE.walkingCustomer ||
-      selectedOption === TYPE.vendor
+      selectedCustomerType === TYPE.customer ||
+      selectedCustomerType === TYPE.walkingCustomer ||
+      selectedCustomerType === TYPE.vendor
     ) {
       const nonArchivedOrDeleted = appContext.customersList.filter((item) => {
         let bool = true;
@@ -574,13 +590,13 @@ function Customers({
       });
 
       const _filteredList = nonArchivedOrDeleted.filter(
-        (item) => item.type === selectedOption,
+        (item) => item.type === selectedCustomerType,
       );
 
       filteredList = [..._filteredList];
     }
 
-    if (selectedOption === TYPE.archived) {
+    if (selectedCustomerType === TYPE.archived) {
       const nonDeletedOrUnArchived = appContext.customersList.filter((item) => {
         let bool = true;
 
@@ -602,10 +618,10 @@ function Customers({
     }
 
     appContext.setFilteredCustomersList(filteredList);
-  }, [selectedOption]);
+  }, [selectedCustomerType]);
 
   const handleSelectionChange = ({ target: { value } }: RadioChangeEvent) => {
-    setSelectedOption(value);
+    setSelectedCustomerType(value);
     setSelectedRowKeys([]);
   };
 
@@ -811,7 +827,7 @@ function Customers({
   const showDeleteConfirm = () => {
     confirm({
       title: `Are you sure delete ${
-        selectedOption === TYPE.customer ? 'Customer' : 'Vendor'
+        selectedCustomerType === TYPE.customer ? 'Customer' : 'Vendor'
       }`,
       icon: <ExclamationCircleFilled />,
       content: (
@@ -839,7 +855,7 @@ function Customers({
   const showArchiveConfirm = () => {
     confirm({
       title: `Are you sure archive ${
-        selectedOption === TYPE.customer ? 'Customer' : 'Vendor'
+        selectedCustomerType === TYPE.customer ? 'Customer' : 'Vendor'
       }`,
       icon: <ExclamationCircleFilled />,
       content: (
@@ -870,7 +886,7 @@ function Customers({
   const showUnarchiveConfirm = () => {
     confirm({
       title: `Are you sure to unarchive ${
-        selectedOption === TYPE.customer ? '' : ''
+        selectedCustomerType === TYPE.customer ? '' : ''
       }`,
       icon: <ExclamationCircleFilled />,
       content: (
@@ -943,9 +959,19 @@ function Customers({
         >
           <div style={{ margin: 4 }}>
             <Radio.Group
-              options={options}
+              options={customerTypeOptions}
               onChange={handleSelectionChange}
-              value={selectedOption}
+              value={selectedCustomerType}
+              optionType="button"
+              buttonStyle="solid"
+              size="middle"
+            />
+          </div>
+          <div style={{ margin: 4 }}>
+            <Radio.Group
+              options={customerStatusOptions}
+              onChange={handleSelectionChange}
+              value={selectedCustomerType}
               optionType="button"
               buttonStyle="solid"
               size="middle"
@@ -956,16 +982,15 @@ function Customers({
               <Button
                 type="default"
                 size="middle"
-                style={{ margin: 2 }}
+                style={{ marginRight: 4 }}
                 // onClick={createNewCustomer}
                 onClick={handleShowCreateModal}
                 // loading={loading}
                 disabled={
                   selectedRowKeys.length > 0 ||
-                  selectedOption === TYPE.both ||
-                  selectedOption === TYPE.walkingCustomer ||
-                  selectedOption === TYPE.archived ||
-                  selectedOption === TYPE.deleted
+                  selectedCustomerType === TYPE.both ||
+                  selectedCustomerType === TYPE.archived ||
+                  selectedCustomerType === TYPE.deleted
                 }
               >
                 Add
@@ -973,14 +998,14 @@ function Customers({
               <Button
                 type="default"
                 size="middle"
-                style={{ margin: 2 }}
+                style={{ marginRight: 4 }}
                 // onClick={editSelectedCustomer}
                 onClick={handleShowEditModal}
                 // loading={loading}
                 disabled={
                   selectedRowKeys.length === 0 ||
                   selectedRowKeys.length > 1 ||
-                  selectedOption === TYPE.both
+                  selectedCustomerType === TYPE.both
                 }
               >
                 Edit
@@ -988,7 +1013,7 @@ function Customers({
               <Button
                 type="default"
                 size="middle"
-                style={{ margin: 2 }}
+                style={{ marginRight: 4 }}
                 onClick={loadSelectedCustomers}
                 // loading={loading}
                 disabled={selectedRowKeys.length < 1}
@@ -996,41 +1021,46 @@ function Customers({
                 Load
               </Button>
 
-              {selectedOption === TYPE.archived && (
+              {selectedCustomerType === TYPE.archived && (
                 <Button
                   type="default"
                   size="middle"
-                  style={{ margin: 2 }}
+                  style={{ marginRight: 4 }}
                   onClick={showDeleteConfirm}
                   // loading={loading}
-                  disabled
+                  disabled={
+                    selectedRowKeys.length === 0 ||
+                    selectedCustomerType === TYPE.deleted
+                  }
                 >
                   Delete
                 </Button>
               )}
-              {selectedOption === TYPE.archived && (
+              {selectedCustomerType === TYPE.archived && (
                 <Button
                   type="default"
                   size="middle"
-                  style={{ margin: 2 }}
+                  style={{ marginRight: 4 }}
                   onClick={showUnarchiveConfirm}
                   // loading={loading}
                   disabled={
-                    selectedRowKeys.length < 1 || selectedOption === TYPE.both
+                    selectedRowKeys.length < 1 ||
+                    selectedCustomerType === TYPE.both
                   }
                 >
                   Unarchive
                 </Button>
               )}
-              {showArchiveAction(selectedOption) ? (
+              {showArchiveAction(selectedCustomerType) ? (
                 <Button
                   type="default"
                   size="middle"
-                  style={{ margin: 2 }}
+                  style={{ marginRight: 4 }}
                   onClick={showArchiveConfirm}
                   // loading={loading}
                   disabled={
-                    selectedRowKeys.length < 1 || selectedOption === TYPE.both
+                    selectedRowKeys.length < 1 ||
+                    selectedCustomerType === TYPE.both
                   }
                   // disabled
                 >
@@ -1041,7 +1071,7 @@ function Customers({
                 <Button
                   type="default"
                   size="middle"
-                  style={{ margin: 2 }}
+                  style={{ marginRight: 4 }}
                   onClick={showArchiveConfirm}
                   disabled={
                     selectedRowKeys.length < 1 || selectedOption === TYPE.both
@@ -1055,7 +1085,7 @@ function Customers({
               {/* <Button
                 type="default"
                 size="middle"
-                style={{ margin: 2 }}
+                style={{ marginRight: 4 }}
                 onClick={() => appContext.setToggleSideBar((prev) => !prev)}
               >
                 Hide List
@@ -1063,29 +1093,29 @@ function Customers({
             </div>
             <CustomersList
               data={appContext.filteredCustomersList}
-              option={selectedOption}
+              option={selectedCustomerType}
               selectedRowKeys={selectedRowKeys}
               handleSelectedRowKeys={handleSelectedRowKeys}
             />
           </>
         </Col>
         <Col span={appContext.toggleSideBar ? 18 : 24}>
-          <MultiCustomersTabs
+          {/* <MultiCustomersTabs
             customersList={appContext.customersList}
             getCurrentStock={getCurrentStock}
             selectedCutomersToLoad={selectedCutomersToLoad}
-          />
+          /> */}
         </Col>
       </Row>
       <Modal
         open={openCreateModal}
         title={`${
-          selectedOption === TYPE.customer ||
-          selectedOption === TYPE.walkingCustomer
+          selectedCustomerType === TYPE.customer ||
+          selectedCustomerType === TYPE.walkingCustomer
             ? 'Create Customer'
             : 'Create Vendor'
         }`}
-        width={selectedOption === TYPE.vendor ? 1000 : 500}
+        width={selectedCustomerType === TYPE.vendor ? 1000 : 500}
         onOk={handleCreateModalOk}
         onCancel={handleCreateModalCancel}
         // footer={(_, { OkBtn, CancelBtn }) => (
@@ -1097,29 +1127,29 @@ function Customers({
         // )}
       >
         <div>
-          {selectedOption === TYPE.customer && (
+          {selectedCustomerType === TYPE.customer && (
             <CustomerForm
               form={form}
               initialValues={{
                 name: '',
                 address: '',
                 phone: '',
-                type: selectedOption,
+                type: selectedCustomerType,
               }}
             />
           )}
-          {selectedOption === TYPE.walkingCustomer && (
+          {selectedCustomerType === TYPE.walkingCustomer && (
             <CustomerForm
               form={form}
               initialValues={{
                 name: '',
                 address: '',
                 phone: '',
-                type: selectedOption,
+                type: selectedCustomerType,
               }}
             />
           )}
-          {selectedOption === TYPE.vendor && (
+          {selectedCustomerType === TYPE.vendor && (
             <div>
               <VendorForm
                 form={form}
@@ -1137,7 +1167,7 @@ function Customers({
                       ? form.getFieldValue('phone')
                       : ''
                   }`,
-                  type: selectedOption,
+                  type: selectedCustomerType,
                 }}
               />
               <Products
@@ -1202,12 +1232,12 @@ function Customers({
       <Modal
         open={openEditModal}
         title={`${
-          selectedOption === TYPE.customer ||
-          selectedOption === TYPE.walkingCustomer
+          selectedCustomerType === TYPE.customer ||
+          selectedCustomerType === TYPE.walkingCustomer
             ? 'Edit Customer'
             : 'Edit Vendor'
         }`}
-        width={selectedOption === TYPE.vendor ? 1000 : 500}
+        width={selectedCustomerType === TYPE.vendor ? 1000 : 500}
         onOk={handleEditModalOk}
         onCancel={handleEditModalCancel}
         // footer={(_, { OkBtn, CancelBtn }) => (
@@ -1218,25 +1248,25 @@ function Customers({
         //   </>
         // )}
       >
-        {selectedOption === TYPE.customer && (
+        {selectedCustomerType === TYPE.customer && (
           <CustomerForm
             form={form}
             initialValues={{
               name: selectedCutomer.name,
               address: selectedCutomer.address,
               phone: selectedCutomer.phone,
-              type: selectedOption,
+              type: selectedCustomerType,
             }}
           />
         )}
-        {selectedOption === TYPE.walkingCustomer && (
+        {selectedCustomerType === TYPE.walkingCustomer && (
           <CustomerForm
             form={form}
             initialValues={{
               name: selectedCutomer.name,
               address: selectedCutomer.address,
               phone: selectedCutomer.phone,
-              type: selectedOption,
+              type: selectedCustomerType,
             }}
           />
         )}
@@ -1252,7 +1282,7 @@ function Customers({
           />
         )} */}
 
-        {selectedOption === TYPE.vendor && (
+        {selectedCustomerType === TYPE.vendor && (
           <div>
             <VendorForm
               form={form}
@@ -1260,7 +1290,7 @@ function Customers({
                 name: selectedCutomer.name,
                 address: selectedCutomer.address,
                 phone: selectedCutomer.phone,
-                type: selectedOption,
+                type: selectedCustomerType,
               }}
             />
             <Products
