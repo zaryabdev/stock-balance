@@ -384,7 +384,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
   const currentVendorProducts = {};
 
-  if (type === TYPE.customer || type === TYPE.walkingCustomer) {
+  if (type === TYPE.customer || type === TYPE.walkinCustomer) {
     productsToShow = [...productsToShow, ...context.currentProducts];
     if (productsToShow.length > 0) {
       productsToShow.map((product) => {
@@ -928,7 +928,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       setData(withState);
       setPrevData(withState);
 
-      if (type === TYPE.customer || type === TYPE.walkingCustomer) {
+      if (type === TYPE.customer || type === TYPE.walkinCustomer) {
         const newStock = {};
         withState.map((record) => {
           if (newStock[record.product]) {

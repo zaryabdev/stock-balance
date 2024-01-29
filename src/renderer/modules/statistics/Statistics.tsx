@@ -61,7 +61,7 @@ const Statistics: React.FC = ({}) => {
     allInvoices.map((item, index) => {
       const customerId = item.customer_id;
 
-      if (item.type === TYPE.customer || item.type === TYPE.walkingCustomer) {
+      if (item.type === TYPE.customer || item.type === TYPE.walkinCustomer) {
         if (customerBalanceMap[customerId]) {
           customerBalanceMap[customerId].push({ ...item });
         } else {
@@ -208,7 +208,7 @@ const Statistics: React.FC = ({}) => {
         }
       }
 
-      if (type === TYPE.customer || type === TYPE.walkingCustomer) {
+      if (type === TYPE.customer || type === TYPE.walkinCustomer) {
         if (
           product !== RECORD_TYPE.previous_balance &&
           product !== RECORD_TYPE.none

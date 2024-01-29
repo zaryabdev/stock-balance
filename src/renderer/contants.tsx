@@ -19,7 +19,7 @@ export const STATE = {
 
 export const TYPE = {
   customer: 'CUSTOMER',
-  walkingCustomer: 'WALKING_CUSTOMER',
+  walkinCustomer: 'WALKIN_CUSTOMER',
   vendor: 'VENDOR',
   both: 'BOTH',
   deleted: 'DELETED',
@@ -40,7 +40,7 @@ export const RECORD_TYPE = {
 
 export const TYPE_COLOR_PALLETE: TYPE_COLOR_PALLETE_I = {
   CUSTOMER: 'cyan',
-  WALKING_CUSTOMER: 'gold',
+  WALKIN_CUSTOMER: 'gold',
   VENDOR: 'green',
   ARCHIVED: 'rgb(128, 128, 128)',
   DELETED: 'red',
@@ -49,7 +49,7 @@ export const TYPE_COLOR_PALLETE: TYPE_COLOR_PALLETE_I = {
 
 interface TYPE_COLOR_PALLETE_I {
   CUSTOMER: string;
-  WALKING_CUSTOMER: string;
+  WALKIN_CUSTOMER: string;
   VENDOR: string;
   ARCHIVED: string;
   DELETED: string;

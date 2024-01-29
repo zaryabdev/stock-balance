@@ -51,7 +51,7 @@ import MultiCustomersTabs from './MultiCustomersTabs';
 const { confirm } = Modal;
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
-// { label: 'Walking', value: TYPE.walkingCustomer },
+// { label: 'Walking', value: TYPE.walkinCustomer },
 // { label: 'Customers & Vendors', value: TYPE.both },
 
 const customerTypeOptions = [
@@ -71,11 +71,11 @@ const customerTypeOptions = [
   {
     label: (
       <Space>
-        <Badge color={`${TYPE_COLOR_PALLETE[TYPE.walkingCustomer]}`} />
-        Walking
+        <Badge color={`${TYPE_COLOR_PALLETE[TYPE.walkinCustomer]}`} />
+        Walkin
       </Space>
     ),
-    value: TYPE.walkingCustomer,
+    value: TYPE.walkinCustomer,
   },
   {
     label: (
@@ -572,7 +572,7 @@ function Customers({
 
     if (
       selectedCustomerType === TYPE.customer ||
-      selectedCustomerType === TYPE.walkingCustomer ||
+      selectedCustomerType === TYPE.walkinCustomer ||
       selectedCustomerType === TYPE.vendor
     ) {
       const nonArchivedOrDeleted = appContext.customersList.filter((item) => {
@@ -938,7 +938,7 @@ function Customers({
     switch (showArchiveAction) {
       case TYPE.customer:
         return true;
-      case TYPE.walkingCustomer:
+      case TYPE.walkinCustomer:
         return true;
       case TYPE.vendor:
         return true;
@@ -1108,7 +1108,7 @@ function Customers({
         open={openCreateModal}
         title={`${
           selectedCustomerType === TYPE.customer ||
-          selectedCustomerType === TYPE.walkingCustomer
+          selectedCustomerType === TYPE.walkinCustomer
             ? 'Create Customer'
             : 'Create Vendor'
         }`}
@@ -1135,7 +1135,7 @@ function Customers({
               }}
             />
           )}
-          {selectedCustomerType === TYPE.walkingCustomer && (
+          {selectedCustomerType === TYPE.walkinCustomer && (
             <CustomerForm
               form={form}
               initialValues={{
@@ -1230,7 +1230,7 @@ function Customers({
         open={openEditModal}
         title={`${
           selectedCustomerType === TYPE.customer ||
-          selectedCustomerType === TYPE.walkingCustomer
+          selectedCustomerType === TYPE.walkinCustomer
             ? 'Edit Customer'
             : 'Edit Vendor'
         }`}
@@ -1256,7 +1256,7 @@ function Customers({
             }}
           />
         )}
-        {selectedCustomerType === TYPE.walkingCustomer && (
+        {selectedCustomerType === TYPE.walkinCustomer && (
           <CustomerForm
             form={form}
             initialValues={{

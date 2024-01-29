@@ -75,7 +75,7 @@ const Stock: React.FC = ({ activeTab }) => {
         }
       }
 
-      if (type === TYPE.customer || type === TYPE.walkingCustomer) {
+      if (type === TYPE.customer || type === TYPE.walkinCustomer) {
         if (
           product !== RECORD_TYPE.previous_balance &&
           product !== RECORD_TYPE.none

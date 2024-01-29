@@ -131,7 +131,7 @@ const CustomersList: React.FC = ({
     switch (option) {
       case TYPE.customer:
         return 'Customers';
-      case TYPE.walkingCustomer:
+      case TYPE.walkinCustomer:
         return 'Walking Customers';
       case TYPE.both:
         return 'Customers | Vendors';
