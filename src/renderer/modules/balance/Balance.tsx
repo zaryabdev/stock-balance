@@ -513,7 +513,11 @@ const Balance: React.FC = ({}) => {
         margin: 10,
       }}
     >
-      <Space>
+      <Space
+        style={{
+          margin: 5,
+        }}
+      >
         <Button type="default" onClick={start} loading={loading}>
           Refresh Balance
         </Button>
