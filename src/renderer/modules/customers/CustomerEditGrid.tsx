@@ -898,6 +898,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
   };
 
   const commit = () => {
+    debugger;
     /* Perform insert, update, and delete to the database here */
 
     // const newData = data.filter(({ id }) => !deletedRowIds.has(id));

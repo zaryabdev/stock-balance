@@ -26,6 +26,7 @@ import type { TabsProps } from 'antd';
 import React, { useEffect, useState } from 'react';
 import './App.css';
 import Context from './AppContext';
+import './DarkTheme.css';
 import SampleList from './SampleList';
 import { STATE, STATUS, TYPE } from './contants';
 import Customers from './modules/customers/Customers';

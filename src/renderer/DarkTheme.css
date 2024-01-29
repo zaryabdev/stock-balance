@@ -24,6 +24,18 @@ body {
   box-shadow: 0 1px var(--darkreader-bg--dsg-border-color) inset !important;
 }
 
+.dsg-add-row {
+  background-image: initial;
+  background-color: rgb(27, 29, 30);
+  border-top-color: initial;
+  color: rgb(232, 230, 227);
+}
+.dsg-add-row-btn,
+.dsg-add-row-input {
+  background-image: initial;
+  background-color: rgb(24, 26, 27);
+  border-color: rgb(58, 63, 65);
+}
 .dsg-cell,
 .dsg-row {
   background: var(--darkreader-bg--dsg-cell-background-color) !important;
