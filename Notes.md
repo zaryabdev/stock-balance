@@ -35,6 +35,7 @@
 
 # Features :
 
+- Add date_created and date_modified
 - Show All stock sheet on print
 - Show date
 - Show Checkboxes

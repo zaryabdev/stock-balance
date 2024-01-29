@@ -105,26 +105,6 @@ export default function App() {
     }
   };
 
-  window.electron.ipcRenderer.on(
-    'delete:duplicated-customer-invoice-response',
-    (response) => {
-      console.log(
-        'delete:duplicated-customer-invoice-response reponse came back',
-      );
-      // console.log(response);
-
-      if (response.status === STATUS.FAILED) {
-        console.log(response.message);
-      }
-
-      if (response.status === STATUS.SUCCESS) {
-        setDuplicateRows([]);
-        console.log('response of delete:duplicated-customer-invoice-response ');
-        // console.log(response);
-      }
-    },
-  );
-
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -292,17 +272,31 @@ export default function App() {
   };
 
   function validateInvoices() {
-    const validations = validateData(allInvoices, customersList);
+    let allInvoices = [];
 
-    setInvalidRows(validations.invalidRows);
-    setDuplicateRows(validations.duplicateRows);
+    const response = window.electron.ipcRenderer.getAllCustomersInvoice({});
+    console.log('get:all:customer-invoices-response reponse came back');
+    console.log(response);
+
     debugger;
+    if (response.status === STATUS.FAILED) {
+      console.log(response.message);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      allInvoices = [...response.data];
+    }
+
+    const validations = validateData(allInvoices, customersList);
 
     if (!validations.isValid) {
       setValidationsModal(true);
     } else {
       success('All records passed validations.');
     }
+
+    setInvalidRows(validations.invalidRows);
+    setDuplicateRows(validations.duplicateRows);
   }
 
   function getCurrentStock(params: type) {
@@ -356,8 +350,18 @@ export default function App() {
         recordsToDelete,
       );
 
+    console.log(
+      'delete:duplicated-customer-invoice-response reponse came back',
+    );
     console.log(response);
     debugger;
+    if (response.status === STATUS.FAILED) {
+      console.log(response.message);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      setDuplicateRows([]);
+    }
   };
 
   const confirm = (e: React.MouseEvent<HTMLElement>) => {

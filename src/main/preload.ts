@@ -14,6 +14,7 @@ const electronHandler = {
     sendMessage(channel: MEDIA_CHANNELS, ...args: unknown[]) {
       // ipcRenderer.send(channel, ...args);
     },
+    //  Customer
     getAllCustomers(data) {
       log('getAllCustomers');
       console.log(data);
@@ -21,17 +22,14 @@ const electronHandler = {
     },
     createCustomer(data) {
       log('createCustomer');
-
       console.log(data);
       return ipcRenderer.sendSync('create:customer', data);
     },
     updateCustomer(data) {
       log('updateCustomer');
-
       console.log(data);
       return ipcRenderer.sendSync('update:customer', data);
     },
-
     deleteCustomers(data) {
       log('deleteCustomers');
       console.log(data);
@@ -48,26 +46,23 @@ const electronHandler = {
       console.log(data);
       return ipcRenderer.sendSync('unarchive:customer', data);
     },
+    // Customer Invoices
+    // createCustomerInvoice not in use
     createCustomerInvoice(data) {
       log('createCustomerInvoice');
       console.log(data);
-      return ipcRenderer.send('create:customer-invoice', data);
+      return ipcRenderer.sendSync('create:customer-invoice', data);
     },
     updateCustomerInvoice(data) {
       log('updateCustomerInvoice');
-
       console.log(data);
-      return ipcRenderer.send('update:customer-invoice', data);
+      return ipcRenderer.sendSync('update:customer-invoice', data);
     },
+    // deleteCustomerInvoice not in use
     deleteCustomerInvoice(data) {
       log('deleteCustomerInvoice');
       console.log(data);
       return ipcRenderer.sendSync('delete:customer-invoice', data);
-    },
-    deleteDuplicatedCustomerInvoice(data) {
-      log('deleteDuplicatedCustomerInvoice');
-      console.log(data);
-      return ipcRenderer.sendSync('delete:duplicated-customer-invoice', data);
     },
     getAllCustomersInvoice(data) {
       log('getAllCustomersInvoice');
@@ -79,12 +74,18 @@ const electronHandler = {
       console.log(data);
       return ipcRenderer.sendSync('get:all:customer-invoices:id', data);
     },
-    // TODO
+    // TODO deleteCustomersInvoice should delete be permanent or just a status change
     deleteCustomersInvoice(data) {
       log('deleteCustomersInvoice');
       console.log(data);
       return ipcRenderer.sendSync('delete:customer-invoice', data);
     },
+    deleteDuplicatedCustomerInvoice(data) {
+      log('deleteDuplicatedCustomerInvoice');
+      console.log(data);
+      return ipcRenderer.sendSync('delete:duplicated-customer-invoice', data);
+    },
+    // Products
     createProduct(data) {
       log('createProduct');
       console.log(data);

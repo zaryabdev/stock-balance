@@ -232,94 +232,100 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
     return null;
   }
 
+  const updateCustomerInvoice = (withFinalBalance) => {
+    const response =
+      window.electron.ipcRenderer.updateCustomerInvoice(withFinalBalance);
+
+    console.log('response of update:customer-invoice ');
+    console.log(response);
+    debugger;
+
+    if (response.status === STATUS.FAILED) {
+      console.log(response.message);
+    }
+
+    if (response.status === STATUS.SUCCESS) {
+      createdRowIds.clear();
+      deletedRowIds.clear();
+      updatedRowIds.clear();
+      context.success('Invoice Saved Successfully.');
+
+      getAllCustomerInvoicesById(customerId);
+    }
+  };
+
   // IPC Main listeners Customer Invoice
-  window.electron.ipcRenderer.on(
-    'create:customer-invoice-response',
-    (response) => {
-      console.log('create:customer-invoice-response reponse came back');
-      // console.log(response);
+  // window.electron.ipcRenderer.on(
+  //   'create:customer-invoice-response',
+  //   (response) => {
+  //     console.log('create:customer-invoice-response reponse came back');
+  //     // console.log(response);
 
-      if (response.status === STATUS.FAILED) {
-        console.log(response.message);
-      }
+  //     if (response.status === STATUS.FAILED) {
+  //       console.log(response.message);
+  //     }
 
-      if (response.status === STATUS.SUCCESS) {
-        console.log('response of create:customer-invoice-response ');
-        // console.log(response);
-        // getAllCustomers({});
-      }
-    },
-  );
+  //     if (response.status === STATUS.SUCCESS) {
+  //       console.log('response of create:customer-invoice-response ');
+  //       // console.log(response);
+  //       // getAllCustomers({});
+  //     }
+  //   },
+  // );
 
-  window.electron.ipcRenderer.on('update:customer-invoice', (response) => {
-    console.log('update:customer-invoice reponse came back');
-    // console.log(response);
+  // window.electron.ipcRenderer.on('delete:customer-invoice', (response) => {
+  //   console.log('delete:customer-invoice reponse came back');
+  //   // console.log(response);
 
-    if (response.status === STATUS.FAILED) {
-      console.log(response.message);
-    }
+  //   if (response.status === STATUS.FAILED) {
+  //     console.log(response.message);
+  //   }
 
-    if (response.status === STATUS.SUCCESS) {
-      console.log('response of update:customer-invoice ');
-      // console.log(response);
+  //   if (response.status === STATUS.SUCCESS) {
+  //     console.log('response of delete:customer-invoice ');
+  //     // console.log(response);
 
-      getAllCustomerInvoicesById(customerId);
-    }
-  });
+  //     getAllCustomerInvoicesById(customerId);
+  //   }
+  // });
 
-  window.electron.ipcRenderer.on('delete:customer-invoice', (response) => {
-    console.log('delete:customer-invoice reponse came back');
-    // console.log(response);
+  // window.electron.ipcRenderer.on(
+  //   'delete:duplicated-customer-invoice-response',
+  //   (response) => {
+  //     console.log(
+  //       'delete:duplicated-customer-invoice-response reponse came back',
+  //     );
+  //     // console.log(response);
 
-    if (response.status === STATUS.FAILED) {
-      console.log(response.message);
-    }
+  //     if (response.status === STATUS.FAILED) {
+  //       console.log(response.message);
+  //     }
 
-    if (response.status === STATUS.SUCCESS) {
-      console.log('response of delete:customer-invoice ');
-      // console.log(response);
+  //     if (response.status === STATUS.SUCCESS) {
+  //       getAllCustomerInvoicesById(customerId);
+  //       console.log('response of delete:duplicated-customer-invoice-response ');
+  //       // console.log(response);
+  //     }
+  //   },
+  // );
 
-      getAllCustomerInvoicesById(customerId);
-    }
-  });
+  // // IPC Main listeners Stock
+  // window.electron.ipcRenderer.on('update:stock-response', (response) => {
+  //   console.log('update:stock-response reponse came back');
+  //   // console.log(response);
 
-  window.electron.ipcRenderer.on(
-    'delete:duplicated-customer-invoice-response',
-    (response) => {
-      console.log(
-        'delete:duplicated-customer-invoice-response reponse came back',
-      );
-      // console.log(response);
+  //   if (response.status === STATUS.FAILED) {
+  //     console.log(response.message);
+  //   }
 
-      if (response.status === STATUS.FAILED) {
-        console.log(response.message);
-      }
-
-      if (response.status === STATUS.SUCCESS) {
-        getAllCustomerInvoicesById(customerId);
-        console.log('response of delete:duplicated-customer-invoice-response ');
-        // console.log(response);
-      }
-    },
-  );
-
-  // IPC Main listeners Stock
-  window.electron.ipcRenderer.on('update:stock-response', (response) => {
-    console.log('update:stock-response reponse came back');
-    // console.log(response);
-
-    if (response.status === STATUS.FAILED) {
-      console.log(response.message);
-    }
-
-    if (response.status === STATUS.SUCCESS) {
-      console.log('response of update:stock-response ');
-      // console.log(response);
-      getCurrentStock();
-      // setTimeout(() =>
-      // , 500);
-    }
-  });
+  //   if (response.status === STATUS.SUCCESS) {
+  //     console.log('response of update:stock-response ');
+  //     // console.log(response);
+  //     getCurrentStock();
+  //     // setTimeout(() =>
+  //     // , 500);
+  //   }
+  // });
 
   const showPrintModal = () => {
     setIsModalOpen(true);
@@ -1014,18 +1020,8 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
           return item;
         });
-        window.electron.ipcRenderer.updateCustomerInvoice(withFinalBalance);
-        // window.electron.ipcRenderer.updateStock(updatedStock);
-        // window.electron.ipcRenderer.createBalance({
-        //   id : uuidv4(),
-        //   customer_id : customerId,
-        //   balance : currentBalance
-        // });
 
-        createdRowIds.clear();
-        deletedRowIds.clear();
-        updatedRowIds.clear();
-        context.success('Invoice Saved Successfully.');
+        updateCustomerInvoice(withFinalBalance);
       }
 
       if (type === TYPE.vendor) {
@@ -1107,13 +1103,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
 
           return item;
         });
-        window.electron.ipcRenderer.updateCustomerInvoice(withFinalBalance);
-        // window.electron.ipcRenderer.updateStock(updatedStock);
-
-        createdRowIds.clear();
-        deletedRowIds.clear();
-        updatedRowIds.clear();
-        context.success('Invoice Saved Successfully.');
+        updateCustomerInvoice(withFinalBalance);
       }
     } else {
       console.log(validation);

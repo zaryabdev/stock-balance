@@ -378,7 +378,7 @@ const Statistics: React.FC = ({}) => {
         <Col span={6}>
           <Card bordered>
             <Statistic
-              title="Current Worth"
+              title="Total Current Balance"
               value={balanceSheetData.current_worth}
               precision={2}
               valueStyle={{

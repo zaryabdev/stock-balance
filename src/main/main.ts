@@ -161,348 +161,162 @@ ipcMain.on('ipc-example', async (event, arg) => {
   event.reply('ipc-example', msgTemplate('pong'));
 });
 
+const callbackFunction = (response, err, event) => {
+  try {
+    if (err) {
+      console.log(err);
+    }
+    if (response.status === STATUS.SUCCESS) {
+      event.returnValue = response;
+    } else {
+      event.returnValue = response;
+      console.log(response.message);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 // IPC listener - customer
 ipcMain.on('create:customer', async (event, data) => {
   console.log('main.ts create:customer');
-  const callbackFunction = (response, err) => {
-    try {
-      if (err) {
-        console.log(err);
-      }
-      if (response.status === STATUS.SUCCESS) {
-        event.returnValue = response;
-      } else {
-        event.returnValue = response;
-        console.log(response.message);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  customerRepo.create(data, callbackFunction);
+  console.log(`Length of data sent : ${data.length}`);
+  customerRepo.create(data, (response, err) =>
+    callbackFunction(response, err, event),
+  );
 });
 
 ipcMain.on('update:customer', async (event, data) => {
   console.log('main.ts update:customer');
-  const callbackFunction = (response, err) => {
-    try {
-      if (err) {
-        console.log(err);
-      }
-      if (response.status === STATUS.SUCCESS) {
-        event.returnValue = response;
-      } else {
-        event.returnValue = response;
-        console.log(response.message);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  console.log(`Length of data sent : ${data.length}`);
 
-  customerRepo.update(data, callbackFunction);
+  customerRepo.update(data, (response, err) =>
+    callbackFunction(response, err, event),
+  );
 });
 
 ipcMain.on('get:all:customer', async (event, data) => {
   console.log('main.ts - get:all:customer');
+  console.log(`Length of data sent : ${data.length}`);
 
-  const callbackFunction = (response, err) => {
-    try {
-      if (err) {
-        console.log(err);
-      }
-      if (response.status === STATUS.SUCCESS) {
-        event.returnValue = response;
-      } else {
-        event.returnValue = response;
-        console.log(response.message);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  customerRepo.getAll(data, callbackFunction);
+  customerRepo.getAll(data, (response, err) =>
+    callbackFunction(response, err, event),
+  );
 });
 
 ipcMain.on('delete:customer', async (event, data) => {
   console.log('main.ts delete:customer');
+  console.log(`Length of data sent : ${data.length}`);
 
-  const callbackFunction = (response, err) => {
-    try {
-      if (err) {
-        console.log(err);
-      }
-      if (response.status === STATUS.SUCCESS) {
-        event.returnValue = response;
-      } else {
-        event.returnValue = response;
-        console.log(response.message);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  customerRepo.deleteRecords(data, callbackFunction);
+  customerRepo.deleteRecords(data, (response, err) =>
+    callbackFunction(response, err, event),
+  );
 });
 
 ipcMain.on('archive:customer', async (event, data) => {
   console.log('main.ts archive:customer');
-  const callbackFunction = (response, err) => {
-    try {
-      if (err) {
-        console.log(err);
-      }
-      if (response.status === STATUS.SUCCESS) {
-        event.returnValue = response;
-      } else {
-        event.returnValue = response;
-        console.log(response.message);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  console.log(`Length of data sent : ${data.length}`);
 
-  customerRepo.archiveRecords(data, callbackFunction);
+  customerRepo.archiveRecords(data, (response, err) =>
+    callbackFunction(response, err, event),
+  );
 });
 
 ipcMain.on('unarchive:customer', async (event, data) => {
   console.log('main.ts unarchive:customer');
-  const callbackFunction = (response, err) => {
-    try {
-      if (err) {
-        console.log(err);
-      }
-      if (response.status === STATUS.SUCCESS) {
-        event.returnValue = response;
-      } else {
-        event.returnValue = response;
-        console.log(response.message);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  console.log(`Length of data sent : ${data.length}`);
 
-  customerRepo.unarchiveRecords(data, callbackFunction);
+  customerRepo.unarchiveRecords(data, (response, err) =>
+    callbackFunction(response, err, event),
+  );
 });
 
 // IPC listener - customer-invoice
 ipcMain.on('create:customer-invoice', (event, data) => {
   console.log('main.ts create:customer-invoice');
-  console.log(data.length);
-  const callbackFunction = (response, err) => {
-    try {
-      if (err) {
-        console.log(err);
-      }
-      if (response.status === STATUS.SUCCESS) {
-        event.returnValue = response;
-      } else {
-        event.returnValue = response;
-        console.log(response.message);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  console.log(`Length of data sent : ${data.length}`);
 
-  customerInvoiceRepo.create(data, callbackFunction);
+  customerInvoiceRepo.create(data, (response, err) =>
+    callbackFunction(response, err, event),
+  );
 });
 
 ipcMain.on('update:customer-invoice', (event, data) => {
   console.log('main.ts update:customer-invoice');
-  console.log(data.length);
-  const callbackFunction = (response, err) => {
-    try {
-      if (err) {
-        console.log(err);
-      }
-      if (response.status === STATUS.SUCCESS) {
-        event.returnValue = response;
-      } else {
-        event.returnValue = response;
-        console.log(response.message);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  console.log(`Length of data sent : ${data.length}`);
 
-  customerInvoiceRepo.update(data, callbackFunction);
+  customerInvoiceRepo.update(data, (response, err) =>
+    callbackFunction(response, err, event),
+  );
 });
+
 ipcMain.on('delete:duplicated-customer-invoice', (event, data) => {
   console.log('main.ts delete:duplicated-customer-invoice');
-  console.log(data.length);
-  const callbackFunction = (response, err) => {
-    try {
-      if (err) {
-        console.log(err);
-      }
-      if (response.status === STATUS.SUCCESS) {
-        event.returnValue = response;
-      } else {
-        event.returnValue = response;
-        console.log(response.message);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  console.log(`Length of data sent : ${data.length}`);
 
-  customerInvoiceRepo.deleteDuplicated(data, callbackFunction);
+  customerInvoiceRepo.deleteDuplicated(data, (response, err) =>
+    callbackFunction(response, err, event),
+  );
 });
 
 ipcMain.on('get:all:customer-invoices', (event, data) => {
   console.log('main.ts get:all:customer-invoices');
-  console.log(data.length);
-  const callbackFunction = (response, err) => {
-    try {
-      if (err) {
-        console.log(err);
-      }
-      if (response.status === STATUS.SUCCESS) {
-        event.returnValue = response;
-      } else {
-        event.returnValue = response;
-        console.log(response.message);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  customerInvoiceRepo.getAll(data, callbackFunction);
+  console.log(`Length of data sent : ${data.length}`);
+
+  customerInvoiceRepo.getAll(data, (response, err) =>
+    callbackFunction(response, err, event),
+  );
 });
 
 ipcMain.on('get:all:customer-invoices:id', (event, data) => {
   console.log('main.ts get:all:customer-invoices:id');
-  console.log(data.length);
-  const callbackFunction = (response, err) => {
-    try {
-      if (err) {
-        console.log(err);
-      }
-      if (response.status === STATUS.SUCCESS) {
-        event.returnValue = response;
-      } else {
-        event.returnValue = response;
-        console.log(response.message);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  console.log(`Length of data sent : ${data.length}`);
 
-  customerInvoiceRepo.getById(data, callbackFunction);
+  customerInvoiceRepo.getById(data, (response, err) =>
+    callbackFunction(response, err, event),
+  );
 });
 
 ipcMain.on('delete:customer-invoice', (event, data) => {
   console.log('main.ts delete:customer-invoice');
-  console.log(data.length);
-  const callbackFunction = (response, err) => {
-    try {
-      if (err) {
-        console.log(err);
-      }
-      if (response.status === STATUS.SUCCESS) {
-        event.returnValue = response;
-      } else {
-        event.returnValue = response;
-        console.log(response.message);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  console.log(`Length of data sent : ${data.length}`);
 
-  customerInvoiceRepo.deleteRecords(data, callbackFunction);
+  customerInvoiceRepo.deleteRecords(data, (response, err) =>
+    callbackFunction(response, err, event),
+  );
 });
 
 // IPC listener - product
 ipcMain.on('create:product', async (event, data) => {
   console.log('main.ts create:product');
-  const callbackFunction = (response, err) => {
-    try {
-      if (err) {
-        console.log(err);
-      }
-      if (response.status === STATUS.SUCCESS) {
-        event.returnValue = response;
-      } else {
-        event.returnValue = response;
-        console.log(response.message);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  productRepo.create(data, callbackFunction);
+  console.log(`Length of data sent : ${data.length}`);
+  productRepo.create(data, (response, err) =>
+    callbackFunction(response, err, event),
+  );
 });
 
 ipcMain.on('update:product', async (event, data) => {
   console.log('main.ts update:product');
-  const callbackFunction = (response, err) => {
-    try {
-      if (err) {
-        console.log(err);
-      }
-      if (response.status === STATUS.SUCCESS) {
-        event.returnValue = response;
-      } else {
-        event.returnValue = response;
-        console.log(response.message);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  productRepo.update(data, callbackFunction);
+  console.log(`Length of data sent : ${data.length}`);
+  productRepo.update(data, (response, err) =>
+    callbackFunction(response, err, event),
+  );
 });
 
 ipcMain.on('get:all:product', (event, data) => {
   console.log('main.ts get:all:product');
-  const callbackFunction = (response, err) => {
-    try {
-      if (err) {
-        console.log(err);
-      }
-      if (response.status === STATUS.SUCCESS) {
-        event.returnValue = response;
-      } else {
-        event.returnValue = response;
-        console.log(response.message);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  productRepo.getAll(data, callbackFunction);
+  console.log(`Length of data sent : ${data.length}`);
+  productRepo.getAll(data, (response, err) =>
+    callbackFunction(response, err, event),
+  );
 });
 
 ipcMain.on('delete:product', async (event, data) => {
   console.log('main.ts delete:product');
-  const callbackFunction = (response, err) => {
-    try {
-      if (err) {
-        console.log(err);
-      }
-      if (response.status === STATUS.SUCCESS) {
-        event.returnValue = response;
-      } else {
-        event.returnValue = response;
-        console.log(response.message);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  productRepo.deleteRecords(data, callbackFunction);
+  console.log(`Length of data sent : ${data.length}`);
+  productRepo.deleteRecords(data, (response, err) =>
+    callbackFunction(response, err, event),
+  );
 });
 
 // App listerns
