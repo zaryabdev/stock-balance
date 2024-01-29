@@ -14,6 +14,7 @@
 - When archiving all customer app crashes sometimes
 - Add option to migrate customer type
 - Fix delete archive unchrive state and type issue
+- On first vendor addition if we add products no product is saved unless vendor has an ID
 
 # Isssues :
 

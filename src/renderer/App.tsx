@@ -31,7 +31,9 @@ import { STATE, STATUS, TYPE } from './contants';
 import Customers from './modules/customers/Customers';
 
 export default function App() {
-  const [messageApi, contextHolder] = message.useMessage();
+  const [messageApi, contextHolder] = message.useMessage({
+    top: 35,
+  });
 
   const [toggleSideBar, setToggleSideBar] = useState(true);
   const [currentStock, setCurrentStock] = useState([]);

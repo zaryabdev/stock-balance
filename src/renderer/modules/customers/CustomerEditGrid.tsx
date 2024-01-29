@@ -637,7 +637,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
                   const currentProduct = currentVendorProducts[product];
                   if (currentProduct) {
                     if (product === RECORD_TYPE.previous_balance) {
-                      currentRecord.payment = RECORD_TYPE.previous_balance;
+                      // currentRecord.payment = RECORD_TYPE.previous_balance;
                       currentRecord.qty_ctn = 0;
                       currentRecord.carton = 0;
                       currentRecord.total_qty = 0;
@@ -655,7 +655,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
                       currentRecord.balance = currentRecord.credit;
                       currentRecord.state = STATE.updated;
                     } else {
-                      currentRecord.payment = RECORD_TYPE.none;
+                      // currentRecord.payment = RECORD_TYPE.none;
                       currentRecord.qty_ctn = currentProduct.qty_ctn;
                       currentRecord.total_qty =
                         currentRecord.carton * currentProduct.qty_ctn;
