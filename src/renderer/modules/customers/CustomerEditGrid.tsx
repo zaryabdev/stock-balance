@@ -107,6 +107,30 @@ const SelectComponent = React.memo(
     return (
       <Select
         ref={ref}
+        theme={(theme) => ({
+          ...theme,
+          borderRadius: 0,
+          colors: {
+            ...theme.colors,
+            // primary: '#181A1B', // background
+            primary75: 'green',
+            primary50: '#8C8C8C', //  on click
+            primary25: '#D9D9D9', // options hover
+            danger: 'red',
+            dangerLight: 'pink',
+            neutral0: '#181A1B', // background
+            neutral5: 'blue',
+            neutral10: 'yellow', //
+            neutral20: '#363A3D', // border
+            // neutral30: '#262626', // on field hover and focu
+            neutral40: '#ffffff', // op option text
+            neutral50: 'purple',
+            neutral60: '#ffffff', // arrow icon active
+            neutral70: 'orange',
+            neutral80: '#ffffff', // input field text color
+            neutral90: 'red',
+          },
+        })}
         styles={{
           container: (provided) => ({
             ...provided,
@@ -114,13 +138,11 @@ const SelectComponent = React.memo(
             alignSelf: 'stretch',
             pointerEvents: focus ? undefined : 'none',
           }),
-          control: (provided) => ({
-            ...provided,
+          control: (baseStyles) => ({
+            ...baseStyles,
             height: '100%',
-            border: 'none',
-            boxShadow: 'none',
-            background: 'none',
           }),
+
           indicatorSeparator: (provided) => ({
             ...provided,
             opacity: 0,
@@ -134,6 +156,7 @@ const SelectComponent = React.memo(
             opacity: active ? 1 : 0,
           }),
         }}
+        classNamePrefix="react-select"
         isDisabled={columnData.disabled}
         value={
           columnData.choices.find(({ value }) => value === rowData) ?? null

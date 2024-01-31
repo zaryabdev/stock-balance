@@ -1,8 +1,8 @@
 :root {
-  --darkreader-bg--dsg-border-color: #242728;
-  --darkreader-bg--dsg-cell-background-color: #181a1b;
-  --darkreader-text--dsg-header-text-color: #afa89d;
-  --darkreader-border--dsg-border-color: #363a3d;
+  --dark-border-color: #242728;
+  --dark-cell-background-color: #181a1b;
+  --dark-text-color: #afa89d;
+  --dark-border-color-2: #363a3d;
 }
 
 body {
@@ -21,7 +21,7 @@ body {
 }
 
 .dsg-row {
-  box-shadow: 0 1px var(--darkreader-bg--dsg-border-color) inset !important;
+  box-shadow: 0 1px var(--dark-border-color) inset !important;
 }
 
 .dsg-add-row {
@@ -38,29 +38,29 @@ body {
 }
 .dsg-cell,
 .dsg-row {
-  background: var(--darkreader-bg--dsg-cell-background-color) !important;
+  background: var(--dark-cell-background-color) !important;
 }
 
 .dsg-cell-gutter,
 .dsg-cell-header {
   box-shadow: none;
-  color: var(--darkreader-text--dsg-header-text-color);
+  color: var(--dark-text-color);
 }
 
 .dsg-cell {
   border-bottom-color: initial;
   border-right-color: initial;
-  box-shadow: 1px 1px var(--darkreader-bg--dsg-border-color);
+  box-shadow: 1px 1px var(--dark-border-color);
 }
 
 .dsg-cell,
 .dsg-scrollable-view {
-  border: 1px solid var(--darkreader-border--dsg-border-color);
+  border: 1px solid var(--dark-border-color-2);
 }
 
 .dsg-cell,
 .dsg-row {
-  background: var(--darkreader-bg--dsg-cell-background-color);
+  background: var(--dark-cell-background-color);
 }
 
 html,
@@ -82,3 +82,67 @@ button,
 dialog {
   background-color: #181a1b;
 }
+
+/*  React-select css start  */
+/* div[class*='-control'] {
+  height: 31px !important;
+  min-height: 31px !important;
+  background-color: var(--dark-cell-background-color) !important;
+  border-color: var(--dark-border-color) !important;
+  color: var(--dark-text-color) !important;
+}
+
+.css-t3ipsp-control {
+  border-color: var(--dark-border-color) !important;
+  box-shadow: 0 0 0 0.075rem var(--dark-border-color-2) !important;
+}
+
+.css-1fdsijx-ValueContainer {
+  padding: 0px 8px !important;
+}
+
+.css-1xc3v61-indicatorContainer,
+.css-15lsz6c-indicatorContainer {
+  padding: 5px 8px !important;
+}
+
+.css-1u9des2-indicatorSeparator {
+  margin-bottom: 4px !important;
+  margin-top: 6px !important;
+}
+
+.css-4xgw5l-IndicatorsContainer2 {
+  height: 28px !important;
+}
+
+.css-qbdosj-Input {
+  margin: 0px !important;
+}
+
+.css-w9q2zk-Input2,
+.css-feonkk-Input2,
+.css-1xc3v61-indicatorContainer,
+.css-15lsz6c-indicatorContainer,
+.css-1xc3v61-indicatorContainer:hover,
+.css-15lsz6c-indicatorContainer:hover {
+  color: var(--dark-text-color) !important;
+}
+
+.css-1nmdiq5-menu {
+  z-index: 1001 !important;
+  background-color: var(--dark-cell-background-color) !important;
+}
+
+.css-1dimb5e-singleValue {
+  color: var(--dark-text-color) !important;
+}
+
+.css-feonkk-Input2 {
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+}
+.css-19bb58m {
+  margin: 0px !important;
+} */
+
+/*  React-select css end  */
