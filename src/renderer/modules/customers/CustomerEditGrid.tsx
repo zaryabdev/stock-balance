@@ -122,7 +122,7 @@ const SelectComponent = React.memo(
             neutral5: 'blue',
             neutral10: 'yellow', //
             neutral20: '#363A3D', // border
-            // neutral30: '#262626', // on field hover and focu
+            // neutral30: '#262626', // on field hover and focus
             neutral40: '#ffffff', // op option text
             neutral50: 'purple',
             neutral60: '#ffffff', // arrow icon active

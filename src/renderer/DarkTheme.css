@@ -17,7 +17,14 @@ body {
   background-color: rgb(24, 26, 27) !important;
   border-left-color: initial !important;
   border-top-color: initial !important;
+  border-bottom-color: var(--dark-border-color-2) !important;
   color: rgb(232, 230, 227) !important;
+}
+
+.dsg-cell-header.dsg-cell-gutter {
+  box-shadow:
+    1px 0 var(--dark-border-color-2),
+    0 1px var(--dark-border-color-2);
 }
 
 .dsg-row {
@@ -29,6 +36,7 @@ body {
   background-color: rgb(27, 29, 30);
   border-top-color: initial;
   color: rgb(232, 230, 227);
+  border-color: var(--dark-border-color-2);
 }
 .dsg-add-row-btn,
 .dsg-add-row-input {
@@ -84,6 +92,17 @@ dialog {
 }
 
 /*  React-select css start  */
+
+.react-select__option--is-focused {
+  background-color: #1668dc !important;
+  color: white !important;
+}
+
+.react-select__option--is-selected {
+  background-color: #1668dc !important;
+  color: white !important;
+}
+
 /* div[class*='-control'] {
   height: 31px !important;
   min-height: 31px !important;
