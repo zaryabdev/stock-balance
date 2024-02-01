@@ -5,137 +5,122 @@
   --dark-border-color-2: #363a3d;
 }
 
-body {
-  margin: 0 !important;
-  overflow-x: hidden;
+main.light {
+  background-color: white;
+}
+main.dark {
   background-color: black;
 }
 
-input[type='date'] {
+.dark input {
+  color: #e8e6e3;
+}
+
+.dark input[type='date'] {
   color-scheme: dark;
 }
 
 /* date picker icon color from light to gray */
-::-webkit-calendar-picker-indicator {
+.dark input[type='date']::-webkit-calendar-picker-indicator {
   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="15" viewBox="0 0 24 24"><path fill="%23bbbbbb" d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z"/></svg>');
 }
 
-.dsg-container {
-  height: 500px !important;
+.dark .dsg-container {
   background-image: initial !important;
   background-color: rgb(24, 26, 27) !important;
   border-color: var(--dark-border-color-2) !important;
   color: rgb(232, 230, 227) !important;
 }
 
-.dsg-cell-header.dsg-cell-gutter {
+.dark .dsg-cell-header.dsg-cell-gutter {
   box-shadow:
     1px 0 var(--dark-border-color-2),
     0 1px var(--dark-border-color-2);
 }
 
-.dsg-row {
+.dark .dsg-row {
   box-shadow: 0 1px var(--dark-border-color) inset !important;
 }
 
-.dsg-add-row {
+.dark .dsg-add-row {
   background-image: initial;
   background-color: rgb(27, 29, 30);
   border-top-color: initial;
   color: rgb(232, 230, 227);
   border-color: var(--dark-border-color-2);
 }
-.dsg-add-row-btn,
-.dsg-add-row-input {
+.dark .dsg-add-row-btn,
+.dark .dsg-add-row-input {
   background-image: initial;
   background-color: rgb(24, 26, 27);
   border-color: rgb(58, 63, 65);
 }
-.dsg-cell,
-.dsg-row {
+.dark .dsg-cell,
+.dark .dsg-row {
   background: var(--dark-cell-background-color) !important;
 }
 
-.dsg-cell-gutter,
-.dsg-cell-header {
+.dark .dsg-cell-gutter,
+.dark .dsg-cell-header {
   box-shadow: none;
   color: var(--dark-text-color);
 }
 
-.dsg-cell {
+.dark .dsg-cell {
   border-bottom-color: initial;
   border-right-color: initial;
   box-shadow: 1px 1px var(--dark-border-color);
 }
 
-.dsg-cell,
-.dsg-scrollable-view {
+.dark .dsg-cell,
+.dark .dsg-scrollable-view {
   border: 1px solid var(--dark-border-color-2);
 }
 
-.dsg-cell,
-.dsg-row {
+.dark .dsg-cell,
+.dark .dsg-row {
   background: var(--dark-cell-background-color);
-}
-
-html,
-body,
-input,
-textarea,
-select,
-button {
-  border-color: #736b5e;
-  color: #e8e6e3;
-}
-
-html,
-body,
-input,
-textarea,
-select,
-button,
-dialog {
-  background-color: #181a1b;
 }
 
 /*  React-select css start  */
 
-.react-select__option--is-focused {
+.dark .react-select__option--is-focused {
   background-color: #1668dc !important;
   color: white !important;
 }
 
-.react-select__option--is-selected {
+.dark .react-select__option--is-selected {
   background-color: #1668dc !important;
   color: white !important;
 }
+
 /* Scroll bar - tables */
 
-.ant-table-body::-webkit-scrollbar-track {
+.dark .ant-table-body::-webkit-scrollbar-track {
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   background-color: #141414;
 }
 
-.ant-table-body::-webkit-scrollbar {
+.dark .ant-table-body::-webkit-scrollbar {
   width: 10px;
   background-color: #141414;
 }
 
-.ant-table-body::-webkit-scrollbar-thumb {
+.dark .ant-table-body::-webkit-scrollbar-thumb {
   background-color: #303030;
 }
 
 /* Scroll bar - datasheeet  */
-.dsg-container::-webkit-scrollbar-track {
+.dark .dsg-container::-webkit-scrollbar-track {
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   background-color: #141414;
 }
 
-.dsg-container::-webkit-scrollbar {
+.dark .dsg-container::-webkit-scrollbar {
   width: 10px;
   background-color: #141414;
 }
 
-.dsg-container::-webkit-scrollbar-thumb {
+.dark .dsg-container::-webkit-scrollbar-thumb {
   background-color: #303030;
 }

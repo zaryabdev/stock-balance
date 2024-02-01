@@ -82,8 +82,35 @@ type Row = {
 };
 
 type SelectOptions = {
+  theme: string;
   choices: Choice[];
   disabled?: boolean;
+};
+
+const darkReactSelectTheme = {
+  // primary: '#181A1B', // background
+  primary75: 'green',
+  primary50: '#8C8C8C', //  on click
+  primary25: '#D9D9D9', // options hover
+  danger: 'red',
+  dangerLight: 'pink',
+  neutral0: '#181A1B', // background
+  neutral5: 'blue',
+  neutral10: 'yellow', //
+  neutral20: '#363A3D', // border
+  // neutral30: '#262626', // on field hover and focus
+  neutral40: '#ffffff', // op option text
+  neutral50: 'purple',
+  neutral60: '#ffffff', // arrow icon active
+  neutral70: 'orange',
+  neutral80: '#ffffff', // input field text color
+  neutral90: 'red',
+};
+
+const lightReactSelectTheme = {
+  border: 'none',
+  boxShadow: 'none',
+  background: 'none',
 };
 
 const SelectComponent = React.memo(
@@ -107,30 +134,26 @@ const SelectComponent = React.memo(
     return (
       <Select
         ref={ref}
-        theme={(theme) => ({
-          ...theme,
-          borderRadius: 0,
-          colors: {
-            ...theme.colors,
-            // primary: '#181A1B', // background
-            primary75: 'green',
-            primary50: '#8C8C8C', //  on click
-            primary25: '#D9D9D9', // options hover
-            danger: 'red',
-            dangerLight: 'pink',
-            neutral0: '#181A1B', // background
-            neutral5: 'blue',
-            neutral10: 'yellow', //
-            neutral20: '#363A3D', // border
-            // neutral30: '#262626', // on field hover and focus
-            neutral40: '#ffffff', // op option text
-            neutral50: 'purple',
-            neutral60: '#ffffff', // arrow icon active
-            neutral70: 'orange',
-            neutral80: '#ffffff', // input field text color
-            neutral90: 'red',
-          },
-        })}
+        theme={(theme) => {
+          if (columnData.theme === 'dark') {
+            return {
+              ...theme,
+              borderRadius: 0,
+              colors: {
+                ...theme.colors,
+                ...darkReactSelectTheme,
+              },
+            };
+          }
+
+          return {
+            ...theme,
+            borderRadius: 0,
+            colors: {
+              ...theme.colors,
+            },
+          };
+        }}
         styles={{
           container: (provided) => ({
             ...provided,
@@ -138,10 +161,21 @@ const SelectComponent = React.memo(
             alignSelf: 'stretch',
             pointerEvents: focus ? undefined : 'none',
           }),
-          control: (baseStyles) => ({
-            ...baseStyles,
-            height: '100%',
-          }),
+          control: (baseStyles) => {
+            if (columnData.theme === 'dark') {
+              return {
+                ...baseStyles,
+                height: '100%',
+                border: 'none',
+              };
+            }
+
+            return {
+              ...baseStyles,
+              height: '100%',
+              ...lightReactSelectTheme,
+            };
+          },
 
           indicatorSeparator: (provided) => ({
             ...provided,
@@ -456,6 +490,7 @@ function CustomerEditGrid({ customerId, type, getCurrentStock }) {
       ...keyColumn(
         'product',
         selectColumn({
+          theme: context.appTheme,
           choices: productsToShow,
         }),
       ),

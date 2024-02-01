@@ -28,6 +28,8 @@ import './App.css';
 import Context from './AppContext';
 import './DarkTheme.css';
 import SampleList from './SampleList';
+import { MoonIcon } from './components/MoonIcon';
+import { SunIcon } from './components/SunIcon';
 import { STATE, STATUS, TYPE } from './contants';
 import Customers from './modules/customers/Customers';
 
@@ -37,10 +39,12 @@ export default function App() {
   });
 
   const [toggleSideBar, setToggleSideBar] = useState(true);
+  const [toggleTheme, setToggleTheme] = useState(true);
   const [currentStock, setCurrentStock] = useState([]);
   const [currentProducts, setCurrentProducts] = useState([]);
   const [customersList, setCustomersList] = useState([]);
   const [allInvoices, setAllInvoices] = useState([]);
+  const [appTheme, setAppTheme] = useState('light');
   const [filteredCustomersList, setFilteredCustomersList] = useState([]);
   const [validationsModal, setValidationsModal] = useState(false);
   const [invalidRows, setInvalidRows] = useState([]);
@@ -385,116 +389,116 @@ export default function App() {
   };
 
   return (
-    <Context.Provider
-      value={{
-        toggleSideBar,
-        currentStock,
-        currentProducts,
-        customersList,
-        filteredCustomersList,
-        setFilteredCustomersList,
-        setCustomersList,
-        setToggleSideBar,
-        success,
-        error,
-        warning,
-      }}
-    >
-      {contextHolder}
-      <ConfigProvider
-        theme={{
-          algorithm: [theme.darkAlgorithm],
+    <main className={`${appTheme}`}>
+      <Context.Provider
+        value={{
+          toggleSideBar,
+          currentStock,
+          currentProducts,
+          customersList,
+          filteredCustomersList,
+          appTheme,
+          setFilteredCustomersList,
+          setCustomersList,
+          setToggleSideBar,
+          success,
+          error,
+          warning,
         }}
       >
-        <Customers
-          getCurrentStock={getCurrentStock}
-          getCurrentProducts={getCurrentProducts}
-          getCurrentCustomers={getCurrentCustomers}
-          selectedCustomerType={selectedCustomerType}
-          setSelectedCustomerType={setSelectedCustomerType}
-          selectedCustomerState={selectedCustomerState}
-          setSelectedCustomerState={setSelectedCustomerState}
-        />
-        {/* {toggleSideBar ? (
+        {contextHolder}
+        <ConfigProvider
+          theme={{
+            algorithm: appTheme === 'dark' ? [theme.darkAlgorithm] : [],
+          }}
+        >
+          <Customers
+            getCurrentStock={getCurrentStock}
+            getCurrentProducts={getCurrentProducts}
+            getCurrentCustomers={getCurrentCustomers}
+            selectedCustomerType={selectedCustomerType}
+            setSelectedCustomerType={setSelectedCustomerType}
+            selectedCustomerState={selectedCustomerState}
+            setSelectedCustomerState={setSelectedCustomerState}
+          />
           <FloatButton
-            tooltip="Hide sidebar"
-            style={{ right: 95, bottom: 15 }}
+            // tooltip={`${toggleSideBar ? 'Hide sidebar' : 'Show sidebar'}`}
+            style={{ right: 180, bottom: 15 }}
             type="default"
             shape="circle"
-            icon={<DoubleLeftOutlined />}
+            icon={
+              toggleSideBar ? <DoubleLeftOutlined /> : <DoubleRightOutlined />
+            }
             onClick={() => hideSideBar()}
           />
-        ) : (
-          <FloatButton
-            tooltip="Show sidebar"
-            style={{ right: 15, bottom: 15 }}
-            type="primary"
-            shape="circle"
-            icon={<DoubleRightOutlined />}
-            onClick={() => hideSideBar()}
-          />
-        )} */}
+          {appTheme === 'dark' ? (
+            <FloatButton
+              style={{ right: 140, bottom: 15 }}
+              type="default"
+              shape="circle"
+              icon={<MoonIcon />}
+              onClick={() => setAppTheme('light')}
+            />
+          ) : (
+            <FloatButton
+              style={{ right: 140, bottom: 15 }}
+              type="default"
+              shape="circle"
+              icon={<MoonIcon />}
+              onClick={() => setAppTheme('dark')}
+            />
+          )}
 
-        <FloatButton
-          // tooltip={`${toggleSideBar ? 'Hide sidebar' : 'Show sidebar'}`}
-          style={{ right: 140, bottom: 15 }}
-          type="default"
-          shape="circle"
-          icon={
-            toggleSideBar ? <DoubleLeftOutlined /> : <DoubleRightOutlined />
-          }
-          onClick={() => hideSideBar()}
-        />
-        <FloatButton
-          // tooltip="Hide sidebar"
-          style={{ right: 100, bottom: 15 }}
-          type="default"
-          shape="circle"
-          icon={<IssuesCloseOutlined />}
-          onClick={() => validateInvoices()}
-        />
-        <Modal
-          title="Validation Results"
-          style={{ top: 40 }}
-          width={800}
-          open={validationsModal}
-          onOk={() => setValidationsModal(false)}
-          onCancel={() => setValidationsModal(false)}
-          footer={[
-            <Button onClick={getAllCustomersInvoice}>Refresh Data</Button>,
-            <Button onClick={validateInvoices}>Check Validation</Button>,
-            <Popconfirm
-              title="Delete Duplicate Records"
-              description="Are you sure to delete duplicate records?"
-              onConfirm={confirm}
-              onCancel={cancel}
-              okText="Yes"
-              cancelText="No"
-            >
-              <Button danger>Remove Duplicate Records</Button>
-            </Popconfirm>,
-          ]}
-        >
-          <Tabs
-            defaultActiveKey="1"
-            centered
-            items={[
-              {
-                label: 'Invalid Records',
-                key: '1',
-                children: <DuplicateRowsTable data={invalidRows} />,
-              },
-              {
-                label: 'Duplicate Records',
-                key: '2',
-                children: <DuplicateRowsTable data={duplicateRows} />,
-              },
-            ]}
-            onChange={onChange}
+          <FloatButton
+            style={{ right: 100, bottom: 15 }}
+            type="default"
+            shape="circle"
+            icon={<IssuesCloseOutlined />}
+            onClick={() => validateInvoices()}
           />
-        </Modal>
-      </ConfigProvider>
-    </Context.Provider>
+          <Modal
+            title="Validation Results"
+            style={{ top: 40 }}
+            width={800}
+            open={validationsModal}
+            onOk={() => setValidationsModal(false)}
+            onCancel={() => setValidationsModal(false)}
+            footer={[
+              <Button onClick={getAllCustomersInvoice}>Refresh Data</Button>,
+              <Button onClick={validateInvoices}>Check Validation</Button>,
+              <Popconfirm
+                title="Delete Duplicate Records"
+                description="Are you sure to delete duplicate records?"
+                onConfirm={confirm}
+                onCancel={cancel}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button danger>Remove Duplicate Records</Button>
+              </Popconfirm>,
+            ]}
+          >
+            <Tabs
+              defaultActiveKey="1"
+              centered
+              items={[
+                {
+                  label: 'Invalid Records',
+                  key: '1',
+                  children: <DuplicateRowsTable data={invalidRows} />,
+                },
+                {
+                  label: 'Duplicate Records',
+                  key: '2',
+                  children: <DuplicateRowsTable data={duplicateRows} />,
+                },
+              ]}
+              onChange={onChange}
+            />
+          </Modal>
+        </ConfigProvider>
+      </Context.Provider>
+    </main>
   );
 }
 

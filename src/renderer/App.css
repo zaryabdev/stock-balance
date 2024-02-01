@@ -9,9 +9,21 @@
 body {
   margin: 0 !important;
   overflow-x: hidden;
+}
+
+html,
+body,
+input,
+textarea,
+select,
+button,
+dialog {
   background-color: black;
 }
 
+input {
+  color: #181a1b;
+}
 .dsg-container {
   height: 500px !important;
 }
