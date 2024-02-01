@@ -109,66 +109,33 @@ dialog {
   background-color: #1668dc !important;
   color: white !important;
 }
+/* Scroll bar - tables */
 
-/* div[class*='-control'] {
-  height: 31px !important;
-  min-height: 31px !important;
-  background-color: var(--dark-cell-background-color) !important;
-  border-color: var(--dark-border-color) !important;
-  color: var(--dark-text-color) !important;
+.ant-table-body::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #141414;
 }
 
-.css-t3ipsp-control {
-  border-color: var(--dark-border-color) !important;
-  box-shadow: 0 0 0 0.075rem var(--dark-border-color-2) !important;
+.ant-table-body::-webkit-scrollbar {
+  width: 10px;
+  background-color: #141414;
 }
 
-.css-1fdsijx-ValueContainer {
-  padding: 0px 8px !important;
+.ant-table-body::-webkit-scrollbar-thumb {
+  background-color: #303030;
 }
 
-.css-1xc3v61-indicatorContainer,
-.css-15lsz6c-indicatorContainer {
-  padding: 5px 8px !important;
+/* Scroll bar - datasheeet  */
+.dsg-container::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #141414;
 }
 
-.css-1u9des2-indicatorSeparator {
-  margin-bottom: 4px !important;
-  margin-top: 6px !important;
+.dsg-container::-webkit-scrollbar {
+  width: 10px;
+  background-color: #141414;
 }
 
-.css-4xgw5l-IndicatorsContainer2 {
-  height: 28px !important;
+.dsg-container::-webkit-scrollbar-thumb {
+  background-color: #303030;
 }
-
-.css-qbdosj-Input {
-  margin: 0px !important;
-}
-
-.css-w9q2zk-Input2,
-.css-feonkk-Input2,
-.css-1xc3v61-indicatorContainer,
-.css-15lsz6c-indicatorContainer,
-.css-1xc3v61-indicatorContainer:hover,
-.css-15lsz6c-indicatorContainer:hover {
-  color: var(--dark-text-color) !important;
-}
-
-.css-1nmdiq5-menu {
-  z-index: 1001 !important;
-  background-color: var(--dark-cell-background-color) !important;
-}
-
-.css-1dimb5e-singleValue {
-  color: var(--dark-text-color) !important;
-}
-
-.css-feonkk-Input2 {
-  padding-top: 0px !important;
-  padding-bottom: 0px !important;
-}
-.css-19bb58m {
-  margin: 0px !important;
-} */
-
-/*  React-select css end  */
