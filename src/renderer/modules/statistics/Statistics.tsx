@@ -4,6 +4,7 @@ import {
   Button,
   Card,
   Col,
+  Flex,
   Input,
   Row,
   Space,
@@ -322,126 +323,116 @@ const Statistics: React.FC = ({}) => {
         </Button>
       </Space>
 
-      <Row gutter={16}>
-        <Col span={6}>
-          <Card bordered>
-            <Statistic
-              title="Customer's Balance"
-              value={balanceSheetData.customer}
-              precision={2}
-              valueStyle={{
-                color: `${
-                  balanceSheetData.customer > 0 ? '#3f8600' : '#cf1322'
-                }`,
-              }}
-              prefix={
-                balanceSheetData.customer > 0 ? (
-                  <ArrowUpOutlined />
-                ) : (
-                  <ArrowDownOutlined />
-                )
-              }
-              suffix={
-                <span
-                  style={{
-                    fontSize: 'small',
-                  }}
-                >
-                  PKR
-                </span>
-              }
-            />
-          </Card>
-        </Col>
-        <Col span={6}>
-          <Card bordered>
-            <Statistic
-              title="Vendor's Balance"
-              value={balanceSheetData.vendor}
-              precision={2}
-              valueStyle={{
-                color: `${balanceSheetData.vendor > 0 ? '#3f8600' : '#cf1322'}`,
-              }}
-              prefix={
-                balanceSheetData.vendor > 0 ? (
-                  <ArrowUpOutlined />
-                ) : (
-                  <ArrowDownOutlined />
-                )
-              }
-              suffix={
-                <span
-                  style={{
-                    fontSize: 'small',
-                  }}
-                >
-                  PKR
-                </span>
-              }
-            />
-          </Card>
-        </Col>
-        <Col span={6}>
-          <Card bordered>
-            <Statistic
-              title="Total Current Balance"
-              value={balanceSheetData.current_worth}
-              precision={2}
-              valueStyle={{
-                color: `${
-                  balanceSheetData.current_worth > 0 ? '#3f8600' : '#cf1322'
-                }`,
-              }}
-              prefix={
-                balanceSheetData.current_worth > 0 ? (
-                  <ArrowUpOutlined />
-                ) : (
-                  <ArrowDownOutlined />
-                )
-              }
-              suffix={
-                <span
-                  style={{
-                    fontSize: 'small',
-                  }}
-                >
-                  PKR
-                </span>
-              }
-            />
-          </Card>
-        </Col>
-        <Col span={6}>
-          <Card bordered>
-            <Statistic
-              title="Stock Worth"
-              value={balanceSheetData.stock_worth}
-              precision={2}
-              valueStyle={{
-                color: `${
-                  balanceSheetData.stock_worth > 0 ? '#3f8600' : '#cf1322'
-                }`,
-              }}
-              prefix={
-                balanceSheetData.stock_worth > 0 ? (
-                  <ArrowUpOutlined />
-                ) : (
-                  <ArrowDownOutlined />
-                )
-              }
-              suffix={
-                <span
-                  style={{
-                    fontSize: 'small',
-                  }}
-                >
-                  PKR
-                </span>
-              }
-            />
-          </Card>
-        </Col>
-      </Row>
+      <Flex wrap="wrap" gap="small">
+        <Card bordered>
+          <Statistic
+            title="Customer's Balance"
+            value={balanceSheetData.customer}
+            precision={2}
+            valueStyle={{
+              color: `${balanceSheetData.customer > 0 ? '#3f8600' : '#cf1322'}`,
+            }}
+            prefix={
+              balanceSheetData.customer > 0 ? (
+                <ArrowUpOutlined />
+              ) : (
+                <ArrowDownOutlined />
+              )
+            }
+            suffix={
+              <span
+                style={{
+                  fontSize: 'small',
+                }}
+              >
+                PKR
+              </span>
+            }
+          />
+        </Card>
+        <Card bordered>
+          <Statistic
+            title="Vendor's Balance"
+            value={balanceSheetData.vendor}
+            precision={2}
+            valueStyle={{
+              color: `${balanceSheetData.vendor > 0 ? '#3f8600' : '#cf1322'}`,
+            }}
+            prefix={
+              balanceSheetData.vendor > 0 ? (
+                <ArrowUpOutlined />
+              ) : (
+                <ArrowDownOutlined />
+              )
+            }
+            suffix={
+              <span
+                style={{
+                  fontSize: 'small',
+                }}
+              >
+                PKR
+              </span>
+            }
+          />
+        </Card>
+        <Card bordered>
+          <Statistic
+            title="Total Current Balance"
+            value={balanceSheetData.current_worth}
+            precision={2}
+            valueStyle={{
+              color: `${
+                balanceSheetData.current_worth > 0 ? '#3f8600' : '#cf1322'
+              }`,
+            }}
+            prefix={
+              balanceSheetData.current_worth > 0 ? (
+                <ArrowUpOutlined />
+              ) : (
+                <ArrowDownOutlined />
+              )
+            }
+            suffix={
+              <span
+                style={{
+                  fontSize: 'small',
+                }}
+              >
+                PKR
+              </span>
+            }
+          />
+        </Card>
+        <Card bordered>
+          <Statistic
+            title="Stock Worth"
+            value={balanceSheetData.stock_worth}
+            precision={2}
+            valueStyle={{
+              color: `${
+                balanceSheetData.stock_worth > 0 ? '#3f8600' : '#cf1322'
+              }`,
+            }}
+            prefix={
+              balanceSheetData.stock_worth > 0 ? (
+                <ArrowUpOutlined />
+              ) : (
+                <ArrowDownOutlined />
+              )
+            }
+            suffix={
+              <span
+                style={{
+                  fontSize: 'small',
+                }}
+              >
+                PKR
+              </span>
+            }
+          />
+        </Card>
+      </Flex>
     </div>
   );
 };
