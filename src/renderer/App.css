@@ -18,14 +18,14 @@ textarea,
 select,
 button,
 dialog {
-  background-color: black;
+  background-color: white;
 }
 
 input {
   color: #181a1b;
 }
 .dsg-container {
-  height: 500px !important;
+  height: 650px !important;
 }
 
 .display-block {
